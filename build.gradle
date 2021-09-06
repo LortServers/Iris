@@ -1,0 +1,41 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'java-library'
+}
+
+group 'net.iris'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+    maven {
+        url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots'
+    }
+    maven {
+        url 'https://repo.screamingsandals.org/public/'
+    }
+}
+
+dependencies {
+    compileOnly "org.spigotmc:spigot-api:${SPIGOT_API_VERSION}"
+    api "org.screamingsandals.lib:core-common:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:tasker-common:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:material-common:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:player-common:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:plugin-common:${SCREAMING_LIB_VERSION}"
+    annotationProcessor "org.screamingsandals.lib:screaming-annotation:${SCREAMING_LIB_VERSION}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${JUNIT_VERSION}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${JUNIT_VERSION}"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+shadowJar {
+    relocate 'org.screamingsandals.lib', 'net.iris.lib.slib'
+}
