@@ -2,6 +2,7 @@ package net.iris.ac.config;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import net.iris.ac.IrisPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -28,7 +29,7 @@ public class Configurator {
             try {
                 config = MAPPER.readValue(CONFIG_FILE, Configuration.class);
             } catch (IOException e) {
-                IrisPlugin.getInstance().getLogger().error("Could not load configuration.", e);
+                IrisPlugin.getInstance().getSLF4JLogger().error("Could not load configuration.", e);
                 config = new Configuration();
             }
         } else {
@@ -45,7 +46,7 @@ public class Configurator {
         try {
             MAPPER.writeValue(CONFIG_FILE, config);
         } catch (IOException e) {
-            IrisPlugin.getInstance().getLogger().error("Could not save configuration.", e);
+            IrisPlugin.getInstance().getSLF4JLogger().error("Could not save configuration.", e);
         }
     }
 }

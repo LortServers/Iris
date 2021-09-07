@@ -32,7 +32,10 @@ dependencies {
 
     implementation "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
     implementation "org.slf4j:slf4j-api:${SLF4J_VERSION}"
+    implementation "org.slf4j:slf4j-simple:${SLF4J_VERSION}"
     compileOnly "org.checkerframework:checker-qual:${CHECKER_FRAMEWORK_VERSION}"
+    compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
+    annotationProcessor "org.projectlombok:lombok:${LOMBOK_VERSION}"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${JUNIT_VERSION}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${JUNIT_VERSION}"
