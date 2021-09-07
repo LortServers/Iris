@@ -15,18 +15,24 @@ repositories {
         url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots'
     }
     maven {
+        url 'https://papermc.io/repo/repository/maven-public/'
+    }
+    maven {
         url 'https://repo.screamingsandals.org/public/'
     }
 }
 
 dependencies {
     compileOnly "org.spigotmc:spigot-api:${SPIGOT_API_VERSION}"
-    api "org.screamingsandals.lib:core-common:${SCREAMING_LIB_VERSION}"
-    api "org.screamingsandals.lib:tasker-common:${SCREAMING_LIB_VERSION}"
-    api "org.screamingsandals.lib:material-common:${SCREAMING_LIB_VERSION}"
-    api "org.screamingsandals.lib:player-common:${SCREAMING_LIB_VERSION}"
-    api "org.screamingsandals.lib:plugin-common:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:core-bukkit:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:tasker-bukkit:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:plugin-bukkit:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:utils-common:${SCREAMING_LIB_VERSION}"
     annotationProcessor "org.screamingsandals.lib:screaming-annotation:${SCREAMING_LIB_VERSION}"
+
+    implementation "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
+    implementation "org.slf4j:slf4j-api:${SLF4J_VERSION}"
+    compileOnly "org.checkerframework:checker-qual:${CHECKER_FRAMEWORK_VERSION}"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${JUNIT_VERSION}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${JUNIT_VERSION}"
@@ -38,4 +44,6 @@ test {
 
 shadowJar {
     relocate 'org.screamingsandals.lib', 'net.iris.lib.slib'
+    relocate 'com.fasterxml.jackson', 'net.iris.lib.jackson'
+    relocate 'org.slf4j', 'net.iris.lib.slf4j'
 }

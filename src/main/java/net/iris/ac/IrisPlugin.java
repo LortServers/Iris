@@ -1,6 +1,6 @@
 package net.iris.ac;
 
-import net.iris.ac.checks.CriticalsCheckA;
+import net.iris.ac.config.Configurator;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
@@ -11,11 +11,21 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
         version = "1.0-SNAPSHOT"
 )
 @Init(services = {
-        CriticalsCheckA.class
+        Configurator.class,
+        CheckManager.class
 })
 public class IrisPlugin extends PluginContainer {
+    private static IrisPlugin INSTANCE = null;
+
     @Override
     public void enable() {
+        INSTANCE = this;
+    }
 
+    public static IrisPlugin getInstance() {
+        if (INSTANCE == null) {
+            throw new UnsupportedOperationException("Plugin is not initialized yet.");
+        }
+        return INSTANCE;
     }
 }
