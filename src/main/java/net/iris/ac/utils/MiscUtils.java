@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MiscUtils {
-    public static boolean getLookingAt(PlayerWrapper player, EntityLiving livingEntity){
+    public static boolean getLookingAt(PlayerWrapper player, EntityLiving livingEntity) {
         LocationHolder eye = player.asEntity().getEyeLocation();
         Vector3D toEntity = vectorSubtract(livingEntity.getEyeLocation().asVector(), eye.asVector());
         double dot = vectorDot(toEntity.normalize(), eye.getFacingDirection());
@@ -21,10 +21,10 @@ public class MiscUtils {
     }
 
     @Nullable
-    public static EntityLiving getTargetEntity(PlayerWrapper player){
-        for (EntityBasic e : getNearbyEntities(player.getLocation(), 10)){
-            if (e instanceof EntityLiving){
-                if (getLookingAt(player, (EntityLiving) e)){
+    public static EntityLiving getTargetEntity(PlayerWrapper player) {
+        for (EntityBasic e : getNearbyEntities(player.getLocation(), 10)) {
+            if (e instanceof EntityLiving) {
+                if (getLookingAt(player, (EntityLiving) e)) {
                     return (EntityLiving) e;
                 }
             }
