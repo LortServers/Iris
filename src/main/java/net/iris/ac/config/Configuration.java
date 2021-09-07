@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Configuration {
     private int checkDecreaseFrequency = 60;
     private int checkDecreaseAmount = 10;
+    private int checkCooldownPeriod = 1;
 
     protected Configuration() {}
 
@@ -13,6 +14,7 @@ public class Configuration {
         return "Configuration{" +
                 "checkDecreaseFrequency=" + checkDecreaseFrequency +
                 ", checkDecreaseAmount=" + checkDecreaseAmount +
+                ", checkCooldownPeriod=" + checkCooldownPeriod +
                 '}';
     }
 
@@ -21,7 +23,7 @@ public class Configuration {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Configuration that = (Configuration) o;
-        return checkDecreaseFrequency == that.checkDecreaseFrequency && checkDecreaseAmount == that.checkDecreaseAmount;
+        return checkDecreaseFrequency == that.checkDecreaseFrequency && checkDecreaseAmount == that.checkDecreaseAmount && checkCooldownPeriod == that.checkCooldownPeriod;
     }
 
     @Override
@@ -43,5 +45,13 @@ public class Configuration {
 
     public void setCheckDecreaseAmount(int checkDecreaseAmount) {
         this.checkDecreaseAmount = checkDecreaseAmount;
+    }
+
+    public int getCheckCooldownPeriod() {
+        return checkCooldownPeriod;
+    }
+
+    public void setCheckCooldownPeriod(int checkCooldownPeriod) {
+        this.checkCooldownPeriod = checkCooldownPeriod;
     }
 }

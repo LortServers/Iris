@@ -1,8 +1,10 @@
 package net.iris.ac.checks;
 
-import net.iris.ac.CheckManager;
+import net.iris.ac.utils.CheckManager;
 import net.iris.ac.config.Configurator;
 import net.iris.ac.utils.CheckAlphabet;
+import net.iris.ac.utils.CooldownManager;
+import net.iris.ac.utils.CooldownMapping;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.tasker.Tasker;
@@ -14,22 +16,22 @@ import java.util.UUID;
 
 @ServiceDependencies(dependsOn = {
         Configurator.class,
-        CheckManager.class
+        CheckManager.class,
+        CooldownManager.class
 })
 public abstract class Check {
+    private final int cooldown;
+
     public Check() {
         this(
                 ServiceManager.get(Configurator.class).getConfig().getCheckDecreaseAmount(),
                 ServiceManager.get(Configurator.class).getConfig().getCheckDecreaseFrequency(),
+                ServiceManager.get(Configurator.class).getConfig().getCheckCooldownPeriod(),
                 TaskerTime.SECONDS
         );
     }
 
-    public Check(int decreaseBy, long decreaseTime) {
-        this(decreaseBy, decreaseTime, TaskerTime.TICKS);
-    }
-
-    public Check(int decreaseBy, long decreaseTime, TaskerTime decreaseTimeType) {
+    public Check(int decreaseBy, long decreaseTime, int cooldown, TaskerTime decreaseTimeType) {
         Tasker.build(() -> {
             final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(Check.this.getClass());
             for (final Map.Entry<UUID, Integer> entry : vls.entrySet()) {
@@ -42,6 +44,7 @@ public abstract class Check {
                 vls.put(entry.getKey(), currentVl);
             }
         }).repeat(decreaseTime, decreaseTimeType).start();
+        this.cooldown = cooldown;
     }
 
     public abstract CheckAlphabet getType();
@@ -61,5 +64,18 @@ public abstract class Check {
             currentVl = 0;
         }
         vls.put(player.getUuid(), currentVl);
+    }
+
+    public boolean isOnCooldown(PlayerWrapper player) {
+        final Map<UUID, CooldownMapping> cooldowns = ServiceManager.get(CooldownManager.class).getCooldowns(this.getClass());
+        return cooldowns.containsKey(player.getUuid()) && cooldowns.get(player.getUuid()).isOnCooldown();
+    }
+
+    public void putCooldown(PlayerWrapper player) {
+        final Map<UUID, CooldownMapping> cooldowns = ServiceManager.get(CooldownManager.class).getCooldowns(this.getClass());
+        if (!cooldowns.containsKey(player.getUuid())) {
+            cooldowns.put(player.getUuid(), new CooldownMapping(cooldown));
+        }
+        cooldowns.get(player.getUuid()).putCooldown();
     }
 }

@@ -1,8 +1,8 @@
 package net.iris.ac.checks;
 
-public abstract class CriticalsCheck extends Check {
+public abstract class AimbotCheck extends Check {
     @Override
     public String getName() {
-        return "Criticals";
+        return "Aimbot";
     }
 }
