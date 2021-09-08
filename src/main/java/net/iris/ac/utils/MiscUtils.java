@@ -45,7 +45,7 @@ public class MiscUtils {
     public static List<EntityBasic> getNearbyEntities(LocationHolder loc, int radius) {
         final double squaredRadius = radius * radius;
         return loc.getWorld().getEntities().stream()
-                .filter(e -> e.getLocation().getDistanceSquared(loc) <= radius)
+                .filter(e -> e.getLocation().getDistanceSquared(loc) <= squaredRadius)
                 .collect(Collectors.toList());
     }
 }

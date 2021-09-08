@@ -1,8 +1,10 @@
 package net.iris.ac;
 
 import net.iris.ac.config.Configurator;
-import net.iris.ac.utils.CheckManager;
+import net.iris.ac.checks.CheckManager;
+import net.iris.ac.listener.AimbotListener;
 import net.iris.ac.utils.CooldownManager;
+import net.iris.ac.utils.Punisher;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
@@ -15,7 +17,10 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
 @Init(services = {
         Configurator.class,
         CheckManager.class,
-        CooldownManager.class
+        CooldownManager.class,
+        Punisher.class,
+        // checks
+        AimbotListener.class
 })
 public class IrisPlugin extends PluginContainer {
     private static IrisPlugin INSTANCE = null;

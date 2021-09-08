@@ -1,15 +1,11 @@
 package net.iris.ac.utils;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class CooldownMapping {
     private final int cooldown;
     private long lastUsage = System.currentTimeMillis();
-
-    /**
-     * @param cooldown cooldown in seconds
-     */
-    public CooldownMapping(int cooldown) {
-        this.cooldown = cooldown / 1000;
-    }
 
     public boolean isOnCooldown() {
         return (System.currentTimeMillis() - lastUsage) < cooldown;

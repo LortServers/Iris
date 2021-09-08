@@ -1,6 +1,5 @@
-package net.iris.ac.utils;
+package net.iris.ac.checks;
 
-import net.iris.ac.checks.Check;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.HashMap;

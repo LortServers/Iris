@@ -1,8 +1,6 @@
 package net.iris.ac.checks;
 
-import net.iris.ac.utils.CheckManager;
 import net.iris.ac.config.Configurator;
-import net.iris.ac.utils.CheckAlphabet;
 import net.iris.ac.utils.CooldownManager;
 import net.iris.ac.utils.CooldownMapping;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -11,6 +9,7 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -50,6 +49,11 @@ public abstract class Check {
     public abstract CheckAlphabet getType();
     public abstract String getName();
 
+    public int getVL(PlayerWrapper player) {
+        final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(this.getClass());
+        return vls.get(player.getUuid());
+    }
+
     public void increaseVL(PlayerWrapper player, int vl) {
         final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(this.getClass());
         vls.put(player.getUuid(), vls.getOrDefault(player.getUuid(), 0) + vl);
@@ -77,5 +81,12 @@ public abstract class Check {
             cooldowns.put(player.getUuid(), new CooldownMapping(cooldown));
         }
         cooldowns.get(player.getUuid()).putCooldown();
+    }
+
+    public boolean isEligibleForCheck(PlayerWrapper player) {
+        return player.isOnline() &&
+                !player.asEntity().isDead() &&
+                !player.getGameMode().is("spectator", "creative") &&
+                !player.hasPermission("iris.bypass." + this.getName().toLowerCase(Locale.ROOT) + "." + this.getType().name().toLowerCase(Locale.ROOT));
     }
 }
