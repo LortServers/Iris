@@ -4,9 +4,7 @@ import net.iris.ac.config.Configurator;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 
-@Service(dependsOn = {
-        Configurator.class
-})
+@Service
 public class AimbotCheckH extends AimbotCheck {
     @Override
     public CheckAlphabet getType() {
