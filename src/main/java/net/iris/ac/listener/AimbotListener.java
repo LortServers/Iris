@@ -85,6 +85,9 @@ public class AimbotListener {
                         if (!h.isOnCooldown(subj) && h.isEligibleForCheck(subj)) {
                             h.increaseVL(subj, 1);
                             ServiceManager.get(Punisher.class).logWarn(subj, h);
+                            if (h.getVL(subj) >= h.getVLThreshold()) {
+                                // TODO: punish player
+                            }
                             h.putCooldown(subj);
                         }
                     }

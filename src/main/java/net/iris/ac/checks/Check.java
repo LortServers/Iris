@@ -50,17 +50,17 @@ public abstract class Check {
     public abstract String getName();
 
     public int getVL(PlayerWrapper player) {
-        final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(this.getClass());
+        final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(getClass());
         return vls.get(player.getUuid());
     }
 
     public void increaseVL(PlayerWrapper player, int vl) {
-        final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(this.getClass());
+        final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(getClass());
         vls.put(player.getUuid(), vls.getOrDefault(player.getUuid(), 0) + vl);
     }
 
     public void decreaseVL(PlayerWrapper player, int vl) {
-        final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(this.getClass());
+        final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(getClass());
         int currentVl = vls.getOrDefault(player.getUuid(), 0);
         if (currentVl >= vl) {
             currentVl = currentVl - vl;
@@ -71,12 +71,12 @@ public abstract class Check {
     }
 
     public boolean isOnCooldown(PlayerWrapper player) {
-        final Map<UUID, CooldownMapping> cooldowns = ServiceManager.get(CooldownManager.class).getCooldowns(this.getClass());
+        final Map<UUID, CooldownMapping> cooldowns = ServiceManager.get(CooldownManager.class).getCooldowns(getClass());
         return cooldowns.containsKey(player.getUuid()) && cooldowns.get(player.getUuid()).isOnCooldown();
     }
 
     public void putCooldown(PlayerWrapper player) {
-        final Map<UUID, CooldownMapping> cooldowns = ServiceManager.get(CooldownManager.class).getCooldowns(this.getClass());
+        final Map<UUID, CooldownMapping> cooldowns = ServiceManager.get(CooldownManager.class).getCooldowns(getClass());
         if (!cooldowns.containsKey(player.getUuid())) {
             cooldowns.put(player.getUuid(), new CooldownMapping(cooldown));
         }
@@ -87,6 +87,8 @@ public abstract class Check {
         return player.isOnline() &&
                 !player.asEntity().isDead() &&
                 !player.getGameMode().is("spectator", "creative") &&
-                !player.hasPermission("iris.bypass." + this.getName().toLowerCase(Locale.ROOT) + "." + this.getType().name().toLowerCase(Locale.ROOT));
+                !player.hasPermission("iris.bypass." + getName().toLowerCase(Locale.ROOT) + "." + getType().name().toLowerCase(Locale.ROOT));
     }
+
+    public abstract int getVLThreshold();
 }
