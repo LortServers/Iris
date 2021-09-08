@@ -1,11 +1,13 @@
 package net.iris.ac.config;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Configuration {
     private int checkDecreaseFrequency = 60;
     private int checkDecreaseAmount = 10;
