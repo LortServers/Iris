@@ -15,12 +15,17 @@ import java.nio.file.Paths;
 @Service
 public class Configurator {
     private static final ObjectMapper MAPPER = new ObjectMapper(new JsonFactory());
-    private static final File CONFIG_FILE = Paths.get(IrisPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "config.json").toFile();
+    private static File CONFIG_FILE;
     @Getter
     private Configuration config;
 
     @OnEnable
     public void enable() {
+        if (!IrisPlugin.getInstance().getDataFolder().toFile().exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            IrisPlugin.getInstance().getDataFolder().toFile().mkdirs();
+        }
+        CONFIG_FILE = Paths.get(IrisPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "config.json").toFile();
         if (CONFIG_FILE.exists() && !CONFIG_FILE.isDirectory()) {
             try {
                 config = MAPPER.readValue(CONFIG_FILE, Configuration.class);
@@ -31,7 +36,7 @@ public class Configurator {
         } else {
             config = new Configuration();
             try {
-                MAPPER.writeValue(CONFIG_FILE, config);
+                MAPPER.writerWithDefaultPrettyPrinter().writeValue(CONFIG_FILE, config);
             } catch (IOException e) {
                 IrisPlugin.getInstance().getLogger().error("Could not save configuration.", e);
             }
@@ -45,7 +50,7 @@ public class Configurator {
             CONFIG_FILE.delete();
         }
         try {
-            MAPPER.writeValue(CONFIG_FILE, config);
+            MAPPER.writerWithDefaultPrettyPrinter().writeValue(CONFIG_FILE, config);
         } catch (IOException e) {
             IrisPlugin.getInstance().getLogger().error("Could not save configuration.", e);
         }

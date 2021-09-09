@@ -6,6 +6,7 @@ import net.iris.ac.listener.AimbotListener;
 import net.iris.ac.utils.CooldownManager;
 import net.iris.ac.utils.Punisher;
 import org.screamingsandals.lib.plugin.PluginContainer;
+import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 
@@ -18,16 +19,18 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
         Configurator.class,
         CheckManager.class,
         CooldownManager.class,
-        Punisher.class,
-        // checks
-        AimbotListener.class
+        Punisher.class
 })
 public class IrisPlugin extends PluginContainer {
     private static IrisPlugin INSTANCE = null;
 
+    public IrisPlugin() {
+        INSTANCE = this;
+    }
+
     @Override
     public void enable() {
-        INSTANCE = this;
+        ServiceManager.putService(new AimbotListener());
     }
 
     public static IrisPlugin getInstance() {

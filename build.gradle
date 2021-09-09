@@ -27,14 +27,13 @@ configurations.all {
 dependencies {
     compileOnly "io.papermc.paper:paper-api:${PAPER_API_VERSION}"
     api "org.screamingsandals.lib:core-bukkit:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:event-bukkit:${SCREAMING_LIB_VERSION}"
     api "org.screamingsandals.lib:tasker-bukkit:${SCREAMING_LIB_VERSION}"
     api "org.screamingsandals.lib:plugin-bukkit:${SCREAMING_LIB_VERSION}"
     api "org.screamingsandals.lib:utils-common:${SCREAMING_LIB_VERSION}"
     annotationProcessor "org.screamingsandals.lib:screaming-annotation:${SCREAMING_LIB_VERSION}"
 
     implementation "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
-    implementation "org.slf4j:slf4j-api:${SLF4J_VERSION}"
-    implementation "org.slf4j:slf4j-simple:${SLF4J_VERSION}"
     compileOnly "org.checkerframework:checker-qual:${CHECKER_FRAMEWORK_VERSION}"
     compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
     annotationProcessor "org.projectlombok:lombok:${LOMBOK_VERSION}"
@@ -50,5 +49,4 @@ test {
 shadowJar {
     relocate 'org.screamingsandals.lib', 'net.iris.lib.slib'
     relocate 'com.fasterxml.jackson', 'net.iris.lib.jackson'
-    relocate 'org.slf4j', 'net.iris.lib.slf4j'
 }
