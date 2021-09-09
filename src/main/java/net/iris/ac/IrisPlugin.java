@@ -1,7 +1,7 @@
 package net.iris.ac;
 
-import net.iris.ac.config.Configurator;
 import net.iris.ac.checks.CheckManager;
+import net.iris.ac.config.Configurator;
 import net.iris.ac.listener.AimbotListener;
 import net.iris.ac.utils.CooldownManager;
 import net.iris.ac.utils.Punisher;
