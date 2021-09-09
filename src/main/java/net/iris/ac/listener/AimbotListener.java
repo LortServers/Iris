@@ -1,6 +1,7 @@
 package net.iris.ac.listener;
 
 import net.iris.ac.checks.AimbotCheckH;
+import net.iris.ac.checks.AimbotCheckI;
 import net.iris.ac.config.Configuration;
 import net.iris.ac.config.Configurator;
 import net.iris.ac.utils.Punisher;
@@ -16,15 +17,22 @@ import org.screamingsandals.lib.utils.MathUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.world.LocationHolder;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service(dependsOn = {
         Configurator.class,
-        AimbotCheckH.class
+        AimbotCheckH.class,
+        AimbotCheckI.class
 })
 public class AimbotListener {
+    private final Map<UUID, Integer> count = new HashMap<>();
+    private final Map<UUID, Integer> countAmount = new HashMap<>();
+
     @OnEvent
     public void onEntityDamageByEntity(SEntityDamageByEntityEvent event) {
         final EntityBasic attacker = event.getDamager();
@@ -85,14 +93,47 @@ public class AimbotListener {
                         final PlayerWrapper subj = attacker.as(PlayerWrapper.class);
                         if (!h.isOnCooldown(subj) && h.isEligibleForCheck(subj)) {
                             h.increaseVL(subj, 1);
-                            ServiceManager.get(Punisher.class).logWarn(subj, h);
                             if (h.getVL(subj) >= h.getVLThreshold()) {
-                                // TODO: punish player
+                                ServiceManager.get(Punisher.class).logWarn(subj, h);
                             }
                             h.putCooldown(subj);
                         }
                     }
                 }
+            }
+            if (count.get() <= 20) {
+                if (r1 >= MathUtils.square(config.getAimbotIDistance())) {
+                    final int attackerCount = this.count.getOrDefault(attacker.as(PlayerWrapper.class).getUuid(), 0) - count.get();
+                    /*if ((this.count.getOrDefault(attacker.as(PlayerWrapper.class).getUuid(), 0) - count.get()) >= 1) {
+                        if ((this.count.getOrDefault(attacker.as(PlayerWrapper.class).getUuid(), 0) - count.get()) <= 3) {
+                            if (event.getEntity().getLocation().getY() >= attacker.getLocation().getY() && !event.getEntity().isSprinting()) {
+                                final AimbotCheckI i = ServiceManager.get(AimbotCheckI.class);
+                                final PlayerWrapper subj = attacker.as(PlayerWrapper.class);
+                                if (!i.isOnCooldown(subj) && i.isEligibleForCheck(subj)) {
+                                    i.increaseVL(subj, 1);
+                                    if (i.getVL(subj) >= i.getVLThreshold()) {
+                                        ServiceManager.get(Punisher.class).logWarn(subj, h);
+                                    }
+                                    i.putCooldown(subj);
+                                }
+                            }
+                        }
+                    }*/
+                    if (attackerCount > 11 && attackerCount < 15 && count.get() <= 8) {
+                        final AimbotCheckI i = ServiceManager.get(AimbotCheckI.class);
+                        final PlayerWrapper subj = attacker.as(PlayerWrapper.class);
+                        if (!i.isOnCooldown(subj) && i.isEligibleForCheck(subj)) {
+                            i.increaseVL(subj, 1);
+                            if (i.getVL(subj) >= i.getVLThreshold()) {
+                                if (event.getEntity().getLocation().getY() >= attacker.getLocation().getY()) {
+                                    ServiceManager.get(Punisher.class).logWarn(subj, i);
+                                }
+                            }
+                            i.putCooldown(subj);
+                        }
+                    }
+                }
+                this.count.put(attacker.as(PlayerWrapper.class).getUuid(), this.count.getOrDefault(attacker.as(PlayerWrapper.class).getUuid(), 0) + 1);
             }
         }).start();
     }
