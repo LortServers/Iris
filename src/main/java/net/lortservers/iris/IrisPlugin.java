@@ -1,10 +1,11 @@
-package net.iris.ac;
+package net.lortservers.iris;
 
-import net.iris.ac.checks.CheckManager;
-import net.iris.ac.config.Configurator;
-import net.iris.ac.listener.AimbotListener;
-import net.iris.ac.utils.CooldownManager;
-import net.iris.ac.utils.Punisher;
+import net.lortservers.iris.checks.CheckManager;
+import net.lortservers.iris.config.Configurator;
+import net.lortservers.iris.config.lang.IrisLangService;
+import net.lortservers.iris.listener.AimbotListener;
+import net.lortservers.iris.utils.CooldownManager;
+import net.lortservers.iris.utils.Punisher;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Init;
@@ -17,6 +18,7 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
 )
 @Init(services = {
         Configurator.class,
+        IrisLangService.class,
         CheckManager.class,
         CooldownManager.class,
         Punisher.class

@@ -3,7 +3,7 @@ plugins {
     id 'java-library'
 }
 
-group 'net.iris'
+group 'net.lortservers'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -17,6 +17,9 @@ repositories {
     maven {
         url 'https://repo.kcra.me/repository/maven-releases/'
     }
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
 }
 
 configurations.all {
@@ -26,6 +29,7 @@ configurations.all {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:${PAPER_API_VERSION}"
+    implementation "net.kyori:adventure-text-minimessage:${MINIMESSAGE_VERSION}"
     api "org.screamingsandals.lib:core-bukkit:${SCREAMING_LIB_VERSION}"
     api "org.screamingsandals.lib:event-bukkit:${SCREAMING_LIB_VERSION}"
     api "org.screamingsandals.lib:tasker-bukkit:${SCREAMING_LIB_VERSION}"
@@ -47,6 +51,7 @@ test {
 }
 
 shadowJar {
-    relocate 'org.screamingsandals.lib', 'net.iris.lib.slib'
-    relocate 'com.fasterxml.jackson', 'net.iris.lib.jackson'
+    relocate 'org.screamingsandals.lib', 'net.lortservers.iris.lib.slib'
+    relocate 'com.fasterxml.jackson', 'net.lortservers.iris.lib.jackson'
+    relocate 'net.kyori.adventure.text.minimessage', 'net.lortservers.iris.lib.minimessage'
 }

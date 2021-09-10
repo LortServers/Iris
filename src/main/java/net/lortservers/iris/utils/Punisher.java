@@ -1,41 +1,36 @@
-package net.iris.ac.utils;
+package net.lortservers.iris.utils;
 
-import net.iris.ac.checks.Check;
-import net.iris.ac.config.Configurator;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.lortservers.iris.checks.Check;
+import net.lortservers.iris.config.Configurator;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service(dependsOn = {
         Configurator.class
 })
 public class Punisher {
-    private final List<UUID> subscribers = new ArrayList<>();
+    private final @NonNull List<UUID> subscribers = new ArrayList<>();
 
     public <T extends Check> void logWarn(PlayerWrapper player, T check) {
-        final TextComponent component = Component.text()
-                .append(Component.text("(", NamedTextColor.GRAY))
-                .append(Component.text("!", NamedTextColor.RED))
-                .append(Component.text(") ", NamedTextColor.GRAY))
-                .append(Component.text(player.getName(), NamedTextColor.RED))
-                .append(Component.text(" failed ", NamedTextColor.WHITE))
-                .append(Component.text(check.getName() + " " + check.getType().name(), NamedTextColor.GOLD))
-                .append(Component.text(" | ", NamedTextColor.GRAY))
-                .append(Component.text("VL: ", NamedTextColor.BLUE))
-                .append(Component.text(check.getVL(player)))
-                .build();
+        final Component component = MiniMessage.get().parse(
+                ServiceManager.get(Configurator.class).getConfig().getFailedMessage(),
+                Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)))
+        );
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
     }
 

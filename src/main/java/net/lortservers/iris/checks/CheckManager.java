@@ -1,4 +1,4 @@
-package net.iris.ac.checks;
+package net.lortservers.iris.checks;
 
 import org.screamingsandals.lib.utils.annotations.Service;
 

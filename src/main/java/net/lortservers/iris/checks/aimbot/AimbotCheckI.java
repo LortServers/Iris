@@ -1,13 +1,15 @@
-package net.iris.ac.checks;
+package net.lortservers.iris.checks.aimbot;
 
-import net.iris.ac.config.Configurator;
+import net.lortservers.iris.checks.CheckAlphabet;
+import net.lortservers.iris.config.Configurator;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
 public class AimbotCheckI extends AimbotCheck {
     @Override
-    public CheckAlphabet getType() {
+    public @NonNull CheckAlphabet getType() {
         return CheckAlphabet.I;
     }
 

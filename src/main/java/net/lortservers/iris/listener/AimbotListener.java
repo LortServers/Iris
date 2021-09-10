@@ -1,10 +1,11 @@
-package net.iris.ac.listener;
+package net.lortservers.iris.listener;
 
-import net.iris.ac.checks.AimbotCheckH;
-import net.iris.ac.checks.AimbotCheckI;
-import net.iris.ac.config.Configuration;
-import net.iris.ac.config.Configurator;
-import net.iris.ac.utils.Punisher;
+import net.lortservers.iris.checks.aimbot.AimbotCheckH;
+import net.lortservers.iris.checks.aimbot.AimbotCheckI;
+import net.lortservers.iris.config.Configuration;
+import net.lortservers.iris.config.Configurator;
+import net.lortservers.iris.utils.Punisher;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.event.OnEvent;
@@ -30,8 +31,8 @@ import java.util.concurrent.atomic.AtomicReference;
         AimbotCheckI.class
 })
 public class AimbotListener {
-    private final Map<UUID, Integer> count = new HashMap<>();
-    private final Map<UUID, Integer> countAmount = new HashMap<>();
+    private final @NonNull Map<UUID, Integer> count = new HashMap<>();
+    private final @NonNull Map<UUID, Integer> countAmount = new HashMap<>();
 
     @OnEvent
     public void onEntityDamageByEntity(SEntityDamageByEntityEvent event) {

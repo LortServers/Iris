@@ -1,12 +1,13 @@
-package net.iris.ac.config;
+package net.lortservers.iris.config;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
-import net.iris.ac.IrisPlugin;
+import net.lortservers.iris.IrisPlugin;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
-import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
+import org.screamingsandals.lib.utils.annotations.methods.OnPostConstruct;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,13 +15,13 @@ import java.nio.file.Paths;
 
 @Service
 public class Configurator {
-    private static final ObjectMapper MAPPER = new ObjectMapper(new JsonFactory());
+    public static final @NonNull ObjectMapper MAPPER = new ObjectMapper(new JsonFactory());
     private static File CONFIG_FILE;
     @Getter
     private Configuration config;
 
-    @OnEnable
-    public void enable() {
+    @OnPostConstruct
+    public void init() {
         if (!IrisPlugin.getInstance().getDataFolder().toFile().exists()) {
             //noinspection ResultOfMethodCallIgnored
             IrisPlugin.getInstance().getDataFolder().toFile().mkdirs();

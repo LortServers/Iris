@@ -1,14 +1,15 @@
-package net.iris.ac.config;
+package net.lortservers.iris.config;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Configuration {
+    private String locale = "en-US";
     private int checkDecreaseFrequency = 60;
     private int checkDecreaseAmount = 10;
     private int checkCooldownPeriod = 100;
@@ -18,4 +19,5 @@ public class Configuration {
     private int aimbotHVLThreshold = 2;
     private double aimbotIDistance = 3.5;
     private int aimbotIVLThreshold = 2;
+    private String failedMessage = "<color:red><player> <color:white>failed <color:gold><name> <type> <color:gray>\\ <color:blue>VL: <vl>";
 }

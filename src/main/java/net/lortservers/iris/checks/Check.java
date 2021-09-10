@@ -1,8 +1,9 @@
-package net.iris.ac.checks;
+package net.lortservers.iris.checks;
 
-import net.iris.ac.config.Configurator;
-import net.iris.ac.utils.CooldownManager;
-import net.iris.ac.utils.CooldownMapping;
+import net.lortservers.iris.config.Configurator;
+import net.lortservers.iris.utils.CooldownManager;
+import net.lortservers.iris.utils.CooldownMapping;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.tasker.Tasker;
@@ -46,8 +47,8 @@ public abstract class Check {
         this.cooldown = cooldown;
     }
 
-    public abstract CheckAlphabet getType();
-    public abstract String getName();
+    public abstract @NonNull CheckAlphabet getType();
+    public abstract @NonNull String getName();
 
     public int getVL(PlayerWrapper player) {
         final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(getClass());

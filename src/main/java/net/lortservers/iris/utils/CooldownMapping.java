@@ -1,4 +1,4 @@
-package net.iris.ac.utils;
+package net.lortservers.iris.utils;
 
 import lombok.RequiredArgsConstructor;
 
