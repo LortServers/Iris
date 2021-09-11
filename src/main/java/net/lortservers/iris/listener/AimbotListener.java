@@ -105,21 +105,21 @@ public class AimbotListener {
             if (count.get() <= 20) {
                 if (r1 >= MathUtils.square(config.getAimbotIDistance())) {
                     final int attackerCount = this.count.getOrDefault(attacker.as(PlayerWrapper.class).getUuid(), 0) - count.get();
-                    /*if ((this.count.getOrDefault(attacker.as(PlayerWrapper.class).getUuid(), 0) - count.get()) >= 1) {
+                    if ((this.count.getOrDefault(attacker.as(PlayerWrapper.class).getUuid(), 0) - count.get()) >= 1) {
                         if ((this.count.getOrDefault(attacker.as(PlayerWrapper.class).getUuid(), 0) - count.get()) <= 3) {
-                            if (event.getEntity().getLocation().getY() >= attacker.getLocation().getY() && !event.getEntity().isSprinting()) {
+                            if (event.getEntity().getLocation().getY() >= attacker.getLocation().getY() && !event.getEntity().as(PlayerWrapper.class).isSprinting()) {
                                 final AimbotCheckI i = ServiceManager.get(AimbotCheckI.class);
                                 final PlayerWrapper subj = attacker.as(PlayerWrapper.class);
                                 if (!i.isOnCooldown(subj) && i.isEligibleForCheck(subj)) {
                                     i.increaseVL(subj, 1);
                                     if (i.getVL(subj) >= i.getVLThreshold()) {
-                                        ServiceManager.get(Punisher.class).logWarn(subj, h);
+                                        ServiceManager.get(Punisher.class).logWarn(subj, i);
                                     }
                                     i.putCooldown(subj);
                                 }
                             }
                         }
-                    }*/
+                    }
                     if (attackerCount > 11 && attackerCount < 15 && count.get() <= 8) {
                         final AimbotCheckI i = ServiceManager.get(AimbotCheckI.class);
                         final PlayerWrapper subj = attacker.as(PlayerWrapper.class);
