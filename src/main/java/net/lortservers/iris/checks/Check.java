@@ -71,6 +71,10 @@ public abstract class Check {
         vls.put(player.getUuid(), currentVl);
     }
 
+    public void resetVL(PlayerWrapper player) {
+        ServiceManager.get(CheckManager.class).getVls(this.getClass()).put(player.getUuid(), 0);
+    }
+
     public boolean isOnCooldown(PlayerWrapper player) {
         final Map<UUID, CooldownMapping> cooldowns = ServiceManager.get(CooldownManager.class).getCooldowns(getClass());
         return cooldowns.containsKey(player.getUuid()) && cooldowns.get(player.getUuid()).isOnCooldown();

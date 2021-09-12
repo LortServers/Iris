@@ -7,14 +7,14 @@ import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 @Service
-public class AimbotCheckA extends AimbotCheck {
+public class AimbotCheckB extends AimbotCheck {
     @Override
     public @NonNull CheckAlphabet getType() {
-        return CheckAlphabet.A;
+        return CheckAlphabet.B;
     }
 
     @Override
     public int getVLThreshold() {
-        return ServiceManager.get(Configurator.class).getConfig().getAimbotAVLThreshold();
+        return ServiceManager.get(Configurator.class).getConfig().getAimbotBVLThreshold();
     }
 }

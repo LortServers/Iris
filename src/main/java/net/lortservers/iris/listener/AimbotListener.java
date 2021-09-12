@@ -1,12 +1,9 @@
 package net.lortservers.iris.listener;
 
-import net.lortservers.iris.checks.aimbot.AimbotCheckH;
-import net.lortservers.iris.checks.aimbot.AimbotCheckI;
-import net.lortservers.iris.config.Configuration;
+import net.lortservers.iris.checks.aimbot.*;
 import net.lortservers.iris.config.Configurator;
 import net.lortservers.iris.utils.Punisher;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.screamingsandals.lib.entity.EntityBasic;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
@@ -16,6 +13,7 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.MathUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.HashMap;
@@ -28,18 +26,27 @@ import java.util.concurrent.atomic.AtomicReference;
 @Service(dependsOn = {
         Configurator.class,
         AimbotCheckH.class,
-        AimbotCheckI.class
+        AimbotCheckI.class,
+        AimbotCheckA.class,
+        AimbotCheckB.class,
+        AimbotCheckF.class
 })
 public class AimbotListener {
+    private Configurator configurator;
     private final @NonNull Map<UUID, Integer> count = new HashMap<>();
-    private final @NonNull Map<UUID, Integer> countAmount = new HashMap<>();
+
+    @OnEnable
+    public void enable() {
+        configurator = ServiceManager.get(Configurator.class);
+    }
 
     @OnEvent
     public void onEntityDamageByEntity(SEntityDamageByEntityEvent event) {
-        final EntityBasic attacker = event.getDamager();
-        if (!attacker.getEntityType().is("minecraft:player") || !event.getEntity().getEntityType().is("minecraft:player") || !event.getDamageCause().is("attack")) {
+        if (!event.getDamager().getEntityType().is("minecraft:player") || !event.getEntity().getEntityType().is("minecraft:player") || !event.getDamageCause().is("attack")) {
             return;
         }
+        final PlayerWrapper attacker = event.getDamager().as(PlayerWrapper.class);
+        final PlayerWrapper victim = event.getEntity().as(PlayerWrapper.class);
         AtomicInteger count = new AtomicInteger(0);
         AtomicReference<Float> pitch = new AtomicReference<>((float) 0);
         AtomicReference<Double> yaw = new AtomicReference<>((double) 0);
@@ -48,23 +55,23 @@ public class AimbotListener {
         AtomicReference<Float> lastpitch = new AtomicReference<>((float) 0);
         AtomicReference<Double> lastyaw = new AtomicReference<>((double) 0);
         LocationHolder loc = attacker.getLocation();
-        double r1 = event.getEntity().getLocation().getDistanceSquared(loc);
+        double r1 = victim.getLocation().getDistanceSquared(loc);
         AtomicReference<Double> r2 = new AtomicReference<>();
-        final Optional<EntityLiving> target1 = attacker.as(PlayerWrapper.class).getTarget();
-        if (target1.isEmpty() || !target1.orElseThrow().getEntityType().is("minecraft:player") || !target1.orElseThrow().as(PlayerWrapper.class).getUuid().equals(event.getEntity().as(PlayerWrapper.class).getUuid())) {
+        final Optional<EntityLiving> target1 = attacker.getTarget();
+        if (target1.isEmpty() || !target1.orElseThrow().getEntityType().is("minecraft:player") || !target1.orElseThrow().as(PlayerWrapper.class).getUuid().equals(victim.getUuid())) {
             return;
         }
         Tasker.build(taskBase -> () -> {
-            final Optional<EntityLiving> target = attacker.as(PlayerWrapper.class).getTarget();
-            if (target.isEmpty() || !target.orElseThrow().getEntityType().is("minecraft:player") || !target.orElseThrow().as(PlayerWrapper.class).getUuid().equals(event.getEntity().as(PlayerWrapper.class).getUuid())) {
+            final Optional<EntityLiving> target = attacker.getTarget();
+            if (target.isEmpty() || !target.orElseThrow().getEntityType().is("minecraft:player") || !target.orElseThrow().as(PlayerWrapper.class).getUuid().equals(victim.getUuid())) {
                 taskBase.cancel();
                 return;
             }
-            if (!attacker.as(PlayerWrapper.class).isOnline() || !event.getEntity().as(PlayerWrapper.class).isOnline()) {
+            if (!attacker.isOnline() || !victim.isOnline()) {
                 taskBase.cancel();
                 return;
             }
-            if (attacker.getLocation().getDistanceSquared(event.getEntity().getLocation()) >= MathUtils.square(4.75)) {
+            if (attacker.getLocation().getDistanceSquared(victim.getLocation()) >= MathUtils.square(4.75)) {
                 taskBase.cancel();
                 return;
             }
@@ -73,7 +80,7 @@ public class AimbotListener {
                 taskBase.cancel();
                 return;
             }
-            r2.set(event.getEntity().getLocation().getDistanceSquared(loc));
+            r2.set(victim.getLocation().getDistanceSquared(loc));
             pitch.set((float) Math.round(attacker.getLocation().getPitch() * 10) / 10);
             if (pitch.get().equals(lastpitch.get())) {
                 pitchcount.getAndIncrement();
@@ -86,55 +93,101 @@ public class AimbotListener {
             lastpitch.set(pitch.get());
             count.getAndIncrement();
         }).repeat(1, TaskerTime.TICKS).stopEvent(task -> {
-            final Configuration config = ServiceManager.get(Configurator.class).getConfig();
-            if (r1 >= MathUtils.square(config.getAimbotHFirstDistance())) {
-                if (r2.get() >= MathUtils.square(config.getAimbotHLastDistance())) {
-                    if (count.get() == config.getAimbotHCount()) {
+            if (r1 >= MathUtils.square(configurator.getConfig().getAimbotHFirstDistance())) {
+                if (r2.get() >= MathUtils.square(configurator.getConfig().getAimbotHLastDistance())) {
+                    if (count.get() == configurator.getConfig().getAimbotHCount()) {
                         final AimbotCheckH h = ServiceManager.get(AimbotCheckH.class);
-                        final PlayerWrapper subj = attacker.as(PlayerWrapper.class);
-                        if (!h.isOnCooldown(subj) && h.isEligibleForCheck(subj)) {
-                            h.increaseVL(subj, 1);
-                            if (h.getVL(subj) >= h.getVLThreshold()) {
-                                ServiceManager.get(Punisher.class).logWarn(subj, h);
+                        if (!h.isOnCooldown(attacker) && h.isEligibleForCheck(attacker)) {
+                            h.increaseVL(attacker, 1);
+                            if (h.getVL(attacker) >= h.getVLThreshold()) {
+                                ServiceManager.get(Punisher.class).logWarn(attacker, h);
                             }
-                            h.putCooldown(subj);
+                            h.putCooldown(attacker);
                         }
                     }
                 }
             }
             if (count.get() <= 20) {
-                if (r1 >= MathUtils.square(config.getAimbotIDistance())) {
-                    final int attackerCount = this.count.getOrDefault(attacker.as(PlayerWrapper.class).getUuid(), 0) - count.get();
-                    if ((this.count.getOrDefault(attacker.as(PlayerWrapper.class).getUuid(), 0) - count.get()) >= 1) {
-                        if ((this.count.getOrDefault(attacker.as(PlayerWrapper.class).getUuid(), 0) - count.get()) <= 3) {
-                            if (event.getEntity().getLocation().getY() >= attacker.getLocation().getY() && !event.getEntity().as(PlayerWrapper.class).isSprinting()) {
+                final int attackerCount = this.count.getOrDefault(attacker.getUuid(), 0) - count.get();
+                if (r1 >= MathUtils.square(configurator.getConfig().getAimbotIDistance())) {
+                    if ((this.count.getOrDefault(attacker.getUuid(), 0) - count.get()) >= 1) {
+                        if ((this.count.getOrDefault(attacker.getUuid(), 0) - count.get()) <= 3) {
+                            if (victim.getLocation().getY() >= attacker.getLocation().getY() && !victim.isSprinting()) {
                                 final AimbotCheckI i = ServiceManager.get(AimbotCheckI.class);
-                                final PlayerWrapper subj = attacker.as(PlayerWrapper.class);
-                                if (!i.isOnCooldown(subj) && i.isEligibleForCheck(subj)) {
-                                    i.increaseVL(subj, 1);
-                                    if (i.getVL(subj) >= i.getVLThreshold()) {
-                                        ServiceManager.get(Punisher.class).logWarn(subj, i);
+                                if (!i.isOnCooldown(attacker) && i.isEligibleForCheck(attacker)) {
+                                    i.increaseVL(attacker, 1);
+                                    if (i.getVL(attacker) >= i.getVLThreshold()) {
+                                        ServiceManager.get(Punisher.class).logWarn(attacker, i);
                                     }
-                                    i.putCooldown(subj);
+                                    i.putCooldown(attacker);
                                 }
                             }
                         }
                     }
                     if (attackerCount > 11 && attackerCount < 15 && count.get() <= 8) {
                         final AimbotCheckI i = ServiceManager.get(AimbotCheckI.class);
-                        final PlayerWrapper subj = attacker.as(PlayerWrapper.class);
-                        if (!i.isOnCooldown(subj) && i.isEligibleForCheck(subj)) {
-                            i.increaseVL(subj, 1);
-                            if (i.getVL(subj) >= i.getVLThreshold()) {
-                                if (event.getEntity().getLocation().getY() >= attacker.getLocation().getY()) {
-                                    ServiceManager.get(Punisher.class).logWarn(subj, i);
+                        if (!i.isOnCooldown(attacker) && i.isEligibleForCheck(attacker)) {
+                            i.increaseVL(attacker, 1);
+                            if (i.getVL(attacker) >= i.getVLThreshold()) {
+                                if (victim.getLocation().getY() >= attacker.getLocation().getY()) {
+                                    ServiceManager.get(Punisher.class).logWarn(attacker, i);
                                 }
                             }
-                            i.putCooldown(subj);
+                            i.putCooldown(attacker);
+                        }
+                    }
+                    if (attackerCount <= configurator.getConfig().getAimbotAMaxCountDifference()) {
+                        if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > configurator.getConfig().getAimbotADistance()) {
+                            final AimbotCheckA a = ServiceManager.get(AimbotCheckA.class);
+                            if (!a.isOnCooldown(attacker) && a.isEligibleForCheck(attacker)) {
+                                a.increaseVL(attacker, 1);
+                                if (a.getVL(attacker) >= a.getVLThreshold()) {
+                                    ServiceManager.get(Punisher.class).logWarn(attacker, a);
+                                    a.resetVL(attacker);
+                                }
+                                a.putCooldown(attacker);
+                            }
+                        }
+                    } else {
+                        final AimbotCheckA a = ServiceManager.get(AimbotCheckA.class);
+                        a.resetVL(attacker);
+                    }
+
+                }
+                this.count.put(attacker.getUuid(), count.get());
+            }
+            if (count.get() <= 14) {
+                final AimbotCheckB b = ServiceManager.get(AimbotCheckB.class);
+                if (count.get() >= 8) {
+                    if (!b.isOnCooldown(attacker) && b.isEligibleForCheck(attacker)) {
+                        b.increaseVL(attacker, 1);
+                        if (b.getVL(attacker) >= b.getVLThreshold()) {
+                            ServiceManager.get(Punisher.class).logWarn(attacker, b);
+                            b.resetVL(attacker);
+                        }
+                        b.putCooldown(attacker);
+                    }
+                } else {
+                    b.resetVL(attacker);
+                }
+                if (yawcount.get() >= configurator.getConfig().getAimbotEMinSimilarYaw() && pitchcount.get() >= configurator.getConfig().getAimbotEMinSimilarPitch()) {
+                    if (r1 == r2.get()) {
+                        ServiceManager.get(Punisher.class).logWarn(attacker, ServiceManager.get(AimbotCheckB.class));
+                    }
+                }
+                if (count.get() <= 12) {
+                    if (((loc.getX() - attacker.getLocation().getX()) + (loc.getZ() - attacker.getLocation().getZ())) >= 1.1) {
+                        final AimbotCheckF f = ServiceManager.get(AimbotCheckF.class);
+                        if (!f.isOnCooldown(attacker) && f.isEligibleForCheck(attacker)) {
+                            f.increaseVL(attacker, 1);
+                            if (f.getVL(attacker) >= f.getVLThreshold()) {
+                                ServiceManager.get(Punisher.class).logWarn(attacker, f);
+                                f.resetVL(attacker);
+                            }
+                            f.putCooldown(attacker);
                         }
                     }
                 }
-                this.count.put(attacker.as(PlayerWrapper.class).getUuid(), this.count.getOrDefault(attacker.as(PlayerWrapper.class).getUuid(), 0) + 1);
             }
         }).start();
     }

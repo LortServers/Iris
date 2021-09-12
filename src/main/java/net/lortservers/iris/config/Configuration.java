@@ -21,6 +21,10 @@ public class Configuration {
     private double aimbotADistance = 0.5;
     private int aimbotAMaxCountDifference = 1;
     private int aimbotAVLThreshold = 4;
+    private int aimbotBVLThreshold = 5;
+    private int aimbotEMinSimilarYaw = 11;
+    private int aimbotEMinSimilarPitch = 5;
+    private int aimbotFVLThreshold = 3;
     private boolean discordWebhook = false;
     private String webhookUrl = "";
 }
