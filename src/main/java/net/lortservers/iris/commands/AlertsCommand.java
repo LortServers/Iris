@@ -35,12 +35,12 @@ public class AlertsCommand extends BaseCommand {
 
                             if (now.isEmpty()) {
                                 commandContext.getSender().sendMessage(
-                                        ServiceManager.get(Configurator.class).getMessages().getMessage("noPermission")
+                                        ServiceManager.get(Configurator.class).getMessage("noPermission")
                                 );
                                 return;
                             }
                             commandContext.getSender().sendMessage(
-                                    ServiceManager.get(Configurator.class).getMessages().getMessage("alertsToggle", Collections.singletonMap("status", Boolean.toString(now.orElseThrow())))
+                                    ServiceManager.get(Configurator.class).getMessage("alertsToggle", Collections.singletonMap("status", Boolean.toString(now.orElseThrow())))
                             );
                         })
         );

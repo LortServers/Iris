@@ -39,6 +39,7 @@ dependencies {
     api "org.screamingsandals.lib:utils-common:${SCREAMING_LIB_VERSION}"
     annotationProcessor "org.screamingsandals.lib:screaming-annotation:${SCREAMING_LIB_VERSION}"
 
+    implementation "me.zlataovce:hook:${HOOK_VERSION}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
     compileOnly "org.checkerframework:checker-qual:${CHECKER_FRAMEWORK_VERSION}"
     compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
@@ -57,4 +58,5 @@ shadowJar {
     relocate 'com.fasterxml.jackson', 'net.lortservers.iris.lib.jackson'
     relocate 'net.kyori.adventure.text.minimessage', 'net.lortservers.iris.lib.minimessage'
     relocate 'cloud.commandframework.minecraft.extras', 'net.lortservers.iris.lib.cloudextras'
+    relocate 'me.zlataovce.hook', 'net.lortservers.iris.lib.hook'
 }

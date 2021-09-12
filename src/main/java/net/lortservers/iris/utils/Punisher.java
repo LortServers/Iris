@@ -23,7 +23,7 @@ public class Punisher {
     private final @NonNull List<UUID> subscribers = new ArrayList<>();
 
     public <T extends Check> void logWarn(PlayerWrapper player, T check) {
-        final Component component = ServiceManager.get(Configurator.class).getMessages().getMessage(
+        final Component component = ServiceManager.get(Configurator.class).getMessage(
                 "failedCheck",
                 Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)))
         );
