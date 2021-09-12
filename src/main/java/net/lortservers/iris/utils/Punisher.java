@@ -28,6 +28,10 @@ public class Punisher {
                 Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)))
         );
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
+        // deez nuts
+        if (ServiceManager.get(Configurator.class).getConfig().isDiscordWebhook()) {
+            // nothing here, at least for next few mins
+        }
     }
 
     @OnEnable
