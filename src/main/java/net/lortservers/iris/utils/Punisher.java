@@ -4,6 +4,7 @@ import me.zlataovce.hook.WebhookRequestDispatcher;
 import me.zlataovce.hook.data.Embed;
 import me.zlataovce.hook.requests.WebhookExecuteRequest;
 import net.kyori.adventure.text.Component;
+import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.config.Configurator;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -24,7 +25,6 @@ import java.util.*;
 @Service(dependsOn = {
         Configurator.class
 })
-
 public class Punisher {
     private final @NonNull List<UUID> subscribers = new ArrayList<>();
 
@@ -34,21 +34,61 @@ public class Punisher {
                 Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)))
         );
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
-        // deez nuts - gonna finish this later bc i cant do that rn
-        /*if (ServiceManager.get(Configurator.class).getConfig().isDiscordWebhook()) {
-            final Embed embed = Embed.builder()
-                    .description("check")
-                    .build();
+        if (ServiceManager.get(Configurator.class).getConfig().isDiscordWebhook()) {
             final WebhookExecuteRequest request = WebhookExecuteRequest.builder()
-                    .embed(embed)
+                    .embed(
+                            Embed.builder()
+                                    .color(0xFFA500)
+                                    .thumbnail(
+                                            Embed.Media.builder()
+                                                    .url("https://mc-heads.net/avatar/" + player.getUuid())
+                                                    .build()
+                                    )
+                                    .title("Violation")
+                                    .description(player.getName())
+                                    .field(
+                                            Embed.Field.builder()
+                                                    .name("Check")
+                                                    .value(check.getName() + " " + check.getType().name())
+                                                    .build()
+                                    )
+                                    .field(
+                                            Embed.Field.builder()
+                                                    .name("VL")
+                                                    .value(check.getVL(player) + "/" + check.getVLThreshold())
+                                                    .build()
+                                    )
+                                    .field(
+                                            Embed.Field.builder()
+                                                    .name("Ping")
+                                                    .value(player.getPing() + "ms")
+                                                    .build()
+                                    )
+                                    .field(
+                                            Embed.Field.builder()
+                                                    .name("Location")
+                                                    .value(
+                                                            "X: " + player.getLocation().getX() +
+                                                                    "\nY: " + player.getLocation().getY() +
+                                                                    "\nZ: " + player.getLocation().getZ() +
+                                                                    "\nYaw: " + player.getLocation().getYaw() +
+                                                                    "\nPitch: " + player.getLocation().getPitch() +
+                                                                    "\nWorld: " + player.getLocation().getWorld().getName()
+                                                    )
+                                                    .build()
+                                    )
+                                    .build()
+                    )
                     .build();
-
             try {
-                WebhookRequestDispatcher.execute(System.getProperty("webhookUrl"), request);
+                WebhookRequestDispatcher.execute(
+                        ServiceManager.get(Configurator.class).getConfig().getWebhookUrl(),
+                        request
+                );
             } catch (MalformedURLException | URISyntaxException e) {
-                e.printStackTrace();
+                IrisPlugin.getInstance().getLogger().error("Malformed Discord webhook URL!");
             }
-        }*/
+        }
     }
 
     @OnEnable

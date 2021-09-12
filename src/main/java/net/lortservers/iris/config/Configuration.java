@@ -22,5 +22,5 @@ public class Configuration {
     private int aimbotAMaxCountDifference = 1;
     private int aimbotAVLThreshold = 4;
     private boolean discordWebhook = false;
-    private String webhookToken = "put_your_token_here";
+    private String webhookUrl = "";
 }
