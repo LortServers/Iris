@@ -27,11 +27,11 @@ public class Configurator {
     private Messages messages;
 
     public Component getMessage(String id) {
-        return Messages.MINIMESSAGE.parse(messages.getPrefix() + Reflect.getField(messages, new String[] {id}));
+        return messages.getMessage(id);
     }
 
     public Component getMessage(String id, Map<String, String> placeholders) {
-        return Messages.MINIMESSAGE.parse(messages.getPrefix() + Reflect.getField(messages, new String[] {id}), placeholders);
+        return messages.getMessage(id, placeholders);
     }
 
     @OnPostConstruct
