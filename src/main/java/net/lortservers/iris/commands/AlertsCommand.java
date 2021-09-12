@@ -11,6 +11,7 @@ import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.sender.permissions.SimplePermission;
 import org.screamingsandals.lib.utils.annotations.Service;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,18 +35,12 @@ public class AlertsCommand extends BaseCommand {
 
                             if (now.isEmpty()) {
                                 commandContext.getSender().sendMessage(
-                                        MiniMessage.get().parse(
-                                                ServiceManager.get(Configurator.class).getConfig().getPrefix() +
-                                                        "<color:red>No permission!"
-                                        )
+                                        ServiceManager.get(Configurator.class).getMessages().getMessage("noPermission")
                                 );
                                 return;
                             }
                             commandContext.getSender().sendMessage(
-                                    MiniMessage.get().parse(
-                                            ServiceManager.get(Configurator.class).getConfig().getPrefix() +
-                                                    "<color:yellow>Turned alerts <color:green>" + BOOL_ABBR.get(now.orElseThrow()) + "<color:yellow>!"
-                                    )
+                                    ServiceManager.get(Configurator.class).getMessages().getMessage("alertsToggle", Collections.singletonMap("status", Boolean.toString(now.orElseThrow())))
                             );
                         })
         );

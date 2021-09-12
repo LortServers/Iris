@@ -1,7 +1,6 @@
 package net.lortservers.iris.utils;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.config.Configurator;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -24,8 +23,8 @@ public class Punisher {
     private final @NonNull List<UUID> subscribers = new ArrayList<>();
 
     public <T extends Check> void logWarn(PlayerWrapper player, T check) {
-        final Component component = MiniMessage.get().parse(
-                ServiceManager.get(Configurator.class).getConfig().getPrefix() + ServiceManager.get(Configurator.class).getConfig().getFailedMessage(),
+        final Component component = ServiceManager.get(Configurator.class).getMessages().getMessage(
+                "failedCheck",
                 Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)))
         );
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));

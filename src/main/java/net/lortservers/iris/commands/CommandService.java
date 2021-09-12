@@ -26,16 +26,10 @@ public class CommandService {
             new MinecraftExceptionHandler<CommandSenderWrapper>()
                     .withDefaultHandlers()
                     .withHandler(MinecraftExceptionHandler.ExceptionType.NO_PERMISSION, (senderWrapper, e) ->
-                            MiniMessage.get().parse(
-                                    ServiceManager.get(Configurator.class).getConfig().getPrefix() +
-                                            "<color:red>No permission!"
-                            )
+                            ServiceManager.get(Configurator.class).getMessages().getMessage("noPermission")
                     )
                     .withHandler(MinecraftExceptionHandler.ExceptionType.INVALID_SYNTAX, (senderWrapper, e) ->
-                            MiniMessage.get().parse(
-                                    ServiceManager.get(Configurator.class).getConfig().getPrefix() +
-                                            "<color:red>Invalid command!"
-                            )
+                            ServiceManager.get(Configurator.class).getMessages().getMessage("invalidCommand")
                     )
                     .apply(manager, s -> s);
 
