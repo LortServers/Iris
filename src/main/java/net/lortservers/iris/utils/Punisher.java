@@ -15,10 +15,7 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service(dependsOn = {
         Configurator.class
@@ -64,5 +61,17 @@ public class Punisher {
         if (player.hasPermission("iris.alerts")) {
             subscribers.remove(player.getUuid());
         }
+    }
+
+    public Optional<Boolean> toggleAlerts(PlayerWrapper player) {
+        if (player.hasPermission("iris.alerts")) {
+            if (subscribers.contains(player.getUuid())) {
+                subscribers.remove(player.getUuid());
+                return Optional.of(false);
+            }
+            subscribers.add(player.getUuid());
+            return Optional.of(true);
+        }
+        return Optional.empty();
     }
 }

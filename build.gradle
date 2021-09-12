@@ -30,10 +30,12 @@ configurations.all {
 dependencies {
     compileOnly "io.papermc.paper:paper-api:${PAPER_API_VERSION}"
     implementation "net.kyori:adventure-text-minimessage:${MINIMESSAGE_VERSION}"
+    implementation "cloud.commandframework:cloud-minecraft-extras:${CLOUD_EXTRAS_VERSION}"
     api "org.screamingsandals.lib:core-bukkit:${SCREAMING_LIB_VERSION}"
     api "org.screamingsandals.lib:event-bukkit:${SCREAMING_LIB_VERSION}"
     api "org.screamingsandals.lib:tasker-bukkit:${SCREAMING_LIB_VERSION}"
     api "org.screamingsandals.lib:plugin-bukkit:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:command-bukkit:${SCREAMING_LIB_VERSION}"
     api "org.screamingsandals.lib:utils-common:${SCREAMING_LIB_VERSION}"
     annotationProcessor "org.screamingsandals.lib:screaming-annotation:${SCREAMING_LIB_VERSION}"
 
@@ -54,4 +56,5 @@ shadowJar {
     relocate 'org.screamingsandals.lib', 'net.lortservers.iris.lib.slib'
     relocate 'com.fasterxml.jackson', 'net.lortservers.iris.lib.jackson'
     relocate 'net.kyori.adventure.text.minimessage', 'net.lortservers.iris.lib.minimessage'
+    relocate 'cloud.commandframework.minecraft.extras', 'net.lortservers.iris.lib.cloudextras'
 }
