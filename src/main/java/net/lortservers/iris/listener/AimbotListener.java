@@ -7,6 +7,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
+import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.tasker.Tasker;
@@ -16,10 +17,10 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.world.LocationHolder;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -34,11 +35,16 @@ import java.util.concurrent.atomic.AtomicReference;
 })
 public class AimbotListener {
     private Configurator configurator;
-    private final @NonNull Map<UUID, Integer> count = new HashMap<>();
+    private final @NonNull Map<UUID, Integer> count = new ConcurrentHashMap<>();
 
     @OnEnable
     public void enable() {
         configurator = ServiceManager.get(Configurator.class);
+    }
+
+    @OnEvent
+    public void onPlayerLeave(SPlayerLeaveEvent event) {
+        count.remove(event.getPlayer().getUuid());
     }
 
     @OnEvent
@@ -109,10 +115,10 @@ public class AimbotListener {
                 }
             }
             if (count.get() <= 20) {
-                final int attackerCount = this.count.getOrDefault(attacker.getUuid(), 0) - count.get();
+                final int attackerCount = Math.abs(this.count.getOrDefault(attacker.getUuid(), 0) - count.get());
                 if (r1 >= MathUtils.square(configurator.getConfig().getAimbotIDistance())) {
-                    if ((this.count.getOrDefault(attacker.getUuid(), 0) - count.get()) >= 1) {
-                        if ((this.count.getOrDefault(attacker.getUuid(), 0) - count.get()) <= 3) {
+                    if (attackerCount >= 1) {
+                        if (attackerCount <= 3) {
                             if (victim.getLocation().getY() >= attacker.getLocation().getY() && !victim.isSprinting()) {
                                 final AimbotCheckI i = ServiceManager.get(AimbotCheckI.class);
                                 if (!i.isOnCooldown(attacker) && i.isEligibleForCheck(attacker)) {
@@ -178,7 +184,7 @@ public class AimbotListener {
                 }
                 final AimbotCheckF f = ServiceManager.get(AimbotCheckF.class);
                 if (count.get() <= 12) {
-                    if (((loc.getX() - attacker.getLocation().getX()) + (loc.getZ() - attacker.getLocation().getZ())) >= 1.1) {
+                    if ((Math.abs(loc.getX() - attacker.getLocation().getX()) + Math.abs(loc.getZ() - attacker.getLocation().getZ())) >= 1.1) {
                         if (!f.isOnCooldown(attacker) && f.isEligibleForCheck(attacker)) {
                             f.increaseVL(attacker, 1);
                             if (f.getVL(attacker) >= f.getVLThreshold()) {

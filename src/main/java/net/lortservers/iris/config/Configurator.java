@@ -5,18 +5,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
+import net.lortservers.iris.checks.CheckManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostConstruct;
-import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Map;
 
-@Service
+@Service(loadAfter = {
+        CheckManager.class
+})
 public class Configurator {
     public static final @NonNull ObjectMapper MAPPER = new ObjectMapper(new JsonFactory());
     private static File CONFIG_FILE;

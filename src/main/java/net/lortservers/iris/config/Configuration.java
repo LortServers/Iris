@@ -27,6 +27,8 @@ public class Configuration {
     private int aimbotFVLThreshold = 3;
     private double aimbotGDistance = 0.5;
     private int aimbotGVLThreshold = 2;
+    private int interactFrequencyAMaxCPS = 22;
+    private int interactFrequencyAVLThreshold = 2;
     private boolean discordWebhook = false;
     private String webhookUrl = "";
 }
