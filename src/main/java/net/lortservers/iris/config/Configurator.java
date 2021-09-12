@@ -3,15 +3,18 @@ package net.lortservers.iris.config;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.OnPostConstruct;
+import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Map;
 
 @Service
 public class Configurator {
@@ -22,6 +25,14 @@ public class Configurator {
     private Configuration config;
     @Getter
     private Messages messages;
+
+    public Component getMessage(String id) {
+        return Messages.MINIMESSAGE.parse(messages.getPrefix() + Reflect.getField(messages, new String[] {id}));
+    }
+
+    public Component getMessage(String id, Map<String, String> placeholders) {
+        return Messages.MINIMESSAGE.parse(messages.getPrefix() + Reflect.getField(messages, new String[] {id}), placeholders);
+    }
 
     @OnPostConstruct
     public void init() {

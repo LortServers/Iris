@@ -18,4 +18,7 @@ public class Configuration {
     private int aimbotHVLThreshold = 2;
     private double aimbotIDistance = 3.5;
     private int aimbotIVLThreshold = 2;
+    private double aimbotADistance = 0.5;
+    private int aimbotAMaxCountDifference = 1;
+    private int aimbotAVLThreshold = 4;
 }

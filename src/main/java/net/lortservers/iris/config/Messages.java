@@ -17,7 +17,7 @@ import java.util.Map;
 public class Messages {
     @Getter(AccessLevel.NONE)
     @JsonIgnore
-    private static final MiniMessage MINIMESSAGE = MiniMessage.get();
+    protected static final MiniMessage MINIMESSAGE = MiniMessage.get();
     private String prefix = "<color:gray>(<color:red>!<color:gray>) ";
     private String failedCheck = "<color:red><player> <color:white>failed <color:gold><name> <type> <color:gray>\\ <color:blue>VL: <vl>";
     private String noPermission = "<color:red>No permission!";
