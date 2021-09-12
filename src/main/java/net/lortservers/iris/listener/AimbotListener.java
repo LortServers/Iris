@@ -29,7 +29,8 @@ import java.util.concurrent.atomic.AtomicReference;
         AimbotCheckI.class,
         AimbotCheckA.class,
         AimbotCheckB.class,
-        AimbotCheckF.class
+        AimbotCheckF.class,
+        AimbotCheckG.class
 })
 public class AimbotListener {
     private Configurator configurator;
@@ -137,7 +138,7 @@ public class AimbotListener {
                         }
                     }
                     if (attackerCount <= configurator.getConfig().getAimbotAMaxCountDifference()) {
-                        if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > configurator.getConfig().getAimbotADistance()) {
+                        if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(configurator.getConfig().getAimbotADistance())) {
                             final AimbotCheckA a = ServiceManager.get(AimbotCheckA.class);
                             if (!a.isOnCooldown(attacker) && a.isEligibleForCheck(attacker)) {
                                 a.increaseVL(attacker, 1);
@@ -175,9 +176,9 @@ public class AimbotListener {
                         ServiceManager.get(Punisher.class).logWarn(attacker, ServiceManager.get(AimbotCheckB.class));
                     }
                 }
+                final AimbotCheckF f = ServiceManager.get(AimbotCheckF.class);
                 if (count.get() <= 12) {
                     if (((loc.getX() - attacker.getLocation().getX()) + (loc.getZ() - attacker.getLocation().getZ())) >= 1.1) {
-                        final AimbotCheckF f = ServiceManager.get(AimbotCheckF.class);
                         if (!f.isOnCooldown(attacker) && f.isEligibleForCheck(attacker)) {
                             f.increaseVL(attacker, 1);
                             if (f.getVL(attacker) >= f.getVLThreshold()) {
@@ -185,6 +186,23 @@ public class AimbotListener {
                                 f.resetVL(attacker);
                             }
                             f.putCooldown(attacker);
+                        }
+                    } else {
+                        f.resetVL(attacker);
+                    }
+                } else {
+                    f.resetVL(attacker);
+                }
+                if (yawcount.get() < pitchcount.get()) {
+                    if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(configurator.getConfig().getAimbotGDistance())) {
+                        final AimbotCheckG g = ServiceManager.get(AimbotCheckG.class);
+                        if (!g.isOnCooldown(attacker) && g.isEligibleForCheck(attacker)) {
+                            g.increaseVL(attacker, 1);
+                            if (g.getVL(attacker) >= g.getVLThreshold()) {
+                                ServiceManager.get(Punisher.class).logWarn(attacker, g);
+                                g.resetVL(attacker);
+                            }
+                            g.putCooldown(attacker);
                         }
                     }
                 }
