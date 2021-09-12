@@ -30,7 +30,7 @@ public class Configurator {
             IrisPlugin.getInstance().getDataFolder().toFile().mkdirs();
         }
         CONFIG_FILE = Paths.get(IrisPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "config.json").toFile();
-        CONFIG_FILE = Paths.get(IrisPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "messages.json").toFile();
+        MESSAGES_FILE = Paths.get(IrisPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "messages.json").toFile();
         if (CONFIG_FILE.exists() && !CONFIG_FILE.isDirectory()) {
             try {
                 config = MAPPER.readValue(CONFIG_FILE, Configuration.class);
