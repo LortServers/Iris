@@ -15,7 +15,7 @@ repositories {
         url 'https://repo.screamingsandals.org/public/'
     }
     maven {
-        url 'https://repo.kcra.me/repository/maven-releases/'
+        url 'https://repo.kcra.me/repository/maven-public/'
     }
     maven {
         url 'https://oss.sonatype.org/content/repositories/snapshots/'

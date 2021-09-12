@@ -1,5 +1,8 @@
 package net.lortservers.iris.utils;
 
+import me.zlataovce.hook.WebhookRequestDispatcher;
+import me.zlataovce.hook.data.Embed;
+import me.zlataovce.hook.requests.WebhookExecuteRequest;
 import net.kyori.adventure.text.Component;
 import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.config.Configurator;
@@ -14,11 +17,14 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 @Service(dependsOn = {
         Configurator.class
 })
+
 public class Punisher {
     private final @NonNull List<UUID> subscribers = new ArrayList<>();
 
@@ -28,10 +34,21 @@ public class Punisher {
                 Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)))
         );
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
-        // deez nuts
-        if (ServiceManager.get(Configurator.class).getConfig().isDiscordWebhook()) {
-            // nothing here, at least for next few mins
-        }
+        // deez nuts - gonna finish this later bc i cant do that rn
+        /*if (ServiceManager.get(Configurator.class).getConfig().isDiscordWebhook()) {
+            final Embed embed = Embed.builder()
+                    .description("check")
+                    .build();
+            final WebhookExecuteRequest request = WebhookExecuteRequest.builder()
+                    .embed(embed)
+                    .build();
+
+            try {
+                WebhookRequestDispatcher.execute(System.getProperty("webhookUrl"), request);
+            } catch (MalformedURLException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }*/
     }
 
     @OnEnable
