@@ -35,7 +35,7 @@ public class Configurator {
     }
 
     @OnPostConstruct
-    public void init() {
+    public void construct() {
         if (!IrisPlugin.getInstance().getDataFolder().toFile().exists()) {
             //noinspection ResultOfMethodCallIgnored
             IrisPlugin.getInstance().getDataFolder().toFile().mkdirs();
