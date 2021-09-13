@@ -16,26 +16,60 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Map;
 
+/**
+ * <p>A class responsible for managing the configuration.</p>
+ */
 @Service(loadAfter = {
         CheckManager.class
 })
 public class Configurator {
+    /**
+     * <p>A Jackson object mapper.</p>
+     */
     public static final @NonNull ObjectMapper MAPPER = new ObjectMapper(new JsonFactory());
+    /**
+     * <p>The configuration file.</p>
+     */
     private static File CONFIG_FILE;
+    /**
+     * <p>The messages file.</p>
+     */
     private static File MESSAGES_FILE;
+    /**
+     * <p>The configuration.</p>
+     */
     @Getter
     private Configuration config;
+    /**
+     * <p>The messages.</p>
+     */
     @Getter
     private Messages messages;
 
+    /**
+     * <p>Gets the message component from id.</p>
+     *
+     * @param id the message id
+     * @return the message component
+     */
     public Component getMessage(String id) {
         return messages.getMessage(id);
     }
 
+    /**
+     * <p>Gets the message component from id and translates placeholders.</p>
+     *
+     * @param id the message id
+     * @param placeholders the message placeholders
+     * @return the message component
+     */
     public Component getMessage(String id, Map<String, String> placeholders) {
         return messages.getMessage(id, placeholders);
     }
 
+    /**
+     * <p>Initializes the configuration.</p>
+     */
     @OnPostConstruct
     public void construct() {
         if (!IrisPlugin.getInstance().getDataFolder().toFile().exists()) {
@@ -76,6 +110,9 @@ public class Configurator {
         }
     }
 
+    /**
+     * <p>Saves the configuration.</p>
+     */
     @OnDisable
     public void disable() {
         if (CONFIG_FILE.exists() && !CONFIG_FILE.isDirectory()) {

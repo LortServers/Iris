@@ -1,6 +1,7 @@
 package net.lortservers.iris.checks;
 
 import net.lortservers.iris.listener.AimbotListener;
+import net.lortservers.iris.listener.InteractFrequencyListener;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.HashMap;
@@ -8,7 +9,8 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service(loadAfter = {
-        AimbotListener.class
+        AimbotListener.class,
+        InteractFrequencyListener.class
 })
 public class CheckManager {
     private final Map<Class<? extends Check>, Map<UUID, Integer>> vls = new HashMap<>();

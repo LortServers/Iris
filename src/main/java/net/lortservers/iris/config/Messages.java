@@ -8,6 +8,9 @@ import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.Map;
 
+/**
+ * <p>A class holding the message strings.</p>
+ */
 @Getter
 @Setter
 @EqualsAndHashCode

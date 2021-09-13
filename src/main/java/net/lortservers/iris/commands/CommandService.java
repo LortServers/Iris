@@ -12,12 +12,20 @@ import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.Provider;
 
+/**
+ * <p>Class providing the command manager.</p>
+ */
 @Service(dependsOn = {
         CloudConstructor.class,
         Configurator.class
 })
 @UtilityClass
 public class CommandService {
+    /**
+     * <p>Provides the command manager.</p>
+     *
+     * @return the command manager
+     */
     @Provider(level = Provider.Level.POST_ENABLE)
     public static CommandManager<CommandSenderWrapper> provideCommandManager() {
         try {

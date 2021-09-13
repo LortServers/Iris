@@ -22,12 +22,25 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.*;
 
+/**
+ * <p>Class responsible for dispatching failed messages and punishing players.</p>
+ */
 @Service(dependsOn = {
         Configurator.class
 })
 public class Punisher {
+    /**
+     * <p>Alert subscribers.</p>
+     */
     private final @NonNull List<UUID> subscribers = new ArrayList<>();
 
+    /**
+     * <p>Sends a failed message to alert subscribers.</p>
+     *
+     * @param player the player
+     * @param check the check class
+     * @param <T> the check class type
+     */
     public <T extends Check> void logWarn(PlayerWrapper player, T check) {
         final Component component = ServiceManager.get(Configurator.class).getMessage(
                 "failedCheck",
@@ -91,38 +104,70 @@ public class Punisher {
         }
     }
 
+    /**
+     * <p>Subscribes all eligible players to alerts.</p>
+     */
     @OnEnable
     public void enable() {
         PlayerMapper.getPlayers().forEach(this::subscribeAlerts);
     }
 
+    /**
+     * <p>Unsubscribes all eligible players from alerts.</p>
+     */
     @OnDisable
     public void disable() {
         PlayerMapper.getPlayers().forEach(this::unsubscribeAlerts);
     }
 
+    /**
+     * <p>Subscribes the joined player to alerts if he's eligible.</p>
+     *
+     * @param event the event
+     */
     @OnEvent
     public void onPlayerJoin(SPlayerJoinEvent event) {
         subscribeAlerts(event.getPlayer());
     }
 
+    /**
+     * <p>Unsubscribes the leaving player from alerts if he's subscribed.</p>
+     *
+     * @param event the event
+     */
     @OnEvent
     public void onPlayerLeave(SPlayerLeaveEvent event) {
         unsubscribeAlerts(event.getPlayer());
     }
 
+    /**
+     * <p>Subscribes the player to alerts.</p>
+     *
+     * @param player the player
+     */
     public void subscribeAlerts(PlayerWrapper player) {
         if (player.hasPermission("iris.alerts")) {
             subscribers.add(player.getUuid());
         }
     }
 
+    /**
+     * <p>Unsubscribes the player from alerts.</p>
+     *
+     * @param player the player
+     */
     public void unsubscribeAlerts(PlayerWrapper player) {
         if (player.hasPermission("iris.alerts")) {
             subscribers.remove(player.getUuid());
         }
     }
 
+    /**
+     * <p>Toggles alerts for the player.</p>
+     *
+     * @param player the player
+     * @return the current alert status, empty if the player doesn't have the permission
+     */
     public Optional<Boolean> toggleAlerts(PlayerWrapper player) {
         if (player.hasPermission("iris.alerts")) {
             if (subscribers.contains(player.getUuid())) {

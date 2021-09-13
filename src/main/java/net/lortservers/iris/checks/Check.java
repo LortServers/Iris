@@ -14,14 +14,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * <p>A check base.</p>
+ */
 @ServiceDependencies(dependsOn = {
         Configurator.class,
         CheckManager.class,
         CooldownManager.class
 })
 public abstract class Check {
+    /**
+     * <p>The check's cooldown time.</p>
+     */
     private final int cooldown;
 
+    /**
+     * <p>Constructs the check from default config values.</p>
+     */
     public Check() {
         this(
                 ServiceManager.get(Configurator.class).getConfig().getCheckDecreaseAmount(),
@@ -31,6 +40,14 @@ public abstract class Check {
         );
     }
 
+    /**
+     * <p>Constructs the check.</p>
+     *
+     * @param decreaseBy decrease the suspicion by ...
+     * @param decreaseTime decrease the suspicion every ...
+     * @param cooldown check cooldown time
+     * @param decreaseTimeType time unit for the decreaseTime parameter
+     */
     public Check(int decreaseBy, long decreaseTime, int cooldown, TaskerTime decreaseTimeType) {
         Tasker.build(() -> {
             final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(Check.this.getClass());
@@ -47,19 +64,48 @@ public abstract class Check {
         this.cooldown = cooldown;
     }
 
+    /**
+     * <p>Gets the check type letter.</p>
+     *
+     * @return the check type
+     */
     public abstract @NonNull CheckAlphabet getType();
+
+    /**
+     * <p>Gets the check's name.</p>
+     *
+     * @return the name
+     */
     public abstract @NonNull String getName();
 
+    /**
+     * <p>Gets the suspicion for this player in this check.</p>
+     *
+     * @param player the player
+     * @return the player's VL
+     */
     public int getVL(PlayerWrapper player) {
         final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(getClass());
         return vls.get(player.getUuid());
     }
 
+    /**
+     * <p>Increases the suspicion for this player in this check by the supplied amount.</p>
+     *
+     * @param player the player
+     * @param vl the VL to add
+     */
     public void increaseVL(PlayerWrapper player, int vl) {
         final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(getClass());
         vls.put(player.getUuid(), vls.getOrDefault(player.getUuid(), 0) + vl);
     }
 
+    /**
+     * <p>Decreases the suspicion for this player in this check by the supplied amount.</p>
+     *
+     * @param player the player
+     * @param vl the VL to remove
+     */
     public void decreaseVL(PlayerWrapper player, int vl) {
         final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(getClass());
         int currentVl = vls.getOrDefault(player.getUuid(), 0);
@@ -71,15 +117,31 @@ public abstract class Check {
         vls.put(player.getUuid(), currentVl);
     }
 
+    /**
+     * <p>Resets the suspicion for this player in this check.</p>
+     *
+     * @param player the player
+     */
     public void resetVL(PlayerWrapper player) {
         ServiceManager.get(CheckManager.class).getVls(this.getClass()).put(player.getUuid(), 0);
     }
 
+    /**
+     * <p>Checks if this check is on cooldown for this player.</p>
+     *
+     * @param player the player
+     * @return is the check on cooldown for this player?
+     */
     public boolean isOnCooldown(PlayerWrapper player) {
         final Map<UUID, CooldownMapping> cooldowns = ServiceManager.get(CooldownManager.class).getCooldowns(getClass());
         return cooldowns.containsKey(player.getUuid()) && cooldowns.get(player.getUuid()).isOnCooldown();
     }
 
+    /**
+     * <p>Puts this check on a cooldown for the player.</p>
+     *
+     * @param player the player
+     */
     public void putCooldown(PlayerWrapper player) {
         final Map<UUID, CooldownMapping> cooldowns = ServiceManager.get(CooldownManager.class).getCooldowns(getClass());
         if (!cooldowns.containsKey(player.getUuid())) {
@@ -88,6 +150,12 @@ public abstract class Check {
         cooldowns.get(player.getUuid()).putCooldown();
     }
 
+    /**
+     * <p>Checks if the player is eligible for being checked by this check.</p>
+     *
+     * @param player the player to check
+     * @return is eligible for this check?
+     */
     public boolean isEligibleForCheck(PlayerWrapper player) {
         return player.isOnline() &&
                 !player.asEntity().isDead() &&
@@ -95,5 +163,11 @@ public abstract class Check {
                 !player.hasPermission("iris.bypass." + getName().toLowerCase(Locale.ROOT) + "." + getType().name().toLowerCase(Locale.ROOT));
     }
 
+    /**
+     * <p>Gets the check VL threshold.</p>
+     * <p>Used for sending failed messages after the VL reaches a certain threshold.</p>
+     *
+     * @return the check VL threshold
+     */
     public abstract int getVLThreshold();
 }

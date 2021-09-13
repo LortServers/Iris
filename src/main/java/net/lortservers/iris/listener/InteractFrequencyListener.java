@@ -4,6 +4,7 @@ import net.lortservers.iris.checks.interact.InteractFrequencyCheckA;
 import net.lortservers.iris.checks.interact.block.BlockingFrequencyCheckA;
 import net.lortservers.iris.config.Configurator;
 import net.lortservers.iris.utils.MaterialUtils;
+import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.Punisher;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
@@ -15,20 +16,49 @@ import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.*;
 
+/**
+ * <p>A class responsible for triggering interact frequency checks.</p>
+ */
 @Service(dependsOn = {
         Configurator.class,
         InteractFrequencyCheckA.class,
         BlockingFrequencyCheckA.class
 })
 public class InteractFrequencyListener {
+    /**
+     * <p>Left click interact actions.</p>
+     */
     private static final List<SPlayerInteractEvent.Action> leftActions = Arrays.asList(SPlayerInteractEvent.Action.LEFT_CLICK_AIR, SPlayerInteractEvent.Action.LEFT_CLICK_BLOCK);
+    /**
+     * <p>Right click interact actions.</p>
+     */
     private static final List<SPlayerInteractEvent.Action> rightActions = Arrays.asList(SPlayerInteractEvent.Action.RIGHT_CLICK_AIR, SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK);
+    /**
+     * <p>Left click CPS holder.</p>
+     */
     private final Map<UUID, Integer> cpsLeft = new HashMap<>();
+    /**
+     * <p>Right click CPS holder.</p>
+     */
     private final Map<UUID, Integer> cpsRight = new HashMap<>();
+    /**
+     * <p>Last block break time holder.</p>
+     */
     private final Map<UUID, Long> lastBreak = new HashMap<>();
+    /**
+     * <p>Last hit time holder.</p>
+     */
     private final Map<UUID, Long> lastHit = new HashMap<>();
+    /**
+     * <p>The configurator.</p>
+     */
     private final Configurator configurator = ServiceManager.get(Configurator.class);
 
+    /**
+     * <p>Handles player leave events for cleaning up memory.</p>
+     *
+     * @param event the event
+     */
     @OnEvent
     public void onPlayerLeave(SPlayerLeaveEvent event) {
         cpsLeft.remove(event.getPlayer().getUuid());
@@ -37,12 +67,22 @@ public class InteractFrequencyListener {
         lastHit.remove(event.getPlayer().getUuid());
     }
 
+    /**
+     * <p>Handles player block break events for check logic.</p>
+     *
+     * @param event the event
+     */
     @OnEvent
     public void onPlayerBlockBreak(SPlayerBlockBreakEvent event) {
         cpsLeft.put(event.getPlayer().getUuid(), 0);
         lastBreak.put(event.getPlayer().getUuid(), System.currentTimeMillis());
     }
 
+    /**
+     * <p>Handles player interact events for check logic.</p>
+     *
+     * @param event the event
+     */
     @OnEvent
     public void onPlayerInteract(SPlayerInteractEvent event) {
         if (event.getAction() == SPlayerInteractEvent.Action.PHYSICAL) {
@@ -78,8 +118,7 @@ public class InteractFrequencyListener {
             if (!a.isOnCooldown(event.getPlayer()) && a.isEligibleForCheck(event.getPlayer())) {
                 a.increaseVL(event.getPlayer(), 1);
                 if (a.getVL(event.getPlayer()) >= a.getVLThreshold() && (System.currentTimeMillis() - lastBreak.getOrDefault(player.getUuid(), System.currentTimeMillis())) >= 1500) {
-                    if (rightActions.contains(event.getAction()) && (MaterialUtils.hasPart(player.getPlayerInventory().getItemInMainHand(), "sword") || player.getPlayerInventory().getItemInOffHand().getMaterial().is("minecraft:shield"))) {
-                        // blocking
+                    if (PlayerUtils.isBlocking(event.getAction(), player)) {
                         ServiceManager.get(Punisher.class).logWarn(event.getPlayer(), ServiceManager.get(BlockingFrequencyCheckA.class));
                     } else {
                         ServiceManager.get(Punisher.class).logWarn(event.getPlayer(), a);

@@ -24,6 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * <p>A class responsible for triggering aimbot checks.</p>
+ */
 @Service(dependsOn = {
         Configurator.class,
         AimbotCheckH.class,
@@ -34,19 +37,27 @@ import java.util.concurrent.atomic.AtomicReference;
         AimbotCheckG.class
 })
 public class AimbotListener {
-    private Configurator configurator;
+    /**
+     * <p>The configurator.</p>
+     */
+    private final Configurator configurator = ServiceManager.get(Configurator.class);
     private final @NonNull Map<UUID, Integer> count = new ConcurrentHashMap<>();
 
-    @OnEnable
-    public void enable() {
-        configurator = ServiceManager.get(Configurator.class);
-    }
-
+    /**
+     * <p>Handles player leave events for cleaning up memory.</p>
+     *
+     * @param event the event
+     */
     @OnEvent
     public void onPlayerLeave(SPlayerLeaveEvent event) {
         count.remove(event.getPlayer().getUuid());
     }
 
+    /**
+     * <p>Handles entity damage events for processing aimbot checks.</p>
+     *
+     * @param event the event
+     */
     @OnEvent
     public void onEntityDamageByEntity(SEntityDamageByEntityEvent event) {
         if (!event.getDamager().getEntityType().is("minecraft:player") || !event.getEntity().getEntityType().is("minecraft:player") || !event.getDamageCause().is("attack")) {

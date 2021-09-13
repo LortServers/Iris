@@ -2,6 +2,9 @@ package net.lortservers.iris.config;
 
 import lombok.*;
 
+/**
+ * <p>A class holding the plugin configuration.</p>
+ */
 @Getter
 @Setter
 @EqualsAndHashCode
