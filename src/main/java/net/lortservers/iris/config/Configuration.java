@@ -2,6 +2,8 @@ package net.lortservers.iris.config;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 /**
  * <p>A class holding the plugin configuration.</p>
  */
@@ -11,7 +13,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Configuration {
+public class Configuration implements Serializable {
     private int checkDecreaseFrequency = 60;
     private int checkDecreaseAmount = 10;
     private int checkCooldownPeriod = 100;
