@@ -119,9 +119,9 @@ public class InteractFrequencyListener {
                 a.increaseVL(event.getPlayer(), 1);
                 if (a.getVL(event.getPlayer()) >= a.getVLThreshold() && (System.currentTimeMillis() - lastBreak.getOrDefault(player.getUuid(), System.currentTimeMillis())) >= 1500) {
                     if (PlayerUtils.isBlocking(event.getAction(), player)) {
-                        ServiceManager.get(Punisher.class).logWarn(event.getPlayer(), ServiceManager.get(BlockingFrequencyCheckA.class));
+                        ServiceManager.get(Punisher.class).logWarn(event.getPlayer(), ServiceManager.get(BlockingFrequencyCheckA.class), "blocking too fast");
                     } else {
-                        ServiceManager.get(Punisher.class).logWarn(event.getPlayer(), a);
+                        ServiceManager.get(Punisher.class).logWarn(event.getPlayer(), a, "seems to be using an autoclicker [LCPS: " + cpsLeft.get(player.getUuid()) + ", RCPS: " + cpsRight.get(player.getUuid()) + "]");
                     }
                 }
                 a.putCooldown(event.getPlayer());

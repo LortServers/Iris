@@ -8,6 +8,7 @@ import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.config.Configurator;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
@@ -21,6 +22,8 @@ import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>Class responsible for dispatching failed messages and punishing players.</p>
@@ -42,61 +45,67 @@ public class Punisher {
      * @param <T> the check class type
      */
     public <T extends Check> void logWarn(PlayerWrapper player, T check) {
-        final Component component = ServiceManager.get(Configurator.class).getMessage(
-                "failedCheck",
-                Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)))
-        );
+        logWarn(player, check, null);
+    }
+
+    /**
+     * <p>Sends a failed message to alert subscribers.</p>
+     *
+     * @param player the player
+     * @param check the check class
+     * @param <T> the check class type
+     * @param info additional info to log
+     */
+    public <T extends Check> void logWarn(PlayerWrapper player, T check, @Nullable String info) {
+        Component component;
+        if (info == null) {
+            component = ServiceManager.get(Configurator.class).getMessage(
+                    "shortFailedCheck",
+                    Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)))
+            );
+        } else {
+            component = ServiceManager.get(Configurator.class).getMessage(
+                    "failedCheck",
+                    Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "info", info)
+            );
+        }
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
         if (ServiceManager.get(Configurator.class).getConfig().isDiscordWebhook()) {
-            final WebhookExecuteRequest request = WebhookExecuteRequest.builder()
-                    .embed(
-                            Embed.builder()
-                                    .color(0xFFA500)
-                                    .thumbnail(
-                                            Embed.Media.builder()
-                                                    .url("https://mc-heads.net/avatar/" + player.getUuid())
-                                                    .build()
-                                    )
-                                    .title("Violation")
-                                    .description(player.getName())
-                                    .field(
-                                            Embed.Field.builder()
-                                                    .name("Check")
-                                                    .value(check.getName() + " " + check.getType().name())
-                                                    .build()
-                                    )
-                                    .field(
-                                            Embed.Field.builder()
-                                                    .name("VL")
-                                                    .value(check.getVL(player) + "/" + check.getVLThreshold())
-                                                    .build()
-                                    )
-                                    .field(
-                                            Embed.Field.builder()
-                                                    .name("Ping")
-                                                    .value(player.getPing() + "ms")
-                                                    .build()
-                                    )
-                                    .field(
-                                            Embed.Field.builder()
-                                                    .name("Location")
-                                                    .value(
-                                                            "X: " + player.getLocation().getX() +
-                                                                    "\nY: " + player.getLocation().getY() +
-                                                                    "\nZ: " + player.getLocation().getZ() +
-                                                                    "\nYaw: " + player.getLocation().getYaw() +
-                                                                    "\nPitch: " + player.getLocation().getPitch() +
-                                                                    "\nWorld: " + player.getLocation().getWorld().getName()
-                                                    )
-                                                    .build()
-                                    )
+            final Optional<ProtocolUtils.Protocol> proto = ProtocolUtils.getProtocol(player.getProtocolVersion());
+            final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
+            final Embed.EmbedBuilder embed = Embed.builder()
+                    .thumbnail(
+                            Embed.Media.builder()
+                                    .url("https://mc-heads.net/head/" + player.getUuid())
                                     .build()
                     )
-                    .build();
+                    .title("Iris check violation")
+                    .description("```md\n<" + player.getName() + " failed> [" + check.getName() + "](Type: " + check.getType().name() + ") (VL: " + check.getVL(player) + ")\n```")
+                    .field(
+                            Embed.Field.builder()
+                                    .name("Location")
+                                    .value("`" + Stream.of(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ()).map(e -> Double.toString(e)).collect(Collectors.joining(", ")) + " - " + player.getLocation().getWorld().getName() + "`")
+                                    .build()
+                    )
+                    .field(
+                            Embed.Field.builder()
+                                    .name("Player details")
+                                    .value("```yaml\nPing: " + player.getPing() + "ms\n" + "Protocol version: " + protocolString + "```")
+                                    .build()
+                    )
+                    .timestamp(new Date(System.currentTimeMillis()));
+            if (info != null) {
+                embed.field(
+                        Embed.Field.builder()
+                                .name("Addítional information")
+                                .value("`" + info + "`")
+                                .build()
+                );
+            }
             try {
                 WebhookRequestDispatcher.execute(
                         ServiceManager.get(Configurator.class).getConfig().getWebhookUrl(),
-                        request
+                        WebhookExecuteRequest.builder().embed(embed.build()).build()
                 );
             } catch (MalformedURLException | URISyntaxException e) {
                 IrisPlugin.getInstance().getLogger().error("Malformed Discord webhook URL!");

@@ -25,7 +25,8 @@ public class Messages {
     @JsonIgnore
     protected static final MiniMessage MINIMESSAGE = MiniMessage.get();
     private String prefix = "<color:gray>(<color:red>!<color:gray>) ";
-    private String failedCheck = "<color:red><player> <color:white>failed <color:gold><name> <type> <color:gray>\\ <color:blue>VL: <vl>";
+    private String failedCheck = "<color:red><player> <color:white>failed <color:gold><name> <type> <color:gray>\\ <white><info> <color:gray>\\ <color:blue>VL: <vl>";
+    private String shortFailedCheck = "<color:red><player> <color:white>failed <color:gold><name> <type> <color:gray>\\ <color:blue>VL: <vl>";
     private String noPermission = "<color:red>No permission!";
     private String invalidCommand = "<color:red>Invalid command!";
     private String alertsToggle = "<color:yellow>Turned alerts <color:green><status><color:yellow>!";
