@@ -18,6 +18,9 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Messages {
+    /**
+     * <p>The MiniMessage instance.</p>
+     */
     @Getter(AccessLevel.NONE)
     @JsonIgnore
     protected static final MiniMessage MINIMESSAGE = MiniMessage.get();
@@ -27,10 +30,23 @@ public class Messages {
     private String invalidCommand = "<color:red>Invalid command!";
     private String alertsToggle = "<color:yellow>Turned alerts <color:green><status><color:yellow>!";
 
+    /**
+     * <p>Gets the message component from id.</p>
+     *
+     * @param id the message id
+     * @return the message component
+     */
     public Component getMessage(String id) {
         return MINIMESSAGE.parse(prefix + Reflect.getField(this, new String[] {id}));
     }
 
+    /**
+     * <p>Gets the message component from id and translates placeholders.</p>
+     *
+     * @param id the message id
+     * @param placeholders the message placeholders
+     * @return the message component
+     */
     public Component getMessage(String id, Map<String, String> placeholders) {
         return MINIMESSAGE.parse(prefix + Reflect.getField(this, new String[] {id}), placeholders);
     }
