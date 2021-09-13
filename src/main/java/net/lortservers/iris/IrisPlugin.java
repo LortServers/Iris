@@ -1,8 +1,12 @@
 package net.lortservers.iris;
 
+import net.lortservers.iris.checks.CheckManager;
 import net.lortservers.iris.config.Configurator;
+import net.lortservers.iris.listener.AimbotListener;
+import net.lortservers.iris.listener.InteractFrequencyListener;
 import net.lortservers.iris.utils.CooldownManager;
 import org.screamingsandals.lib.plugin.PluginContainer;
+import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 
@@ -15,8 +19,12 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
         version = "1.0-SNAPSHOT"
 )
 @Init(services = {
+        Tasker.class,
         Configurator.class,
-        CooldownManager.class
+        CooldownManager.class,
+        CheckManager.class,
+        AimbotListener.class,
+        InteractFrequencyListener.class
 })
 public class IrisPlugin extends PluginContainer {
     /**

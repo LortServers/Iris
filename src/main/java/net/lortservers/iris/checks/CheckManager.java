@@ -11,10 +11,7 @@ import java.util.UUID;
 /**
  * <p>Class responsible for managing check suspicions.</p>
  */
-@Service(loadAfter = {
-        AimbotListener.class,
-        InteractFrequencyListener.class
-})
+@Service
 public class CheckManager {
     /**
      * <p>VL check store.</p>

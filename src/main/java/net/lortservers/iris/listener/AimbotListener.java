@@ -14,7 +14,6 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.MathUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.world.LocationHolder;
 
 import java.util.Map;

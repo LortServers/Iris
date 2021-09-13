@@ -1,5 +1,6 @@
 package net.lortservers.iris.checks;
 
+import lombok.RequiredArgsConstructor;
 import net.lortservers.iris.config.Configurator;
 import net.lortservers.iris.utils.CooldownManager;
 import net.lortservers.iris.utils.CooldownMapping;
@@ -9,6 +10,7 @@ import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
+import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
 import java.util.Locale;
 import java.util.Map;
@@ -22,11 +24,24 @@ import java.util.UUID;
         CheckManager.class,
         CooldownManager.class
 })
+@RequiredArgsConstructor
 public abstract class Check {
     /**
      * <p>The check's cooldown time.</p>
      */
     private final int cooldown;
+    /**
+     * <p>The check's periodical decreasing amount.</p>
+     */
+    private final int decreaseBy;
+    /**
+     * <p>The check's periodical decrease time repetition.</p>
+     */
+    private final long decreaseTime;
+    /**
+     * <p>The check's periodical decrease time type.</p>
+     */
+    private final TaskerTime decreaseTimeType;
 
     /**
      * <p>Constructs the check from default config values.</p>
@@ -40,15 +55,8 @@ public abstract class Check {
         );
     }
 
-    /**
-     * <p>Constructs the check.</p>
-     *
-     * @param decreaseBy decrease the suspicion by ...
-     * @param decreaseTime decrease the suspicion every ...
-     * @param cooldown check cooldown time
-     * @param decreaseTimeType time unit for the decreaseTime parameter
-     */
-    public Check(int decreaseBy, long decreaseTime, int cooldown, TaskerTime decreaseTimeType) {
+    @OnEnable
+    public void enable() {
         Tasker.build(() -> {
             final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(Check.this.getClass());
             for (final Map.Entry<UUID, Integer> entry : vls.entrySet()) {
@@ -61,7 +69,6 @@ public abstract class Check {
                 vls.put(entry.getKey(), currentVl);
             }
         }).repeat(decreaseTime, decreaseTimeType).start();
-        this.cooldown = cooldown;
     }
 
     /**

@@ -56,7 +56,7 @@ test {
 shadowJar {
     relocate 'org.screamingsandals.lib', 'net.lortservers.iris.lib.slib'
     relocate 'com.fasterxml.jackson', 'net.lortservers.iris.lib.jackson'
-    relocate 'net.kyori.adventure.text.minimessage', 'net.lortservers.iris.lib.minimessage'
     relocate 'cloud.commandframework.minecraft.extras', 'net.lortservers.iris.lib.cloudextras'
     relocate 'me.zlataovce.hook', 'net.lortservers.iris.lib.hook'
+    relocate 'net.kyori.adventure', 'net.lortservers.iris.lib.adventure'
 }

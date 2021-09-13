@@ -89,7 +89,7 @@ public class InteractFrequencyListener {
             return;
         }
         final PlayerWrapper player = event.getPlayer();
-        final long diff = System.currentTimeMillis() - lastBreak.getOrDefault(player.getUuid(), System.currentTimeMillis());
+        final long diff = Math.abs(System.currentTimeMillis() - lastBreak.getOrDefault(player.getUuid(), 0L));
         if (diff <= 1500) {
             return;
         }
@@ -113,9 +113,11 @@ public class InteractFrequencyListener {
         if (!lastHit.containsKey(player.getUuid())) {
             lastHit.put(player.getUuid(), System.currentTimeMillis() - 1000);
         }
-        if ((cpsLeft.get(player.getUuid()) >= configurator.getConfig().getInteractFrequencyAMaxCPS()) || (cpsRight.get(player.getUuid()) >= configurator.getConfig().getInteractFrequencyAMaxCPS())) {
+        System.out.println(cpsLeft.getOrDefault(player.getUuid(), 0));
+        System.out.println(cpsRight.getOrDefault(player.getUuid(), 0));
+        if ((cpsLeft.getOrDefault(player.getUuid(), 0) >= configurator.getConfig().getInteractFrequencyAMaxCPS()) || (cpsRight.getOrDefault(player.getUuid(), 0) >= configurator.getConfig().getInteractFrequencyAMaxCPS())) {
             final InteractFrequencyCheckA a = ServiceManager.get(InteractFrequencyCheckA.class);
-            if (!a.isOnCooldown(event.getPlayer()) && a.isEligibleForCheck(event.getPlayer())) {
+            if (a.isEligibleForCheck(event.getPlayer())) {
                 a.increaseVL(event.getPlayer(), 1);
                 if (a.getVL(event.getPlayer()) >= a.getVLThreshold() && (System.currentTimeMillis() - lastBreak.getOrDefault(player.getUuid(), System.currentTimeMillis())) >= 1500) {
                     if (PlayerUtils.isBlocking(event.getAction(), player)) {
@@ -124,7 +126,6 @@ public class InteractFrequencyListener {
                         ServiceManager.get(Punisher.class).logWarn(event.getPlayer(), a, "seems to be using an autoclicker [LCPS: " + cpsLeft.get(player.getUuid()) + ", RCPS: " + cpsRight.get(player.getUuid()) + "]");
                     }
                 }
-                a.putCooldown(event.getPlayer());
             }
         }
     }
