@@ -6,6 +6,7 @@ import net.lortservers.iris.config.Configurator;
 import net.lortservers.iris.utils.MaterialUtils;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.Punisher;
+import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
@@ -83,7 +84,7 @@ public class InteractFrequencyListener {
      *
      * @param event the event
      */
-    @OnEvent
+    @OnEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(SPlayerInteractEvent event) {
         if (event.getAction() == SPlayerInteractEvent.Action.PHYSICAL) {
             return;
