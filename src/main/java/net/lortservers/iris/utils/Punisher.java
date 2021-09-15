@@ -70,6 +70,7 @@ public class Punisher {
             );
         }
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
+        PlayerMapper.getConsoleSender().sendMessage(component);
         if (ServiceManager.get(Configurator.class).getConfig().isDiscordWebhook()) {
             final Optional<ProtocolUtils.Protocol> proto = ProtocolUtils.getProtocol(player.getProtocolVersion());
             final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";

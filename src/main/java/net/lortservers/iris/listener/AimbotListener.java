@@ -65,12 +65,9 @@ public class AimbotListener {
         final PlayerWrapper attacker = event.getDamager().as(PlayerWrapper.class);
         final PlayerWrapper victim = event.getEntity().as(PlayerWrapper.class);
         AtomicInteger count = new AtomicInteger(0);
-        AtomicReference<Float> pitch = new AtomicReference<>((float) 0);
-        AtomicReference<Double> yaw = new AtomicReference<>((double) 0);
-        AtomicInteger pitchcount = new AtomicInteger(0);
-        AtomicInteger yawcount = new AtomicInteger(0);
-        AtomicReference<Float> lastpitch = new AtomicReference<>((float) 0);
-        AtomicReference<Double> lastyaw = new AtomicReference<>((double) 0);
+        AtomicReference<Float> pitch = new AtomicReference<>((float) 0), lastpitch = new AtomicReference<>((float) 0);
+        AtomicReference<Double> yaw = new AtomicReference<>((double) 0), lastyaw = new AtomicReference<>((double) 0);
+        AtomicInteger pitchcount = new AtomicInteger(0), yawcount = new AtomicInteger(0);
         LocationHolder loc = attacker.getLocation();
         double r1 = victim.getLocation().getDistanceSquared(loc);
         AtomicReference<Double> r2 = new AtomicReference<>();
