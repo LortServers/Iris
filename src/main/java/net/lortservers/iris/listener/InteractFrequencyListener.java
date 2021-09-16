@@ -1,11 +1,12 @@
 package net.lortservers.iris.listener;
 
+import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.interact.InteractFrequencyCheckA;
 import net.lortservers.iris.checks.interact.block.BlockingFrequencyCheckA;
-import net.lortservers.iris.config.Configurator;
+import net.lortservers.iris.config.ConfigurationManager;
 import net.lortservers.iris.utils.MaterialUtils;
 import net.lortservers.iris.utils.PlayerUtils;
-import net.lortservers.iris.utils.Punisher;
+import net.lortservers.iris.utils.PunishmentManager;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
@@ -28,7 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>A class responsible for triggering interact frequency checks.</p>
  */
 @Service(dependsOn = {
-        Configurator.class,
+        ConfigurationManager.class,
+        PunishmentManager.class,
         InteractFrequencyCheckA.class,
         BlockingFrequencyCheckA.class
 })
@@ -56,7 +58,7 @@ public class InteractFrequencyListener {
     /**
      * <p>The configurator.</p>
      */
-    private final Configurator configurator = ServiceManager.get(Configurator.class);
+    private final ConfigurationManager configurator = ServiceManager.get(ConfigurationManager.class);
 
     /**
      * <p>Initializes the listener.</p>
@@ -144,21 +146,28 @@ public class InteractFrequencyListener {
             }
             cpsRight.put(player.getUuid(), cpsRight.getOrDefault(player.getUuid(), 0) + 1);
         }
-        // System.out.println(cpsLeft.getOrDefault(player.getUuid(), 0));
-        // System.out.println(cpsRight.getOrDefault(player.getUuid(), 0));
         performCheck(player, event.getAction());
     }
 
     private void performCheck(PlayerWrapper player, SPlayerInteractEvent.Action action) {
-        if ((cpsLeft.getOrDefault(player.getUuid(), 0) >= configurator.getConfig().getInteractFrequencyAMaxCPS()) || (cpsRight.getOrDefault(player.getUuid(), 0) >= configurator.getConfig().getInteractFrequencyAMaxCPS())) {
+        if (configurator.getValue("debug", Boolean.class).orElse(false)) {
+            IrisPlugin.getInstance().getLogger().info("LCPS: " + cpsLeft.getOrDefault(player.getUuid(), 0) + ", RCPS: " + cpsRight.getOrDefault(player.getUuid(), 0));
+        }
+        if ((cpsLeft.getOrDefault(player.getUuid(), 0) >= configurator.getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16)) || (cpsRight.getOrDefault(player.getUuid(), 0) >= configurator.getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16))) {
             final InteractFrequencyCheckA a = ServiceManager.get(InteractFrequencyCheckA.class);
             if (a.isEligibleForCheck(player)) {
                 a.increaseVL(player, 1);
                 if (a.getVL(player) >= a.getVLThreshold() && (System.currentTimeMillis() - lastBreak.getOrDefault(player.getUuid(), System.currentTimeMillis())) >= 1500) {
                     if (PlayerUtils.isBlocking(action, player)) {
-                        ServiceManager.get(Punisher.class).logWarn(player, ServiceManager.get(BlockingFrequencyCheckA.class), "blocking too fast");
+                        final BlockingFrequencyCheckA a1 = ServiceManager.get(BlockingFrequencyCheckA.class);
+                        if (a1.isEligibleForCheck(player)) {
+                            a1.increaseVL(player, 1);
+                            if (a1.getVL(player) >= a1.getVLThreshold()) {
+                                ServiceManager.get(PunishmentManager.class).logWarn(player, a1, "blocking too fast [RCPS: " + cpsRight.getOrDefault(player.getUuid(), 0) + "]");
+                            }
+                        }
                     } else {
-                        ServiceManager.get(Punisher.class).logWarn(player, a, "seems to be using an autoclicker [LCPS: " + cpsLeft.get(player.getUuid()) + ", RCPS: " + cpsRight.get(player.getUuid()) + "]");
+                        ServiceManager.get(PunishmentManager.class).logWarn(player, a, "seems to be using an autoclicker [LCPS: " + cpsLeft.getOrDefault(player.getUuid(), 0) + ", RCPS: " + cpsRight.getOrDefault(player.getUuid(), 0) + "]");
                     }
                 }
             }

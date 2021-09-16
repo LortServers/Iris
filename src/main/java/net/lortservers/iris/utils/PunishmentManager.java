@@ -6,7 +6,7 @@ import me.zlataovce.hook.requests.WebhookExecuteRequest;
 import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.Check;
-import net.lortservers.iris.config.Configurator;
+import net.lortservers.iris.config.ConfigurationManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.screamingsandals.lib.event.OnEvent;
@@ -29,9 +29,9 @@ import java.util.stream.Stream;
  * <p>Class responsible for dispatching failed messages and punishing players.</p>
  */
 @Service(dependsOn = {
-        Configurator.class
+        ConfigurationManager.class
 })
-public class Punisher {
+public class PunishmentManager {
     /**
      * <p>Alert subscribers.</p>
      */
@@ -59,19 +59,19 @@ public class Punisher {
     public <T extends Check> void logWarn(PlayerWrapper player, T check, @Nullable String info) {
         Component component;
         if (info == null) {
-            component = ServiceManager.get(Configurator.class).getMessage(
+            component = ServiceManager.get(ConfigurationManager.class).getMessage(
                     "shortFailedCheck",
                     Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)))
             );
         } else {
-            component = ServiceManager.get(Configurator.class).getMessage(
+            component = ServiceManager.get(ConfigurationManager.class).getMessage(
                     "failedCheck",
                     Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "info", info)
             );
         }
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
         PlayerMapper.getConsoleSender().sendMessage(component);
-        if (ServiceManager.get(Configurator.class).getConfig().isDiscordWebhook()) {
+        if (ServiceManager.get(ConfigurationManager.class).getValue("discordWebhook", Boolean.class).orElse(false)) {
             final Optional<ProtocolUtils.Protocol> proto = ProtocolUtils.getProtocol(player.getProtocolVersion());
             final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
             final Embed.EmbedBuilder embed = Embed.builder()
@@ -105,7 +105,7 @@ public class Punisher {
             }
             try {
                 WebhookRequestDispatcher.execute(
-                        ServiceManager.get(Configurator.class).getConfig().getWebhookUrl(),
+                        ServiceManager.get(ConfigurationManager.class).getValue("webhookUrl", String.class).orElseThrow(),
                         WebhookExecuteRequest.builder().embed(embed.build()).build()
                 );
             } catch (MalformedURLException | URISyntaxException e) {

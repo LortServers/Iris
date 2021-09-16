@@ -2,9 +2,8 @@ package net.lortservers.iris.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.lortservers.iris.config.Configurator;
-import net.lortservers.iris.utils.Punisher;
+import net.lortservers.iris.config.ConfigurationManager;
+import net.lortservers.iris.utils.PunishmentManager;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -20,8 +19,8 @@ import java.util.Optional;
  * <p>A class representing the alerts command.</p>
  */
 @Service(dependsOn = {
-        Punisher.class,
-        Configurator.class
+        PunishmentManager.class,
+        ConfigurationManager.class
 })
 public class AlertsCommand extends BaseCommand {
     /**
@@ -48,16 +47,16 @@ public class AlertsCommand extends BaseCommand {
         manager.command(
                 commandSenderWrapperBuilder
                         .handler(commandContext -> {
-                            final Optional<Boolean> now = ServiceManager.get(Punisher.class).toggleAlerts(commandContext.getSender().as(PlayerWrapper.class));
+                            final Optional<Boolean> now = ServiceManager.get(PunishmentManager.class).toggleAlerts(commandContext.getSender().as(PlayerWrapper.class));
 
                             if (now.isEmpty()) {
                                 commandContext.getSender().sendMessage(
-                                        ServiceManager.get(Configurator.class).getMessage("noPermission")
+                                        ServiceManager.get(ConfigurationManager.class).getMessage("noPermission")
                                 );
                                 return;
                             }
                             commandContext.getSender().sendMessage(
-                                    ServiceManager.get(Configurator.class).getMessage("alertsToggle", Collections.singletonMap("status", Boolean.toString(now.orElseThrow())))
+                                    ServiceManager.get(ConfigurationManager.class).getMessage("alertsToggle", Collections.singletonMap("status", Boolean.toString(now.orElseThrow())))
                             );
                         })
         );

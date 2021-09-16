@@ -1,7 +1,7 @@
 package net.lortservers.iris;
 
 import net.lortservers.iris.checks.CheckManager;
-import net.lortservers.iris.config.Configurator;
+import net.lortservers.iris.config.ConfigurationManager;
 import net.lortservers.iris.listener.AimbotListener;
 import net.lortservers.iris.listener.InteractFrequencyListener;
 import net.lortservers.iris.utils.CooldownManager;
@@ -20,7 +20,7 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
 )
 @Init(services = {
         Tasker.class,
-        Configurator.class,
+        ConfigurationManager.class,
         CooldownManager.class,
         CheckManager.class,
         AimbotListener.class,

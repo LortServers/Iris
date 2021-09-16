@@ -1,8 +1,10 @@
 package net.lortservers.iris.config;
 
 import lombok.*;
+import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * <p>A class holding the plugin configuration.</p>
@@ -14,6 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Configuration implements Serializable {
+    private boolean debug = false;
     private int checkDecreaseFrequency = 60;
     private int checkDecreaseAmount = 10;
     private int checkCooldownPeriod = 100;
@@ -34,6 +37,12 @@ public class Configuration implements Serializable {
     private int aimbotGVLThreshold = 2;
     private int interactFrequencyAMaxCPS = 16;
     private int interactFrequencyAVLThreshold = 2;
+    private int blockingFrequencyVLThreshold = 5;
     private boolean discordWebhook = false;
     private String webhookUrl = "";
+
+    public <T> Optional<T> getValue(String key, Class<T> returnType) {
+        final Object result = Reflect.getField(this, key);
+        return (result == null) ? Optional.empty() : Optional.of(returnType.cast(result));
+    }
 }

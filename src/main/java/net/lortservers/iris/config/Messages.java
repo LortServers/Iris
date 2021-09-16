@@ -39,7 +39,7 @@ public class Messages implements Serializable {
      * @return the message component
      */
     public Component getMessage(String id) {
-        return MINIMESSAGE.parse(prefix + Reflect.getField(this, new String[] {id}));
+        return MINIMESSAGE.parse(prefix + Reflect.getField(this, id));
     }
 
     /**
@@ -50,6 +50,6 @@ public class Messages implements Serializable {
      * @return the message component
      */
     public Component getMessage(String id, Map<String, String> placeholders) {
-        return MINIMESSAGE.parse(prefix + Reflect.getField(this, new String[] {id}), placeholders);
+        return MINIMESSAGE.parse(prefix + Reflect.getField(this, id), placeholders);
     }
 }

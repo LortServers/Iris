@@ -1,7 +1,7 @@
 package net.lortservers.iris.checks;
 
 import lombok.RequiredArgsConstructor;
-import net.lortservers.iris.config.Configurator;
+import net.lortservers.iris.config.ConfigurationManager;
 import net.lortservers.iris.utils.CooldownManager;
 import net.lortservers.iris.utils.CooldownMapping;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -20,7 +20,7 @@ import java.util.UUID;
  * <p>A check base.</p>
  */
 @ServiceDependencies(dependsOn = {
-        Configurator.class,
+        ConfigurationManager.class,
         CheckManager.class,
         CooldownManager.class
 })
@@ -48,9 +48,9 @@ public abstract class Check {
      */
     public Check() {
         this(
-                ServiceManager.get(Configurator.class).getConfig().getCheckDecreaseAmount(),
-                ServiceManager.get(Configurator.class).getConfig().getCheckDecreaseFrequency(),
-                ServiceManager.get(Configurator.class).getConfig().getCheckCooldownPeriod(),
+                ServiceManager.get(ConfigurationManager.class).getValue("checkDecreaseAmount", Integer.class).orElse(10),
+                ServiceManager.get(ConfigurationManager.class).getValue("checkDecreaseFrequency", Integer.class).orElse(60),
+                ServiceManager.get(ConfigurationManager.class).getValue("checkCooldownPeriod", Integer.class).orElse(100),
                 TaskerTime.SECONDS
         );
     }
@@ -92,8 +92,7 @@ public abstract class Check {
      * @return the player's VL
      */
     public int getVL(PlayerWrapper player) {
-        final Map<UUID, Integer> vls = ServiceManager.get(CheckManager.class).getVls(getClass());
-        return vls.get(player.getUuid());
+        return ServiceManager.get(CheckManager.class).getVls(getClass()).getOrDefault(player.getUuid(), 0);
     }
 
     /**
@@ -166,7 +165,7 @@ public abstract class Check {
     public boolean isEligibleForCheck(PlayerWrapper player) {
         return player.isOnline() &&
                 !player.asEntity().isDead() &&
-                !player.getGameMode().is("spectator", "creative") &&
+                player.getGameMode().is("survival") &&
                 !player.hasPermission("iris.bypass." + getName().toLowerCase(Locale.ROOT) + "." + getType().name().toLowerCase(Locale.ROOT));
     }
 

@@ -2,7 +2,7 @@ package net.lortservers.iris.utils;
 
 import lombok.*;
 import net.lortservers.iris.IrisPlugin;
-import net.lortservers.iris.config.Configurator;
+import net.lortservers.iris.config.ConfigurationManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class ProtocolUtils {
                     .GET()
                     .build();
             final String body = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
-            protocolVersions = Arrays.stream(Configurator.MAPPER.readValue(body, Protocol[].class)).toList();
+            protocolVersions = Arrays.stream(ConfigurationManager.MAPPER.readValue(body, Protocol[].class)).toList();
         } catch (URISyntaxException | IOException | InterruptedException e) {
             IrisPlugin.getInstance().getLogger().error("Could not retrieve protocol data!", e);
             protocolVersions = new ArrayList<>();

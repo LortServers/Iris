@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * <p>A class responsible for managing the configuration.</p>
@@ -22,7 +23,7 @@ import java.util.Map;
 @Service(loadAfter = {
         CheckManager.class
 })
-public class Configurator {
+public class ConfigurationManager {
     /**
      * <p>A Jackson object mapper.</p>
      */
@@ -65,6 +66,10 @@ public class Configurator {
      */
     public Component getMessage(String id, Map<String, String> placeholders) {
         return messages.getMessage(id, placeholders);
+    }
+
+    public <T> Optional<T> getValue(String key, Class<T> returnType) {
+        return config.getValue(key, returnType);
     }
 
     /**

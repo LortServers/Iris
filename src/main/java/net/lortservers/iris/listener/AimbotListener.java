@@ -1,8 +1,8 @@
 package net.lortservers.iris.listener;
 
 import net.lortservers.iris.checks.aimbot.*;
-import net.lortservers.iris.config.Configurator;
-import net.lortservers.iris.utils.Punisher;
+import net.lortservers.iris.config.ConfigurationManager;
+import net.lortservers.iris.utils.PunishmentManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.event.OnEvent;
@@ -27,7 +27,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>A class responsible for triggering aimbot checks.</p>
  */
 @Service(dependsOn = {
-        Configurator.class,
+        ConfigurationManager.class,
+        PunishmentManager.class,
         AimbotCheckH.class,
         AimbotCheckI.class,
         AimbotCheckA.class,
@@ -39,7 +40,7 @@ public class AimbotListener {
     /**
      * <p>The configurator.</p>
      */
-    private final Configurator configurator = ServiceManager.get(Configurator.class);
+    private final ConfigurationManager configurator = ServiceManager.get(ConfigurationManager.class);
     private final @NonNull Map<UUID, Integer> count = new ConcurrentHashMap<>();
 
     /**
@@ -107,14 +108,14 @@ public class AimbotListener {
             lastpitch.set(pitch.get());
             count.getAndIncrement();
         }).repeat(1, TaskerTime.TICKS).stopEvent(task -> {
-            if (r1 >= MathUtils.square(configurator.getConfig().getAimbotHFirstDistance())) {
-                if (r2.get() >= MathUtils.square(configurator.getConfig().getAimbotHLastDistance())) {
-                    if (count.get() == configurator.getConfig().getAimbotHCount()) {
+            if (r1 >= MathUtils.square(configurator.getValue("aimbotHFirstDistance", Double.class).orElse(3.75))) {
+                if (r2.get() >= MathUtils.square(configurator.getValue("aimbotHLastDistance", Double.class).orElse(3.5))) {
+                    if (count.get() == configurator.getValue("aimbotHCount", Integer.class).orElse(21)) {
                         final AimbotCheckH h = ServiceManager.get(AimbotCheckH.class);
                         if (!h.isOnCooldown(attacker) && h.isEligibleForCheck(attacker)) {
                             h.increaseVL(attacker, 1);
                             if (h.getVL(attacker) >= h.getVLThreshold()) {
-                                ServiceManager.get(Punisher.class).logWarn(attacker, h);
+                                ServiceManager.get(PunishmentManager.class).logWarn(attacker, h);
                             }
                             h.putCooldown(attacker);
                         }
@@ -123,18 +124,16 @@ public class AimbotListener {
             }
             if (count.get() <= 20) {
                 final int attackerCount = Math.abs(this.count.getOrDefault(attacker.getUuid(), 0) - count.get());
-                if (r1 >= MathUtils.square(configurator.getConfig().getAimbotIDistance())) {
-                    if (attackerCount >= 1) {
-                        if (attackerCount <= 3) {
-                            if (victim.getLocation().getY() >= attacker.getLocation().getY() && !victim.isSprinting()) {
-                                final AimbotCheckI i = ServiceManager.get(AimbotCheckI.class);
-                                if (!i.isOnCooldown(attacker) && i.isEligibleForCheck(attacker)) {
-                                    i.increaseVL(attacker, 1);
-                                    if (i.getVL(attacker) >= i.getVLThreshold()) {
-                                        ServiceManager.get(Punisher.class).logWarn(attacker, i);
-                                    }
-                                    i.putCooldown(attacker);
+                if (r1 >= MathUtils.square(configurator.getValue("aimbotIDistance", Double.class).orElse(3.5))) {
+                    if (attackerCount >= 1 && attackerCount <= 3) {
+                        if (victim.getLocation().getY() >= attacker.getLocation().getY() && !victim.isSprinting()) {
+                            final AimbotCheckI i = ServiceManager.get(AimbotCheckI.class);
+                            if (!i.isOnCooldown(attacker) && i.isEligibleForCheck(attacker)) {
+                                i.increaseVL(attacker, 1);
+                                if (i.getVL(attacker) >= i.getVLThreshold()) {
+                                    ServiceManager.get(PunishmentManager.class).logWarn(attacker, i);
                                 }
+                                i.putCooldown(attacker);
                             }
                         }
                     }
@@ -144,26 +143,25 @@ public class AimbotListener {
                             i.increaseVL(attacker, 1);
                             if (i.getVL(attacker) >= i.getVLThreshold()) {
                                 if (victim.getLocation().getY() >= attacker.getLocation().getY()) {
-                                    ServiceManager.get(Punisher.class).logWarn(attacker, i);
+                                    ServiceManager.get(PunishmentManager.class).logWarn(attacker, i);
                                 }
                             }
                             i.putCooldown(attacker);
                         }
                     }
-                    if (attackerCount <= configurator.getConfig().getAimbotAMaxCountDifference()) {
-                        if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(configurator.getConfig().getAimbotADistance())) {
-                            final AimbotCheckA a = ServiceManager.get(AimbotCheckA.class);
+                    final AimbotCheckA a = ServiceManager.get(AimbotCheckA.class);
+                    if (attackerCount <= configurator.getValue("aimbotAMaxCountDifference", Integer.class).orElse(1)) {
+                        if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(configurator.getValue("aimbotADistance", Double.class).orElse(0.5))) {
                             if (!a.isOnCooldown(attacker) && a.isEligibleForCheck(attacker)) {
                                 a.increaseVL(attacker, 1);
                                 if (a.getVL(attacker) >= a.getVLThreshold()) {
-                                    ServiceManager.get(Punisher.class).logWarn(attacker, a);
+                                    ServiceManager.get(PunishmentManager.class).logWarn(attacker, a);
                                     a.resetVL(attacker);
                                 }
                                 a.putCooldown(attacker);
                             }
                         }
                     } else {
-                        final AimbotCheckA a = ServiceManager.get(AimbotCheckA.class);
                         a.resetVL(attacker);
                     }
 
@@ -176,7 +174,7 @@ public class AimbotListener {
                     if (!b.isOnCooldown(attacker) && b.isEligibleForCheck(attacker)) {
                         b.increaseVL(attacker, 1);
                         if (b.getVL(attacker) >= b.getVLThreshold()) {
-                            ServiceManager.get(Punisher.class).logWarn(attacker, b);
+                            ServiceManager.get(PunishmentManager.class).logWarn(attacker, b);
                             b.resetVL(attacker);
                         }
                         b.putCooldown(attacker);
@@ -184,9 +182,9 @@ public class AimbotListener {
                 } else {
                     b.resetVL(attacker);
                 }
-                if (yawcount.get() >= configurator.getConfig().getAimbotEMinSimilarYaw() && pitchcount.get() >= configurator.getConfig().getAimbotEMinSimilarPitch()) {
+                if (yawcount.get() >= configurator.getValue("aimbotEMinSimilarYaw", Integer.class).orElse(11) && pitchcount.get() >= configurator.getValue("aimbotEMinSimilarPitch", Integer.class).orElse(5)) {
                     if (r1 == r2.get()) {
-                        ServiceManager.get(Punisher.class).logWarn(attacker, ServiceManager.get(AimbotCheckB.class));
+                        ServiceManager.get(PunishmentManager.class).logWarn(attacker, ServiceManager.get(AimbotCheckB.class));
                     }
                 }
                 final AimbotCheckF f = ServiceManager.get(AimbotCheckF.class);
@@ -195,7 +193,7 @@ public class AimbotListener {
                         if (!f.isOnCooldown(attacker) && f.isEligibleForCheck(attacker)) {
                             f.increaseVL(attacker, 1);
                             if (f.getVL(attacker) >= f.getVLThreshold()) {
-                                ServiceManager.get(Punisher.class).logWarn(attacker, f);
+                                ServiceManager.get(PunishmentManager.class).logWarn(attacker, f);
                                 f.resetVL(attacker);
                             }
                             f.putCooldown(attacker);
@@ -207,12 +205,12 @@ public class AimbotListener {
                     f.resetVL(attacker);
                 }
                 if (yawcount.get() < pitchcount.get()) {
-                    if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(configurator.getConfig().getAimbotGDistance())) {
+                    if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(configurator.getValue("aimbotGDistance", Double.class).orElse(0.5))) {
                         final AimbotCheckG g = ServiceManager.get(AimbotCheckG.class);
                         if (!g.isOnCooldown(attacker) && g.isEligibleForCheck(attacker)) {
                             g.increaseVL(attacker, 1);
                             if (g.getVL(attacker) >= g.getVLThreshold()) {
-                                ServiceManager.get(Punisher.class).logWarn(attacker, g);
+                                ServiceManager.get(PunishmentManager.class).logWarn(attacker, g);
                                 g.resetVL(attacker);
                             }
                             g.putCooldown(attacker);
