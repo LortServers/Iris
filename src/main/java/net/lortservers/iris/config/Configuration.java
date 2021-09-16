@@ -40,6 +40,7 @@ public class Configuration implements Serializable {
     private int blockingFrequencyVLThreshold = 5;
     private boolean discordWebhook = false;
     private String webhookUrl = "";
+    private String webhookAvatar = "https://i.imgur.com/161mP3g.png";
 
     public <T> Optional<T> getValue(String key, Class<T> returnType) {
         final Object result = Reflect.getField(this, key);

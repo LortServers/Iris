@@ -21,6 +21,7 @@ import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -72,7 +73,7 @@ public class PunishmentManager {
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
         PlayerMapper.getConsoleSender().sendMessage(component);
         if (ServiceManager.get(ConfigurationManager.class).getValue("discordWebhook", Boolean.class).orElse(false)) {
-            final Optional<ProtocolUtils.Protocol> proto = ProtocolUtils.getProtocol(player.getProtocolVersion());
+            final Optional<Protocol> proto = ProtocolUtils.getProtocol(player.getProtocolVersion());
             final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
             final Embed.EmbedBuilder embed = Embed.builder()
                     .thumbnail(
@@ -80,7 +81,7 @@ public class PunishmentManager {
                                     .url("https://mc-heads.net/head/" + player.getUuid())
                                     .build()
                     )
-                    .title("Iris check violation")
+                    .title("Check violation")
                     .description("```md\n<" + player.getName() + " failed> [" + check.getName() + "](Type: " + check.getType().name() + ") (VL: " + check.getVL(player) + ")\n```")
                     .field(
                             Embed.Field.builder()
@@ -104,10 +105,17 @@ public class PunishmentManager {
                 );
             }
             try {
-                WebhookRequestDispatcher.execute(
+                final HttpResponse<String> response = WebhookRequestDispatcher.execute(
                         ServiceManager.get(ConfigurationManager.class).getValue("webhookUrl", String.class).orElseThrow(),
-                        WebhookExecuteRequest.builder().embed(embed.build()).build()
+                        WebhookExecuteRequest.builder()
+                                .username("Iris")
+                                .avatarUrl(ServiceManager.get(ConfigurationManager.class).getValue("webhookAvatar", String.class).orElse(null))
+                                .embed(embed.build())
+                                .build()
                 );
+                if (ServiceManager.get(ConfigurationManager.class).getValue("debug", Boolean.class).orElse(false)) {
+                    IrisPlugin.getInstance().getLogger().info(response.body());
+                }
             } catch (MalformedURLException | URISyntaxException e) {
                 IrisPlugin.getInstance().getLogger().error("Malformed Discord webhook URL!");
             }

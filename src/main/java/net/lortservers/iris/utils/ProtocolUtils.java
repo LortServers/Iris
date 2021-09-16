@@ -1,9 +1,8 @@
 package net.lortservers.iris.utils;
 
-import lombok.*;
+import lombok.Getter;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.config.ConfigurationManager;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.IOException;
 import java.net.URI;
@@ -11,7 +10,10 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * <p>Minecraft protocol utilities.</p>
@@ -21,16 +23,16 @@ public class ProtocolUtils {
      * <p>Current Minecraft protocol versions.</p>
      */
     @Getter
-    private static @NonNull List<Protocol> protocolVersions;
+    private static List<Protocol> protocolVersions;
 
-    static {
+    public static void updateProtocols() {
         try {
             final HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/pc/common/protocolVersions.json"))
                     .GET()
                     .build();
             final String body = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
-            protocolVersions = Arrays.stream(ConfigurationManager.MAPPER.readValue(body, Protocol[].class)).toList();
+            protocolVersions = ConfigurationManager.MAPPER.readValue(body, ConfigurationManager.MAPPER.getTypeFactory().constructCollectionType(List.class, Protocol.class));
         } catch (URISyntaxException | IOException | InterruptedException e) {
             IrisPlugin.getInstance().getLogger().error("Could not retrieve protocol data!", e);
             protocolVersions = new ArrayList<>();
@@ -44,21 +46,6 @@ public class ProtocolUtils {
      * @return the protocol definition
      */
     public static Optional<Protocol> getProtocol(int version) {
-        return protocolVersions.stream().filter(e -> Objects.equals(e.version, version)).findFirst();
-    }
-
-    /**
-     * <p>Class representing the protocol definition.</p>
-     */
-    @AllArgsConstructor
-    @Getter
-    @ToString
-    @EqualsAndHashCode
-    public static final class Protocol {
-        private String minecraftVersion;
-        private int version;
-        private int dataVersion;
-        private boolean usesNetty;
-        private String majorVersion;
+        return protocolVersions.stream().filter(e -> Objects.equals(e.getVersion(), version)).findFirst();
     }
 }

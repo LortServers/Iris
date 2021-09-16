@@ -1,10 +1,12 @@
 package net.lortservers.iris;
 
 import net.lortservers.iris.checks.CheckManager;
+import net.lortservers.iris.commands.AlertsCommand;
 import net.lortservers.iris.config.ConfigurationManager;
 import net.lortservers.iris.listener.AimbotListener;
 import net.lortservers.iris.listener.InteractFrequencyListener;
 import net.lortservers.iris.utils.CooldownManager;
+import net.lortservers.iris.utils.ProtocolUtils;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.annotations.Init;
@@ -24,7 +26,8 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
         CooldownManager.class,
         CheckManager.class,
         AimbotListener.class,
-        InteractFrequencyListener.class
+        InteractFrequencyListener.class,
+        AlertsCommand.class
 })
 public class IrisPlugin extends PluginContainer {
     /**
@@ -37,6 +40,11 @@ public class IrisPlugin extends PluginContainer {
      */
     public IrisPlugin() {
         INSTANCE = this;
+    }
+
+    @Override
+    public void enable() {
+        ProtocolUtils.updateProtocols();
     }
 
     /**
