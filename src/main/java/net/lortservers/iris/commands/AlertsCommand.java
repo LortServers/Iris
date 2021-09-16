@@ -9,7 +9,6 @@ import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.sender.permissions.SimplePermission;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.internal.InternalOnly;
 
 import java.util.Collections;
 import java.util.Map;
@@ -31,7 +30,6 @@ public class AlertsCommand extends BaseCommand {
     /**
      * <p>Constructs the command.</p>
      */
-    @InternalOnly
     public AlertsCommand() {
         super("alerts", SimplePermission.of("iris.alerts"), false);
     }
@@ -51,12 +49,12 @@ public class AlertsCommand extends BaseCommand {
 
                             if (now.isEmpty()) {
                                 commandContext.getSender().sendMessage(
-                                        ServiceManager.get(ConfigurationManager.class).getMessage("noPermission")
+                                        config().getMessage("noPermission")
                                 );
                                 return;
                             }
                             commandContext.getSender().sendMessage(
-                                    ServiceManager.get(ConfigurationManager.class).getMessage("alertsToggle", Collections.singletonMap("status", Boolean.toString(now.orElseThrow())))
+                                    config().getMessage("alertsToggle", Collections.singletonMap("status", Boolean.toString(now.orElseThrow())))
                             );
                         })
         );

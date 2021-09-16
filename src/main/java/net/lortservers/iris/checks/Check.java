@@ -1,9 +1,9 @@
 package net.lortservers.iris.checks;
 
 import lombok.RequiredArgsConstructor;
-import net.lortservers.iris.config.ConfigurationManager;
 import net.lortservers.iris.utils.CooldownManager;
 import net.lortservers.iris.utils.CooldownMapping;
+import net.lortservers.iris.wrap.ConfigurationDependent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -20,12 +20,11 @@ import java.util.UUID;
  * <p>A check base.</p>
  */
 @ServiceDependencies(dependsOn = {
-        ConfigurationManager.class,
         CheckManager.class,
         CooldownManager.class
 })
 @RequiredArgsConstructor
-public abstract class Check {
+public abstract class Check extends ConfigurationDependent {
     /**
      * <p>The check's cooldown time.</p>
      */
@@ -48,9 +47,9 @@ public abstract class Check {
      */
     public Check() {
         this(
-                ServiceManager.get(ConfigurationManager.class).getValue("checkDecreaseAmount", Integer.class).orElse(10),
-                ServiceManager.get(ConfigurationManager.class).getValue("checkDecreaseFrequency", Integer.class).orElse(60),
-                ServiceManager.get(ConfigurationManager.class).getValue("checkCooldownPeriod", Integer.class).orElse(100),
+                config().getValue("checkDecreaseAmount", Integer.class).orElse(10),
+                config().getValue("checkDecreaseFrequency", Integer.class).orElse(60),
+                config().getValue("checkCooldownPeriod", Integer.class).orElse(100),
                 TaskerTime.SECONDS
         );
     }

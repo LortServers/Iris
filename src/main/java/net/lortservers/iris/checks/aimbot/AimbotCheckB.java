@@ -1,9 +1,7 @@
 package net.lortservers.iris.checks.aimbot;
 
 import net.lortservers.iris.checks.CheckAlphabet;
-import net.lortservers.iris.config.ConfigurationManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 /**
@@ -29,6 +27,6 @@ public class AimbotCheckB extends AimbotCheck {
      */
     @Override
     public int getVLThreshold() {
-        return ServiceManager.get(ConfigurationManager.class).getValue("aimbotBVLThreshold", Integer.class).orElse(5);
+        return config().getValue("aimbotBVLThreshold", Integer.class).orElse(5);
     }
 }

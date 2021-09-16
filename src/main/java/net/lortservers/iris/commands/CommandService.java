@@ -4,9 +4,8 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import lombok.experimental.UtilityClass;
-import net.lortservers.iris.config.ConfigurationManager;
+import net.lortservers.iris.wrap.ConfigurationDependent;
 import org.screamingsandals.lib.command.CloudConstructor;
-import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.Provider;
@@ -15,11 +14,10 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
  * <p>Class providing the command manager.</p>
  */
 @Service(dependsOn = {
-        CloudConstructor.class,
-        ConfigurationManager.class
+        CloudConstructor.class
 })
 @UtilityClass
-public class CommandService {
+public class CommandService extends ConfigurationDependent {
     /**
      * <p>Provides the command manager.</p>
      *
@@ -33,10 +31,10 @@ public class CommandService {
             new MinecraftExceptionHandler<CommandSenderWrapper>()
                     .withDefaultHandlers()
                     .withHandler(MinecraftExceptionHandler.ExceptionType.NO_PERMISSION, (senderWrapper, e) ->
-                            ServiceManager.get(ConfigurationManager.class).getMessage("noPermission")
+                            config().getMessage("noPermission")
                     )
                     .withHandler(MinecraftExceptionHandler.ExceptionType.INVALID_SYNTAX, (senderWrapper, e) ->
-                            ServiceManager.get(ConfigurationManager.class).getMessage("invalidCommand")
+                            config().getMessage("invalidCommand")
                     )
                     .apply(manager, s -> s);
 

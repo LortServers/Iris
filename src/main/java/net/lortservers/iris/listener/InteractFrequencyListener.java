@@ -3,10 +3,10 @@ package net.lortservers.iris.listener;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.interact.InteractFrequencyCheckA;
 import net.lortservers.iris.checks.interact.block.BlockingFrequencyCheckA;
-import net.lortservers.iris.config.ConfigurationManager;
 import net.lortservers.iris.utils.MaterialUtils;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManager;
+import net.lortservers.iris.wrap.ConfigurationDependent;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
@@ -29,12 +29,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>A class responsible for triggering interact frequency checks.</p>
  */
 @Service(dependsOn = {
-        ConfigurationManager.class,
         PunishmentManager.class,
         InteractFrequencyCheckA.class,
         BlockingFrequencyCheckA.class
 })
-public class InteractFrequencyListener {
+public class InteractFrequencyListener extends ConfigurationDependent {
     /**
      * <p>Left click interact actions.</p>
      */
@@ -55,10 +54,6 @@ public class InteractFrequencyListener {
      * <p>Last block break time holder.</p>
      */
     private final Map<UUID, Long> lastBreak = new HashMap<>();
-    /**
-     * <p>The configurator.</p>
-     */
-    private final ConfigurationManager configurator = ServiceManager.get(ConfigurationManager.class);
 
     /**
      * <p>Initializes the listener.</p>
@@ -150,10 +145,10 @@ public class InteractFrequencyListener {
     }
 
     private void performCheck(PlayerWrapper player, SPlayerInteractEvent.Action action) {
-        if (configurator.getValue("debug", Boolean.class).orElse(false)) {
+        if (config().getValue("debug", Boolean.class).orElse(false)) {
             IrisPlugin.getInstance().getLogger().info("LCPS: " + cpsLeft.getOrDefault(player.getUuid(), 0) + ", RCPS: " + cpsRight.getOrDefault(player.getUuid(), 0));
         }
-        if ((cpsLeft.getOrDefault(player.getUuid(), 0) >= configurator.getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16)) || (cpsRight.getOrDefault(player.getUuid(), 0) >= configurator.getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16))) {
+        if ((cpsLeft.getOrDefault(player.getUuid(), 0) >= config().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16)) || (cpsRight.getOrDefault(player.getUuid(), 0) >= config().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16))) {
             final InteractFrequencyCheckA a = ServiceManager.get(InteractFrequencyCheckA.class);
             if (a.isEligibleForCheck(player)) {
                 a.increaseVL(player, 1);
