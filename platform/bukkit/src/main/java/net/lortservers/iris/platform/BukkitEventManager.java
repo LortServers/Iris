@@ -22,9 +22,8 @@ public class BukkitEventManager extends EventManager {
     @Override
     protected <T extends AbstractEvent & Wrapper> void fireEvent0(T event) {
         final Class<Event> clazz = Reflect.getClassSafe(event.getClass().getCanonicalName().replace("Impl", "BukkitImpl"));
-        if (clazz == null) {
-            return;
+        if (clazz != null) {
+            Bukkit.getPluginManager().callEvent(event.as(clazz));
         }
-        Bukkit.getPluginManager().callEvent(event.as(clazz));
     }
 }
