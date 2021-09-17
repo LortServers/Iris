@@ -83,40 +83,5 @@ task('proguard', type: ProGuardTask) {
         libraryjars "${System.getProperty('java.home')}/jmods/java.base.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
     }
     ignorewarnings
-    printmapping 'build/out.map'
-    keepparameternames
-    renamesourcefileattribute 'SourceFile'
-    keepattributes 'Signature,Exceptions,InnerClasses,PermittedSubclasses,EnclosingMethod,Deprecated,SourceFile,LineNumberTable'
-    keepattributes '*Annotation*'
-
-    keepclassmembernames 'class * { \
-        java.lang.Class class$(java.lang.String); \
-        java.lang.Class class$(java.lang.String, boolean); \
-    }'
-
-    keepclasseswithmembernames includedescriptorclasses: true, 'class * { \
-        native <methods>; \
-    }'
-
-    keepclassmembers 'enum * { \
-        <fields>; \
-        public static **[] values(); \
-        public static ** valueOf(java.lang.String); \
-    }'
-
-    keepclassmembers 'class * implements java.io.Serializable { \
-        static final long serialVersionUID; \
-        static final java.io.ObjectStreamField[] serialPersistentFields; \
-        private void writeObject(java.io.ObjectOutputStream); \
-        private void readObject(java.io.ObjectInputStream); \
-        java.lang.Object writeReplace(); \
-        java.lang.Object readResolve(); \
-    }'
-
-    keepnames 'class * implements java.io.Serializable { \
-        private <fields>; \
-    }'
-
-    keep 'public class * { \
-    }'
+    dontobfuscate
 }
