@@ -2,6 +2,7 @@ package net.lortservers.iris;
 
 import net.lortservers.iris.checks.CheckManagerImpl;
 import net.lortservers.iris.commands.AlertsCommand;
+import net.lortservers.iris.commands.PlayerInfoCommand;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.listener.AimbotListener;
 import net.lortservers.iris.listener.InteractFrequencyListener;
@@ -27,7 +28,8 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
         CheckManagerImpl.class,
         AimbotListener.class,
         InteractFrequencyListener.class,
-        AlertsCommand.class
+        AlertsCommand.class,
+        PlayerInfoCommand.class
 })
 public class IrisPlugin extends PluginContainer {
     /**

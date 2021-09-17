@@ -5,6 +5,7 @@ import net.lortservers.iris.events.IrisCheckTriggerEvent;
 import net.lortservers.iris.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import net.lortservers.iris.wrap.ConfigurationDependent;
+import net.lortservers.iris.managers.PunishmentManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.event.EventManager;
@@ -30,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>A class responsible for triggering aimbot checks.</p>
  */
 @Service(dependsOn = {
-        PunishmentManagerImpl.class,
+        PunishmentManager.class,
         AimbotCheckH.class,
         AimbotCheckI.class,
         AimbotCheckA.class,

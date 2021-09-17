@@ -1,20 +1,20 @@
 package net.lortservers.iris.wrap;
 
-import net.lortservers.iris.config.ConfigurationManagerImpl;
+import net.lortservers.iris.managers.ConfigurationManager;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 
 @ServiceDependencies(dependsOn = {
-        ConfigurationManagerImpl.class
+        ConfigurationManager.class
 })
 public abstract class ConfigurationDependent {
-    private static final ConfigurationManagerImpl MANAGER;
+    private static final ConfigurationManager MANAGER;
 
     static {
-        MANAGER = ServiceManager.get(ConfigurationManagerImpl.class);
+        MANAGER = ServiceManager.get(ConfigurationManager.class);
     }
 
-    protected static ConfigurationManagerImpl config() {
+    protected static ConfigurationManager config() {
         return MANAGER;
     }
 }

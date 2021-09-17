@@ -31,6 +31,7 @@ public class Messages implements Serializable {
     private String noPermission = "<color:red>No permission!";
     private String invalidCommand = "<color:red>Invalid command!";
     private String alertsToggle = "<color:yellow>Turned alerts <color:green><status><color:yellow>!";
+    private String playerInfo = "<color:yellow>Connection protocol: <color:gray><protocol>";
 
     /**
      * <p>Gets the message component from id.</p>

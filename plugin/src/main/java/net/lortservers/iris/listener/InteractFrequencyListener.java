@@ -5,6 +5,7 @@ import net.lortservers.iris.checks.interact.InteractFrequencyCheckA;
 import net.lortservers.iris.checks.interact.block.BlockingFrequencyCheckA;
 import net.lortservers.iris.events.IrisCheckTriggerEvent;
 import net.lortservers.iris.events.IrisCheckTriggerEventImpl;
+import net.lortservers.iris.managers.PunishmentManager;
 import net.lortservers.iris.utils.MaterialUtils;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
@@ -32,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>A class responsible for triggering interact frequency checks.</p>
  */
 @Service(dependsOn = {
-        PunishmentManagerImpl.class,
+        PunishmentManager.class,
         InteractFrequencyCheckA.class,
         BlockingFrequencyCheckA.class
 })
