@@ -1,2 +1,5 @@
 rootProject.name = 'iris'
 
+include 'plugin'
+include 'api'
+

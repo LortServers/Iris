@@ -1,0 +1,76 @@
+import proguard.gradle.ProGuardTask
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.guardsquare:proguard-gradle:${PROGUARD_VERSION}"
+    }
+}
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+
+repositories {
+    maven {
+        url 'https://papermc.io/repo/repository/maven-public/'
+    }
+    maven {
+        url 'https://repo.kcra.me/repository/maven-public/'
+    }
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}
+
+dependencies {
+    implementation project(':api')
+
+    compileOnly "io.papermc.paper:paper-api:${PAPER_API_VERSION}"
+    implementation "net.kyori:adventure-text-minimessage:${MINIMESSAGE_VERSION}"
+    implementation "cloud.commandframework:cloud-minecraft-extras:${CLOUD_EXTRAS_VERSION}"
+    api "org.screamingsandals.lib:core-bukkit:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:event-bukkit:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:tasker-bukkit:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:plugin-bukkit:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:command-bukkit:${SCREAMING_LIB_VERSION}"
+    api "org.screamingsandals.lib:utils-common:${SCREAMING_LIB_VERSION}"
+    annotationProcessor "org.screamingsandals.lib:screaming-annotation:${SCREAMING_LIB_VERSION}"
+
+    implementation "me.zlataovce:hook:${HOOK_VERSION}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
+    compileOnly "org.checkerframework:checker-qual:${CHECKER_FRAMEWORK_VERSION}"
+    compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
+    annotationProcessor "org.projectlombok:lombok:${LOMBOK_VERSION}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${JUNIT_VERSION}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${JUNIT_VERSION}"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+shadowJar {
+    relocate 'org.screamingsandals.lib', 'net.lortservers.iris.lib.slib'
+    relocate 'com.fasterxml.jackson', 'net.lortservers.iris.lib.jackson'
+    relocate 'cloud.commandframework.minecraft.extras', 'net.lortservers.iris.lib.cloudextras'
+    relocate 'me.zlataovce.hook', 'net.lortservers.iris.lib.hook'
+    relocate 'net.kyori.adventure', 'net.lortservers.iris.lib.adventure'
+}
+
+task('proguard', type: ProGuardTask) {
+    dependsOn 'shadowJar'
+    verbose
+    injars "build/libs/Iris-${project.version}-all.jar"
+    outjars "build/libs/Iris-${project.version}-obf.jar"
+    if (System.getProperty('java.version').startsWith('1.')) {
+        libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+    } else {
+        libraryjars "${System.getProperty('java.home')}/jmods/java.base.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
+    }
+    ignorewarnings
+    dontobfuscate
+}
