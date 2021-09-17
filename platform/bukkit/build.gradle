@@ -2,6 +2,7 @@ dependencies {
     implementation project(":api")
     implementation project(":platform-common")
 
-    implementation "org.screamingsandals.lib:core-bukkit:${SCREAMING_LIB_VERSION}"
-    implementation "org.screamingsandals.lib:event-bukkit:${SCREAMING_LIB_VERSION}"
+    implementation "org.screamingsandals.lib:core-common:${SCREAMING_LIB_VERSION}"
+    implementation "org.screamingsandals.lib:event-common:${SCREAMING_LIB_VERSION}"
+    implementation "org.screamingsandals.lib:utils-common:${SCREAMING_LIB_VERSION}"
 }
