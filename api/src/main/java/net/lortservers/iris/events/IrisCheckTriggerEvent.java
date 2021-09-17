@@ -11,4 +11,8 @@ public interface IrisCheckTriggerEvent {
     }
 
     PlayerWrapper getPlayer();
+
+    boolean isCancelled();
+
+    void setCancelled(boolean cancelled);
 }

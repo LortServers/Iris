@@ -1,6 +1,7 @@
 package net.lortservers.iris.listener;
 
 import net.lortservers.iris.checks.aimbot.*;
+import net.lortservers.iris.events.IrisCheckTriggerEvent;
 import net.lortservers.iris.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import net.lortservers.iris.wrap.ConfigurationDependent;
@@ -110,12 +111,14 @@ public class AimbotListener extends ConfigurationDependent {
                     if (count.get() == config().getValue("aimbotHCount", Integer.class).orElse(21)) {
                         final AimbotCheckH h = ServiceManager.get(AimbotCheckH.class);
                         if (!h.isOnCooldown(attacker) && h.isEligibleForCheck(attacker)) {
-                            h.increaseVL(attacker, 1);
-                            EventManager.fire(new IrisCheckTriggerEventImpl(attacker, h));
-                            if (h.getVL(attacker) >= h.getVLThreshold()) {
-                                ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, h);
+                            final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, h));
+                            if (!evt.isCancelled()) {
+                                h.increaseVL(attacker, 1);
+                                if (h.getVL(attacker) >= h.getVLThreshold()) {
+                                    ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, h);
+                                }
+                                h.putCooldown(attacker);
                             }
-                            h.putCooldown(attacker);
                         }
                     }
                 }
@@ -127,45 +130,50 @@ public class AimbotListener extends ConfigurationDependent {
                         if (victim.getLocation().getY() >= attacker.getLocation().getY() && !victim.isSprinting()) {
                             final AimbotCheckI i = ServiceManager.get(AimbotCheckI.class);
                             if (!i.isOnCooldown(attacker) && i.isEligibleForCheck(attacker)) {
-                                i.increaseVL(attacker, 1);
-                                EventManager.fire(new IrisCheckTriggerEventImpl(attacker, i));
-                                if (i.getVL(attacker) >= i.getVLThreshold()) {
-                                    ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, i);
+                                final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, i));
+                                if (!evt.isCancelled()) {
+                                    i.increaseVL(attacker, 1);
+                                    if (i.getVL(attacker) >= i.getVLThreshold()) {
+                                        ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, i);
+                                    }
+                                    i.putCooldown(attacker);
                                 }
-                                i.putCooldown(attacker);
                             }
                         }
                     }
                     if (attackerCount > 11 && attackerCount < 15 && count.get() <= 8) {
                         final AimbotCheckI i = ServiceManager.get(AimbotCheckI.class);
                         if (!i.isOnCooldown(attacker) && i.isEligibleForCheck(attacker)) {
-                            i.increaseVL(attacker, 1);
-                            EventManager.fire(new IrisCheckTriggerEventImpl(attacker, i));
-                            if (i.getVL(attacker) >= i.getVLThreshold()) {
-                                if (victim.getLocation().getY() >= attacker.getLocation().getY()) {
-                                    ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, i);
+                            final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, i));
+                            if (!evt.isCancelled()) {
+                                i.increaseVL(attacker, 1);
+                                if (i.getVL(attacker) >= i.getVLThreshold()) {
+                                    if (victim.getLocation().getY() >= attacker.getLocation().getY()) {
+                                        ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, i);
+                                    }
                                 }
+                                i.putCooldown(attacker);
                             }
-                            i.putCooldown(attacker);
                         }
                     }
                     final AimbotCheckA a = ServiceManager.get(AimbotCheckA.class);
                     if (attackerCount <= config().getValue("aimbotAMaxCountDifference", Integer.class).orElse(1)) {
                         if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(config().getValue("aimbotADistance", Double.class).orElse(0.5))) {
                             if (!a.isOnCooldown(attacker) && a.isEligibleForCheck(attacker)) {
-                                a.increaseVL(attacker, 1);
-                                EventManager.fire(new IrisCheckTriggerEventImpl(attacker, a));
-                                if (a.getVL(attacker) >= a.getVLThreshold()) {
-                                    ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, a);
-                                    a.resetVL(attacker);
+                                final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, a));
+                                if (!evt.isCancelled()) {
+                                    a.increaseVL(attacker, 1);
+                                    if (a.getVL(attacker) >= a.getVLThreshold()) {
+                                        ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, a);
+                                        a.resetVL(attacker);
+                                    }
+                                    a.putCooldown(attacker);
                                 }
-                                a.putCooldown(attacker);
                             }
                         }
                     } else {
                         a.resetVL(attacker);
                     }
-
                 }
                 this.count.put(attacker.getUuid(), count.get());
             }
@@ -173,34 +181,40 @@ public class AimbotListener extends ConfigurationDependent {
                 final AimbotCheckB b = ServiceManager.get(AimbotCheckB.class);
                 if (count.get() >= 8) {
                     if (!b.isOnCooldown(attacker) && b.isEligibleForCheck(attacker)) {
-                        b.increaseVL(attacker, 1);
-                        EventManager.fire(new IrisCheckTriggerEventImpl(attacker, b));
-                        if (b.getVL(attacker) >= b.getVLThreshold()) {
-                            ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, b);
-                            b.resetVL(attacker);
+                        final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, b));
+                        if (!evt.isCancelled()) {
+                            b.increaseVL(attacker, 1);
+                            if (b.getVL(attacker) >= b.getVLThreshold()) {
+                                ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, b);
+                                b.resetVL(attacker);
+                            }
+                            b.putCooldown(attacker);
                         }
-                        b.putCooldown(attacker);
                     }
                 } else {
                     b.resetVL(attacker);
                 }
                 if (yawcount.get() >= config().getValue("aimbotEMinSimilarYaw", Integer.class).orElse(11) && pitchcount.get() >= config().getValue("aimbotEMinSimilarPitch", Integer.class).orElse(5)) {
                     if (r1 == r2.get()) {
-                        EventManager.fire(new IrisCheckTriggerEventImpl(attacker, b));
-                        ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, b);
+                        final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, b));
+                        if (!evt.isCancelled()) {
+                            ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, b);
+                        }
                     }
                 }
                 final AimbotCheckF f = ServiceManager.get(AimbotCheckF.class);
                 if (count.get() <= 12) {
                     if ((Math.abs(loc.getX() - attacker.getLocation().getX()) + Math.abs(loc.getZ() - attacker.getLocation().getZ())) >= 1.1) {
                         if (!f.isOnCooldown(attacker) && f.isEligibleForCheck(attacker)) {
-                            f.increaseVL(attacker, 1);
-                            EventManager.fire(new IrisCheckTriggerEventImpl(attacker, f));
-                            if (f.getVL(attacker) >= f.getVLThreshold()) {
-                                ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, f);
-                                f.resetVL(attacker);
+                            final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, f));
+                            if (!evt.isCancelled()) {
+                                f.increaseVL(attacker, 1);
+                                if (f.getVL(attacker) >= f.getVLThreshold()) {
+                                    ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, f);
+                                    f.resetVL(attacker);
+                                }
+                                f.putCooldown(attacker);
                             }
-                            f.putCooldown(attacker);
                         }
                     } else {
                         f.resetVL(attacker);
@@ -212,13 +226,15 @@ public class AimbotListener extends ConfigurationDependent {
                     if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(config().getValue("aimbotGDistance", Double.class).orElse(0.5))) {
                         final AimbotCheckG g = ServiceManager.get(AimbotCheckG.class);
                         if (!g.isOnCooldown(attacker) && g.isEligibleForCheck(attacker)) {
-                            g.increaseVL(attacker, 1);
-                            EventManager.fire(new IrisCheckTriggerEventImpl(attacker, g));
-                            if (g.getVL(attacker) >= g.getVLThreshold()) {
-                                ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, g);
-                                g.resetVL(attacker);
+                            final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, g));
+                            if (!evt.isCancelled()) {
+                                g.increaseVL(attacker, 1);
+                                if (g.getVL(attacker) >= g.getVLThreshold()) {
+                                    ServiceManager.get(PunishmentManagerImpl.class).logWarn(attacker, g);
+                                    g.resetVL(attacker);
+                                }
+                                g.putCooldown(attacker);
                             }
-                            g.putCooldown(attacker);
                         }
                     }
                 }

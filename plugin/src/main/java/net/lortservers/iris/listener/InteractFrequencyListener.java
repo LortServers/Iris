@@ -3,11 +3,14 @@ package net.lortservers.iris.listener;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.interact.InteractFrequencyCheckA;
 import net.lortservers.iris.checks.interact.block.BlockingFrequencyCheckA;
+import net.lortservers.iris.events.IrisCheckTriggerEvent;
+import net.lortservers.iris.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.utils.MaterialUtils;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import net.lortservers.iris.wrap.ConfigurationDependent;
 import org.screamingsandals.lib.entity.EntityHuman;
+import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
@@ -151,18 +154,24 @@ public class InteractFrequencyListener extends ConfigurationDependent {
         if ((cpsLeft.getOrDefault(player.getUuid(), 0) >= config().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16)) || (cpsRight.getOrDefault(player.getUuid(), 0) >= config().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16))) {
             final InteractFrequencyCheckA a = ServiceManager.get(InteractFrequencyCheckA.class);
             if (a.isEligibleForCheck(player)) {
-                a.increaseVL(player, 1);
-                if (a.getVL(player) >= a.getVLThreshold() && (System.currentTimeMillis() - lastBreak.getOrDefault(player.getUuid(), System.currentTimeMillis())) >= 1500) {
-                    if (PlayerUtils.isBlocking(action, player)) {
-                        final BlockingFrequencyCheckA a1 = ServiceManager.get(BlockingFrequencyCheckA.class);
-                        if (a1.isEligibleForCheck(player)) {
-                            a1.increaseVL(player, 1);
-                            if (a1.getVL(player) >= a1.getVLThreshold()) {
-                                ServiceManager.get(PunishmentManagerImpl.class).logWarn(player, a1, "blocking too fast [RCPS: " + cpsRight.getOrDefault(player.getUuid(), 0) + "]");
+                final IrisCheckTriggerEvent evt1 = EventManager.fire(new IrisCheckTriggerEventImpl(player, a));
+                if (!evt1.isCancelled()) {
+                    a.increaseVL(player, 1);
+                    if (a.getVL(player) >= a.getVLThreshold() && (System.currentTimeMillis() - lastBreak.getOrDefault(player.getUuid(), System.currentTimeMillis())) >= 1500) {
+                        if (PlayerUtils.isBlocking(action, player)) {
+                            final BlockingFrequencyCheckA a1 = ServiceManager.get(BlockingFrequencyCheckA.class);
+                            if (a1.isEligibleForCheck(player)) {
+                                final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(player, a1));
+                                if (!evt.isCancelled()) {
+                                    a1.increaseVL(player, 1);
+                                    if (a1.getVL(player) >= a1.getVLThreshold()) {
+                                        ServiceManager.get(PunishmentManagerImpl.class).logWarn(player, a1, "blocking too fast [RCPS: " + cpsRight.getOrDefault(player.getUuid(), 0) + "]");
+                                    }
+                                }
                             }
+                        } else {
+                            ServiceManager.get(PunishmentManagerImpl.class).logWarn(player, a, "seems to be using an autoclicker [LCPS: " + cpsLeft.getOrDefault(player.getUuid(), 0) + ", RCPS: " + cpsRight.getOrDefault(player.getUuid(), 0) + "]");
                         }
-                    } else {
-                        ServiceManager.get(PunishmentManagerImpl.class).logWarn(player, a, "seems to be using an autoclicker [LCPS: " + cpsLeft.getOrDefault(player.getUuid(), 0) + ", RCPS: " + cpsRight.getOrDefault(player.getUuid(), 0) + "]");
                     }
                 }
             }
