@@ -15,6 +15,16 @@ subprojects {
         maven {
             url 'https://repo.screamingsandals.org/public/'
         }
+        maven {
+            url 'https://papermc.io/repo/repository/maven-public/'
+        }
+    }
+
+    dependencies {
+        compileOnly "io.papermc.paper:paper-api:${PAPER_API_VERSION}"
+        compileOnly "org.checkerframework:checker-qual:${CHECKER_FRAMEWORK_VERSION}"
+        compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
+        annotationProcessor "org.projectlombok:lombok:${LOMBOK_VERSION}"
     }
 }
 

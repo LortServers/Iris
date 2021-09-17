@@ -1,0 +1,6 @@
+dependencies {
+    implementation project(':api')
+
+    compileOnly "org.screamingsandals.lib:core-common:${SCREAMING_LIB_VERSION}"
+    compileOnly "org.screamingsandals.lib:event-common:${SCREAMING_LIB_VERSION}"
+}

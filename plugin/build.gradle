@@ -15,9 +15,6 @@ plugins {
 
 repositories {
     maven {
-        url 'https://papermc.io/repo/repository/maven-public/'
-    }
-    maven {
         url 'https://repo.kcra.me/repository/maven-public/'
     }
     maven {
@@ -27,8 +24,9 @@ repositories {
 
 dependencies {
     implementation project(':api')
+    implementation project(':platform-common')
+    implementation project(':platform-bukkit')
 
-    compileOnly "io.papermc.paper:paper-api:${PAPER_API_VERSION}"
     implementation "net.kyori:adventure-text-minimessage:${MINIMESSAGE_VERSION}"
     implementation "cloud.commandframework:cloud-minecraft-extras:${CLOUD_EXTRAS_VERSION}"
     api "org.screamingsandals.lib:core-bukkit:${SCREAMING_LIB_VERSION}"
@@ -41,9 +39,6 @@ dependencies {
 
     implementation "me.zlataovce:hook:${HOOK_VERSION}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
-    compileOnly "org.checkerframework:checker-qual:${CHECKER_FRAMEWORK_VERSION}"
-    compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
-    annotationProcessor "org.projectlombok:lombok:${LOMBOK_VERSION}"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${JUNIT_VERSION}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${JUNIT_VERSION}"

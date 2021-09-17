@@ -1,0 +1,7 @@
+dependencies {
+    implementation project(":api")
+    implementation project(":platform-common")
+
+    compileOnly "org.screamingsandals.lib:core-bukkit:${SCREAMING_LIB_VERSION}"
+    compileOnly "org.screamingsandals.lib:event-bukkit:${SCREAMING_LIB_VERSION}"
+}
