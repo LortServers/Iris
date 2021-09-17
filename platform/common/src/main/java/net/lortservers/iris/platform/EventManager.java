@@ -2,7 +2,9 @@ package net.lortservers.iris.platform;
 
 import org.screamingsandals.lib.event.AbstractEvent;
 import org.screamingsandals.lib.utils.Wrapper;
+import org.screamingsandals.lib.utils.annotations.AbstractService;
 
+@AbstractService(replaceRule = "net.lortservers.iris.platform.{Platform}{className}")
 public abstract class EventManager {
     public static EventManager defaultEventManager;
 

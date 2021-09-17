@@ -6,14 +6,11 @@ import net.lortservers.iris.commands.PlayerInfoCommand;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.listener.AimbotListener;
 import net.lortservers.iris.listener.InteractFrequencyListener;
-import net.lortservers.iris.platform.BukkitEventManager;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.utils.CooldownManager;
 import net.lortservers.iris.utils.ProtocolUtils;
 import org.screamingsandals.lib.plugin.PluginContainer;
-import org.screamingsandals.lib.plugin.PluginManager;
 import org.screamingsandals.lib.tasker.Tasker;
-import org.screamingsandals.lib.utils.PlatformType;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 
@@ -27,6 +24,7 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
 )
 @Init(services = {
         Tasker.class,
+        EventManager.class,
         ConfigurationManagerImpl.class,
         CooldownManager.class,
         CheckManagerImpl.class,
@@ -46,13 +44,6 @@ public class IrisPlugin extends PluginContainer {
      */
     public IrisPlugin() {
         INSTANCE = this;
-    }
-
-    @Override
-    public void load() {
-        if (PluginManager.getPlatformType() == PlatformType.BUKKIT) {
-            EventManager.defaultEventManager = new BukkitEventManager();
-        }
     }
 
     @Override
