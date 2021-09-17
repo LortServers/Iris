@@ -6,7 +6,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -18,7 +17,7 @@ import java.util.Map;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Messages implements Serializable {
+public class Messages {
     /**
      * <p>The MiniMessage instance.</p>
      */

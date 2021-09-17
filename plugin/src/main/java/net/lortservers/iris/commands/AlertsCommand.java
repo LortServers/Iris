@@ -2,7 +2,6 @@ package net.lortservers.iris.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import net.lortservers.iris.managers.PunishmentManager;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -18,7 +17,7 @@ import java.util.Optional;
  * <p>A class representing the alerts command.</p>
  */
 @Service(dependsOn = {
-        PunishmentManager.class
+        PunishmentManagerImpl.class
 })
 public class AlertsCommand extends BaseCommand {
     /**

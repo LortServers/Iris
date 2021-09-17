@@ -2,7 +2,6 @@ package net.lortservers.iris.listener;
 
 import net.lortservers.iris.checks.aimbot.*;
 import net.lortservers.iris.events.IrisCheckTriggerEvent;
-import net.lortservers.iris.managers.PunishmentManager;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
@@ -31,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>A class responsible for triggering aimbot checks.</p>
  */
 @Service(dependsOn = {
-        PunishmentManager.class,
+        PunishmentManagerImpl.class,
         AimbotCheckH.class,
         AimbotCheckI.class,
         AimbotCheckA.class,

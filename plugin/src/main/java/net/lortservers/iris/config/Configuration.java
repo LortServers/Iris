@@ -3,7 +3,6 @@ package net.lortservers.iris.config;
 import lombok.*;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 /**
@@ -15,7 +14,7 @@ import java.util.Optional;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Configuration implements Serializable {
+public class Configuration {
     private boolean debug = false;
     private int checkDecreaseFrequency = 60;
     private int checkDecreaseAmount = 10;

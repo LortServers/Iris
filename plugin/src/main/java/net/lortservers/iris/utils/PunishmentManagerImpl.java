@@ -6,8 +6,8 @@ import me.zlataovce.hook.requests.WebhookExecuteRequest;
 import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.Check;
-import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.managers.PunishmentManager;
+import net.lortservers.iris.wrap.ConfigurationDependent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.screamingsandals.lib.event.OnEvent;
@@ -15,7 +15,6 @@ import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
@@ -30,10 +29,8 @@ import java.util.stream.Stream;
 /**
  * <p>Class responsible for dispatching failed messages and punishing players.</p>
  */
-@Service(dependsOn = {
-        ConfigurationManagerImpl.class
-})
-public class PunishmentManagerImpl implements PunishmentManager {
+@Service
+public class PunishmentManagerImpl extends ConfigurationDependent implements PunishmentManager {
     /**
      * <p>Alert subscribers.</p>
      */
@@ -61,19 +58,19 @@ public class PunishmentManagerImpl implements PunishmentManager {
     public <T extends Check> void logWarn(PlayerWrapper player, T check, @Nullable String info) {
         Component component;
         if (info == null) {
-            component = ServiceManager.get(ConfigurationManagerImpl.class).getMessage(
+            component = config().getMessage(
                     "shortFailedCheck",
                     Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)))
             );
         } else {
-            component = ServiceManager.get(ConfigurationManagerImpl.class).getMessage(
+            component = config().getMessage(
                     "failedCheck",
                     Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "info", info)
             );
         }
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
         PlayerMapper.getConsoleSender().sendMessage(component);
-        if (ServiceManager.get(ConfigurationManagerImpl.class).getValue("discordWebhook", Boolean.class).orElse(false)) {
+        if (config().getValue("discordWebhook", Boolean.class).orElse(false)) {
             final Optional<Protocol> proto = ProtocolUtils.getProtocol(player.getProtocolVersion());
             final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
             final Embed.EmbedBuilder embed = Embed.builder()
@@ -107,14 +104,14 @@ public class PunishmentManagerImpl implements PunishmentManager {
             }
             try {
                 final HttpResponse<String> response = WebhookRequestDispatcher.execute(
-                        ServiceManager.get(ConfigurationManagerImpl.class).getValue("webhookUrl", String.class).orElseThrow(),
+                        config().getValue("webhookUrl", String.class).orElseThrow(),
                         WebhookExecuteRequest.builder()
                                 .username("Iris")
-                                .avatarUrl(ServiceManager.get(ConfigurationManagerImpl.class).getValue("webhookAvatar", String.class).orElse(null))
+                                .avatarUrl(config().getValue("webhookAvatar", String.class).orElse(null))
                                 .embed(embed.build())
                                 .build()
                 );
-                if (ServiceManager.get(ConfigurationManagerImpl.class).getValue("debug", Boolean.class).orElse(false)) {
+                if (config().getValue("debug", Boolean.class).orElse(false)) {
                     IrisPlugin.getInstance().getLogger().info(response.body());
                 }
             } catch (MalformedURLException | URISyntaxException e) {
