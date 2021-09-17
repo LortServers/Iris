@@ -3,4 +3,5 @@ dependencies {
 
     implementation "org.screamingsandals.lib:core-common:${SCREAMING_LIB_VERSION}"
     implementation "org.screamingsandals.lib:event-common:${SCREAMING_LIB_VERSION}"
+    implementation "org.screamingsandals.lib:utils-common:${SCREAMING_LIB_VERSION}"
 }
