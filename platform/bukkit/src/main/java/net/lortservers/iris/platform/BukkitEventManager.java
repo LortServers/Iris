@@ -10,7 +10,7 @@ import org.screamingsandals.lib.utils.reflect.Reflect;
 
 public class BukkitEventManager extends EventManager {
     public BukkitEventManager() {
-        checkTriggerEventConverter
+        IrisCheckTriggerEventImpl.getConverter()
                 .registerW2P(IrisCheckTriggerEventBukkitImpl.class, wrapper -> new IrisCheckTriggerEventBukkitImpl(wrapper.getPlayer(), wrapper.getCheck()))
                 .registerP2W(IrisCheckTriggerEventImpl.class, irisCheckTriggerEvent -> new IrisCheckTriggerEventImpl(irisCheckTriggerEvent.getPlayer(), irisCheckTriggerEvent.getCheck()));
     }
