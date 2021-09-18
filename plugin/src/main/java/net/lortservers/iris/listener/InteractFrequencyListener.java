@@ -6,10 +6,9 @@ import net.lortservers.iris.checks.interact.block.BlockingFrequencyCheckA;
 import net.lortservers.iris.events.IrisCheckTriggerEvent;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
-import net.lortservers.iris.utils.MaterialUtils;
-import net.lortservers.iris.utils.PlayerUtils;
-import net.lortservers.iris.utils.PunishmentManagerImpl;
+import net.lortservers.iris.utils.*;
 import net.lortservers.iris.wrap.ConfigurationDependent;
+import net.lortservers.iris.wrap.IntegerPairImpl;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
@@ -25,7 +24,10 @@ import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -40,23 +42,26 @@ public class InteractFrequencyListener extends ConfigurationDependent {
     /**
      * <p>Left click interact actions.</p>
      */
-    private static final List<SPlayerInteractEvent.Action> leftActions = Arrays.asList(SPlayerInteractEvent.Action.LEFT_CLICK_AIR, SPlayerInteractEvent.Action.LEFT_CLICK_BLOCK);
+    private static final List<SPlayerInteractEvent.Action> leftActions = List.of(SPlayerInteractEvent.Action.LEFT_CLICK_AIR, SPlayerInteractEvent.Action.LEFT_CLICK_BLOCK);
     /**
      * <p>Right click interact actions.</p>
      */
-    private static final List<SPlayerInteractEvent.Action> rightActions = Arrays.asList(SPlayerInteractEvent.Action.RIGHT_CLICK_AIR, SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK);
+    private static final List<SPlayerInteractEvent.Action> rightActions = List.of(SPlayerInteractEvent.Action.RIGHT_CLICK_AIR, SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK);
     /**
      * <p>Left click CPS holder.</p>
      */
-    private final Map<UUID, Integer> cpsLeft = new ConcurrentHashMap<>();
-    /**
-     * <p>Right click CPS holder.</p>
-     */
-    private final Map<UUID, Integer> cpsRight = new ConcurrentHashMap<>();
+    private final Map<UUID, IntegerPair> cps = new ConcurrentHashMap<>();
     /**
      * <p>Last block break time holder.</p>
      */
     private final Map<UUID, Long> lastBreak = new HashMap<>();
+
+    public final IntegerPair getCps(PlayerWrapper player) {
+        if (cps.containsKey(player.getUuid())) {
+            return cps.get(player.getUuid());
+        }
+        return cps.put(player.getUuid(), IntegerPairImpl.of(0, 0));
+    }
 
     /**
      * <p>Initializes the listener.</p>
@@ -65,8 +70,7 @@ public class InteractFrequencyListener extends ConfigurationDependent {
     public void enable() {
         Tasker.build(() -> {
             for (PlayerWrapper player : PlayerMapper.getPlayers()) {
-                cpsLeft.put(player.getUuid(), 0);
-                cpsRight.put(player.getUuid(), 0);
+                getCps(player).modifyFull(0, 0);
             }
         }).repeat(22, TaskerTime.TICKS).start();
     }
@@ -78,8 +82,7 @@ public class InteractFrequencyListener extends ConfigurationDependent {
      */
     @OnEvent
     public void onPlayerLeave(SPlayerLeaveEvent event) {
-        cpsLeft.remove(event.getPlayer().getUuid());
-        cpsRight.remove(event.getPlayer().getUuid());
+        cps.remove(event.getPlayer().getUuid());
         lastBreak.remove(event.getPlayer().getUuid());
     }
 
@@ -90,7 +93,7 @@ public class InteractFrequencyListener extends ConfigurationDependent {
      */
     @OnEvent
     public void onPlayerBlockBreak(SPlayerBlockBreakEvent event) {
-        cpsLeft.put(event.getPlayer().getUuid(), 0);
+        getCps(event.getPlayer()).modifyFirst(0);
         lastBreak.put(event.getPlayer().getUuid(), System.currentTimeMillis());
     }
 
@@ -107,7 +110,7 @@ public class InteractFrequencyListener extends ConfigurationDependent {
             if (diff <= 1500) {
                 return;
             }
-            cpsLeft.put(attacker.getUuid(), cpsLeft.getOrDefault(attacker.getUuid(), 0) + 1);
+            getCps(attacker).incrementFirst(1);
             performCheck(attacker, SPlayerInteractEvent.Action.LEFT_CLICK_AIR);
         }
     }
@@ -128,7 +131,7 @@ public class InteractFrequencyListener extends ConfigurationDependent {
             return;
         }
         if (leftActions.contains(event.getAction())) {
-            cpsLeft.put(player.getUuid(), cpsLeft.getOrDefault(player.getUuid(), 0) + 1);
+            getCps(player).incrementFirst(1);
         }
         if (rightActions.contains(event.getAction())) {
             if (event.getBlockClicked() != null) {
@@ -142,17 +145,17 @@ public class InteractFrequencyListener extends ConfigurationDependent {
                     return;
                 }
             }
-            cpsRight.put(player.getUuid(), cpsRight.getOrDefault(player.getUuid(), 0) + 1);
+            getCps(player).incrementSecond(1);
         }
         performCheck(player, event.getAction());
     }
 
     private void performCheck(PlayerWrapper player, SPlayerInteractEvent.Action action) {
-        if (config().getValue("debug", Boolean.class).orElse(false)) {
-            IrisPlugin.getInstance().getLogger().info("LCPS: " + cpsLeft.getOrDefault(player.getUuid(), 0) + ", RCPS: " + cpsRight.getOrDefault(player.getUuid(), 0));
+        if (config().getValue("debug", boolean.class).orElse(false)) {
+            IrisPlugin.getInstance().getLogger().info("LCPS: " + getCps(player).first() + ", RCPS: " + getCps(player).second());
         }
-        if ((cpsLeft.getOrDefault(player.getUuid(), 0) >= config().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16)) || (cpsRight.getOrDefault(player.getUuid(), 0) >= config().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16))) {
-            final InteractFrequencyCheckA a = ServiceManager.get(InteractFrequencyCheckA.class);
+        final InteractFrequencyCheckA a = ServiceManager.get(InteractFrequencyCheckA.class);
+        if ((getCps(player).first() >= config().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16)) || (getCps(player).second() >= config().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16))) {
             if (a.isEligibleForCheck(player)) {
                 final IrisCheckTriggerEvent evt1 = EventManager.fire(new IrisCheckTriggerEventImpl(player, a));
                 if (!evt1.isCancelled()) {
@@ -165,16 +168,18 @@ public class InteractFrequencyListener extends ConfigurationDependent {
                                 if (!evt.isCancelled()) {
                                     a1.increaseVL(player, 1);
                                     if (a1.getVL(player) >= a1.getVLThreshold()) {
-                                        ServiceManager.get(PunishmentManagerImpl.class).logWarn(player, a1, "blocking too fast [RCPS: " + cpsRight.getOrDefault(player.getUuid(), 0) + "]");
+                                        ServiceManager.get(PunishmentManagerImpl.class).logWarn(player, a1, "blocking too fast [RCPS: " + getCps(player).second() + "]");
                                     }
                                 }
                             }
                         } else {
-                            ServiceManager.get(PunishmentManagerImpl.class).logWarn(player, a, "seems to be using an autoclicker [LCPS: " + cpsLeft.getOrDefault(player.getUuid(), 0) + ", RCPS: " + cpsRight.getOrDefault(player.getUuid(), 0) + "]");
+                            ServiceManager.get(PunishmentManagerImpl.class).logWarn(player, a, "seems to be using an autoclicker [LCPS: " + getCps(player).first() + ", RCPS: " + getCps(player).second() + "]");
                         }
                     }
                 }
             }
+        } else {
+            a.resetVL(player);
         }
     }
 }
