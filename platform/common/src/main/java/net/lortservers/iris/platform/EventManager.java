@@ -6,7 +6,7 @@ import org.screamingsandals.lib.utils.annotations.AbstractService;
 
 @AbstractService(replaceRule = "net.lortservers.iris.platform.{Platform}{className}")
 public abstract class EventManager {
-    public static EventManager defaultEventManager;
+    protected static EventManager defaultEventManager;
 
     public static <T extends AbstractEvent & Wrapper> T fire(T event) {
         org.screamingsandals.lib.event.EventManager.fire(event);

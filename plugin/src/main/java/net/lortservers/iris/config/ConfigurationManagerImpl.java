@@ -2,51 +2,41 @@ package net.lortservers.iris.config;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
+import lombok.Data;
+import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
-import net.lortservers.iris.checks.CheckManagerImpl;
 import net.lortservers.iris.managers.ConfigurationManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
-import org.screamingsandals.lib.utils.annotations.methods.OnPostConstruct;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 /**
  * <p>A class responsible for managing the configuration.</p>
  */
-@Service(loadAfter = {
-        CheckManagerImpl.class
-})
+@Service
+@SuppressWarnings("rawtypes")
 public class ConfigurationManagerImpl implements ConfigurationManager {
     /**
      * <p>A Jackson object mapper.</p>
      */
     public static final @NonNull ObjectMapper MAPPER = new ObjectMapper(new JsonFactory());
-    /**
-     * <p>The configuration file.</p>
-     */
-    private static File CONFIG_FILE;
-    /**
-     * <p>The messages file.</p>
-     */
-    private static File MESSAGES_FILE;
-    /**
-     * <p>The configuration.</p>
-     */
-    @Getter
-    private Configuration config;
-    /**
-     * <p>The messages.</p>
-     */
-    @Getter
-    private Messages messages;
+
+    private static final List<ConfigurationManager.FileDefinition> TRACKED_FILES = List.of(
+            new FileDefinitionImpl<>(Configuration.class, "config.json"),
+            new FileDefinitionImpl<>(Messages.class, "messages.json")
+    );
+
+    public Optional<ConfigurationManager.FileDefinition> getTrackedFile(String relativePath) {
+        return TRACKED_FILES.stream().filter(e -> e.getRelativePath().equals(relativePath)).findFirst();
+    }
 
     /**
      * <p>Gets the message component from id.</p>
@@ -55,7 +45,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
      * @return the message component
      */
     public Component getMessage(String id) {
-        return messages.getMessage(id);
+        return ((Messages) getTrackedFile("messages.json").orElseThrow().getObject()).getMessage(id);
     }
 
     /**
@@ -66,53 +56,23 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
      * @return the message component
      */
     public Component getMessage(String id, Map<String, String> placeholders) {
-        return messages.getMessage(id, placeholders);
+        return ((Messages) getTrackedFile("messages.json").orElseThrow().getObject()).getMessage(id, placeholders);
     }
 
     public <T> Optional<T> getValue(String key, Class<T> returnType) {
-        return config.getValue(key, returnType);
+        return ((Configuration) getTrackedFile("config.json").orElseThrow().getObject()).getValue(key, returnType);
     }
 
     /**
      * <p>Initializes the configuration.</p>
      */
-    @OnPostConstruct
-    public void construct() {
+    public ConfigurationManagerImpl() {
         if (!IrisPlugin.getInstance().getDataFolder().toFile().exists()) {
             //noinspection ResultOfMethodCallIgnored
             IrisPlugin.getInstance().getDataFolder().toFile().mkdirs();
         }
-        CONFIG_FILE = Paths.get(IrisPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "config.json").toFile();
-        MESSAGES_FILE = Paths.get(IrisPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "messages.json").toFile();
-        if (CONFIG_FILE.exists() && !CONFIG_FILE.isDirectory()) {
-            try {
-                config = MAPPER.readValue(CONFIG_FILE, Configuration.class);
-            } catch (IOException e) {
-                IrisPlugin.getInstance().getLogger().error("Could not load configuration.", e);
-                config = new Configuration();
-            }
-        } else {
-            config = new Configuration();
-            try {
-                MAPPER.writerWithDefaultPrettyPrinter().writeValue(CONFIG_FILE, config);
-            } catch (IOException e) {
-                IrisPlugin.getInstance().getLogger().error("Could not save configuration.", e);
-            }
-        }
-        if (MESSAGES_FILE.exists() && !MESSAGES_FILE.isDirectory()) {
-            try {
-                messages = MAPPER.readValue(MESSAGES_FILE, Messages.class);
-            } catch (IOException e) {
-                IrisPlugin.getInstance().getLogger().error("Could not load messages.", e);
-                messages = new Messages();
-            }
-        } else {
-            messages = new Messages();
-            try {
-                MAPPER.writerWithDefaultPrettyPrinter().writeValue(MESSAGES_FILE, messages);
-            } catch (IOException e) {
-                IrisPlugin.getInstance().getLogger().error("Could not save messages.", e);
-            }
+        for (ConfigurationManager.FileDefinition file : TRACKED_FILES) {
+            file.load();
         }
     }
 
@@ -121,23 +81,45 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
      */
     @OnDisable
     public void disable() {
-        if (CONFIG_FILE.exists() && !CONFIG_FILE.isDirectory()) {
-            //noinspection ResultOfMethodCallIgnored
-            CONFIG_FILE.delete();
+        for (ConfigurationManager.FileDefinition file : TRACKED_FILES) {
+            file.save();
         }
-        if (MESSAGES_FILE.exists() && !MESSAGES_FILE.isDirectory()) {
-            //noinspection ResultOfMethodCallIgnored
-            MESSAGES_FILE.delete();
+    }
+
+    @Data
+    public static class FileDefinitionImpl<T> implements ConfigurationManager.FileDefinition<T> {
+        private final Class<T> type;
+        private final String relativePath;
+        private T object;
+
+        public File toFile() {
+            return Paths.get(IrisPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), relativePath.split("/")).toFile();
         }
-        try {
-            MAPPER.writerWithDefaultPrettyPrinter().writeValue(CONFIG_FILE, config);
-        } catch (IOException e) {
-            IrisPlugin.getInstance().getLogger().error("Could not save configuration.", e);
+
+        @SneakyThrows
+        public void load() {
+            if (toFile().exists() && !toFile().isDirectory()) {
+                try {
+                    object = MAPPER.readValue(toFile(), type);
+                } catch (IOException e) {
+                    object = type.cast(type.getDeclaredConstructor().newInstance());
+                    IrisPlugin.getInstance().getLogger().error("Could not load " + relativePath + ".", e);
+                }
+            } else {
+                object = type.cast(type.getDeclaredConstructor().newInstance());
+            }
         }
-        try {
-            MAPPER.writerWithDefaultPrettyPrinter().writeValue(MESSAGES_FILE, messages);
-        } catch (IOException e) {
-            IrisPlugin.getInstance().getLogger().error("Could not save messages.", e);
+
+        public void save() {
+            try {
+                MAPPER.writerWithDefaultPrettyPrinter().writeValue(toFile(), object);
+            } catch (IOException e) {
+                IrisPlugin.getInstance().getLogger().error("Could not save " + relativePath + ".", e);
+            }
+        }
+
+        public boolean isLoaded() {
+            return object != null;
         }
     }
 }
