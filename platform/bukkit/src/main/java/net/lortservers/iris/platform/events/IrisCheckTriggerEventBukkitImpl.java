@@ -12,7 +12,7 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 @RequiredArgsConstructor
 public class IrisCheckTriggerEventBukkitImpl extends Event implements Cancellable, IrisCheckTriggerEvent {
     private static final HandlerList HANDLERS = new HandlerList();
-    private boolean cancelled;
+    private boolean cancelled = false;
     private final PlayerWrapper player;
     private final Check check;
 

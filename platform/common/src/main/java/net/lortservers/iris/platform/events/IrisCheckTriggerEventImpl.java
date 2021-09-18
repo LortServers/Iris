@@ -18,7 +18,7 @@ import org.screamingsandals.lib.utils.Wrapper;
 public class IrisCheckTriggerEventImpl extends AbstractEvent implements IrisCheckTriggerEvent, Cancellable, Wrapper {
     @Getter
     private static final BidirectionalConverter<IrisCheckTriggerEventImpl> converter = BidirectionalConverter.build();
-    private boolean cancelled;
+    private boolean cancelled = false;
     private final PlayerWrapper player;
     private final Check check;
 

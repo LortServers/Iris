@@ -12,7 +12,7 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 @ToString
 @RequiredArgsConstructor
 public class IrisCheckTriggerEventMinestomImpl implements IrisCheckTriggerEvent, CancellableEvent {
-    private boolean cancelled;
+    private boolean cancelled = false;
     private final PlayerWrapper player;
     private final Check check;
 
