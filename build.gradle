@@ -10,6 +10,10 @@ allprojects {
 subprojects {
     apply plugin: 'java-library'
 
+    jar {
+        baseName "${rootProject.name}-${project.name}"
+    }
+
     repositories {
         mavenCentral()
         maven {

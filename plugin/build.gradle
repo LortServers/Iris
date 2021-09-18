@@ -1,14 +1,3 @@
-import proguard.gradle.ProGuardTask
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "com.guardsquare:proguard-gradle:${PROGUARD_VERSION}"
-    }
-}
-
 plugins {
     id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
@@ -50,26 +39,11 @@ test {
 }
 
 shadowJar {
+    baseName "${rootProject.name}-${project.name}"
+
     relocate 'org.screamingsandals.lib', 'net.lortservers.iris.lib.slib'
     relocate 'com.fasterxml.jackson', 'net.lortservers.iris.lib.jackson'
     relocate 'cloud.commandframework.minecraft.extras', 'net.lortservers.iris.lib.cloudextras'
     relocate 'me.zlataovce.hook', 'net.lortservers.iris.lib.hook'
     relocate 'net.kyori.adventure', 'net.lortservers.iris.lib.adventure'
-}
-
-task('proguard', type: ProGuardTask) {
-    dependsOn 'shadowJar'
-    verbose
-    injars "build/libs/plugin-${project.version}-all.jar"
-    outjars "build/libs/plugin-${project.version}-obf.jar"
-    if (System.getProperty('java.version').startsWith('1.')) {
-        libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
-    } else {
-        libraryjars "${System.getProperty('java.home')}/jmods/java.base.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
-    }
-    ignorewarnings
-    dontobfuscate
-    dontwarn
-
-    keep 'public class * {}'
 }
