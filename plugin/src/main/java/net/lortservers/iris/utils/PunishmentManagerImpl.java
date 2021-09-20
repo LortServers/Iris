@@ -73,7 +73,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
         }
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
         PlayerMapper.getConsoleSender().sendMessage(component);
-        if (ConfigurationManager.getInstance().getValue("discordWebhook", boolean.class).orElse(false)) {
+        if (ConfigurationManager.getInstance().getValue("discordWebhook", Boolean.class).orElse(false)) {
             final Optional<Protocol> proto = ProtocolUtils.getProtocol(player.getProtocolVersion());
             final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
             final Embed.EmbedBuilder embed = Embed.builder()
@@ -114,7 +114,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
                                 .embed(embed.build())
                                 .build()
                 );
-                if (ConfigurationManager.getInstance().getValue("debug", boolean.class).orElse(false)) {
+                if (ConfigurationManager.getInstance().getValue("debug", Boolean.class).orElse(false)) {
                     IrisPlugin.getInstance().getLogger().info(response.body());
                 }
             } catch (MalformedURLException | URISyntaxException e) {

@@ -156,7 +156,7 @@ public class InteractFrequencyListener {
     }
 
     private void performCheck(PlayerWrapper player, SPlayerInteractEvent.Action action) {
-        if (ConfigurationManager.getInstance().getValue("debug", boolean.class).orElse(false)) {
+        if (ConfigurationManager.getInstance().getValue("debug", Boolean.class).orElse(false)) {
             IrisPlugin.getInstance().getLogger().info("LCPS: " + getCps(player).first() + ", RCPS: " + getCps(player).second());
         }
         final InteractFrequencyCheckA a = ServiceManager.get(InteractFrequencyCheckA.class);

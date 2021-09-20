@@ -15,7 +15,7 @@ public abstract class EventManager {
 
     @OnEnable
     public void enable() {
-        fireToPlatform = ConfigurationManager.getInstance().getValue("eventCompatLayer", boolean.class).orElse(true);
+        fireToPlatform = ConfigurationManager.getInstance().getValue("eventCompatLayer", Boolean.class).orElse(true);
         if (fireToPlatform) {
             log.info("Event compatibility layer for platform " + defaultEventManager.getClass().getSimpleName().replace("EventManager", "") + " was enabled.");
         }
