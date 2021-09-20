@@ -2,6 +2,7 @@ package net.lortservers.iris.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
@@ -47,12 +48,12 @@ public class AlertsCommand extends BaseCommand {
 
                             if (now.isEmpty()) {
                                 commandContext.getSender().sendMessage(
-                                        config().getMessage("noPermission")
+                                        ConfigurationManager.getInstance().getMessage("noPermission")
                                 );
                                 return;
                             }
                             commandContext.getSender().sendMessage(
-                                    config().getMessage("alertsToggle", Collections.singletonMap("status", BOOL_ABBR.get(now.orElseThrow())))
+                                    ConfigurationManager.getInstance().getMessage("alertsToggle", Collections.singletonMap("status", BOOL_ABBR.get(now.orElseThrow())))
                             );
                         })
         );

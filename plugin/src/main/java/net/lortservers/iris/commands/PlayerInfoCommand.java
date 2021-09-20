@@ -3,6 +3,7 @@ package net.lortservers.iris.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.bukkit.parsers.PlayerArgument;
+import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.managers.PunishmentManager;
 import net.lortservers.iris.utils.Protocol;
 import net.lortservers.iris.utils.ProtocolUtils;
@@ -43,7 +44,7 @@ public class PlayerInfoCommand extends BaseCommand {
                             final Optional<Protocol> proto = ProtocolUtils.getProtocol(PlayerMapper.wrapPlayer(commandContext.get("player")).getProtocolVersion());
                             final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
                             commandContext.getSender().sendMessage(
-                                    config().getMessage("playerInfo", Map.of("protocol", protocolString))
+                                    ConfigurationManager.getInstance().getMessage("playerInfo", Map.of("protocol", protocolString))
                             );
                         })
         );

@@ -1,6 +1,7 @@
 package net.lortservers.iris.checks.interact;
 
 import net.lortservers.iris.checks.CheckAlphabet;
+import net.lortservers.iris.managers.ConfigurationManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -27,6 +28,6 @@ public class InteractFrequencyCheckA extends InteractFrequencyCheck {
      */
     @Override
     public int getVLThreshold() {
-        return config().getValue("interactFrequencyAVLThreshold", Integer.class).orElse(2);
+        return ConfigurationManager.getInstance().getValue("interactFrequencyAVLThreshold", Integer.class).orElse(2);
     }
 }

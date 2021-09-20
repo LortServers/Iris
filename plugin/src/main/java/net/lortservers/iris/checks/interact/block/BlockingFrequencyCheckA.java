@@ -1,6 +1,7 @@
 package net.lortservers.iris.checks.interact.block;
 
 import net.lortservers.iris.checks.CheckAlphabet;
+import net.lortservers.iris.managers.ConfigurationManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.utils.annotations.Service;
 
@@ -27,6 +28,6 @@ public class BlockingFrequencyCheckA extends BlockingFrequencyCheck {
      */
     @Override
     public int getVLThreshold() {
-        return config().getValue("blockingFrequencyVLThreshold", Integer.class).orElse(5);
+        return ConfigurationManager.getInstance().getValue("blockingFrequencyVLThreshold", Integer.class).orElse(5);
     }
 }
