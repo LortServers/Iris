@@ -16,6 +16,7 @@ dependencies {
     implementation project(':platform-common')
     implementation project(':platform-bukkit')
     implementation project(':platform-minestom')
+    implementation project(':platform-sponge')
 
     implementation "net.kyori:adventure-text-minimessage:${MINIMESSAGE_VERSION}"
     implementation "cloud.commandframework:cloud-minecraft-extras:${CLOUD_EXTRAS_VERSION}"
