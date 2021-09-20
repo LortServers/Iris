@@ -111,6 +111,8 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
         }
 
         public void save() {
+            // noinspection ResultOfMethodCallIgnored
+            toFile().delete();
             try {
                 MAPPER.writerWithDefaultPrettyPrinter().writeValue(toFile(), object);
             } catch (IOException e) {
