@@ -16,6 +16,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class Configuration {
     private boolean debug = false;
+    private boolean eventCompatLayer = true;
     private int checkDecreaseFrequency = 60;
     private int checkDecreaseAmount = 10;
     private int checkCooldownPeriod = 100;

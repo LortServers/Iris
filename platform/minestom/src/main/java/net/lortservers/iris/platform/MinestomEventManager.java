@@ -4,7 +4,9 @@ import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventMinestomImpl;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.Event;
+import net.minestom.server.event.trait.CancellableEvent;
 import org.screamingsandals.lib.event.AbstractEvent;
+import org.screamingsandals.lib.event.Cancellable;
 import org.screamingsandals.lib.utils.Wrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.reflect.Reflect;
@@ -23,7 +25,16 @@ public class MinestomEventManager extends EventManager {
     protected <T extends AbstractEvent & Wrapper> void fireEvent0(T event) {
         final Class<Event> clazz = Reflect.getClassSafe(event.getClass().getCanonicalName().replace("Impl", "MinestomImpl"));
         if (clazz != null) {
-            MinecraftServer.getGlobalEventHandler().call(event.as(clazz));
+            final Event evt = event.as(clazz);
+            if (Reflect.isInstance(event, Cancellable.class)) {
+                ((CancellableEvent) evt).setCancelled(((Cancellable) event).isCancelled());
+            }
+            MinecraftServer.getGlobalEventHandler().call(evt);
+            if (Reflect.isInstance(event, Cancellable.class)) {
+                if (!((Cancellable) event).isCancelled()) {
+                    ((Cancellable) event).setCancelled(((CancellableEvent) evt).isCancelled());
+                }
+            }
         }
     }
 }

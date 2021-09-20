@@ -1,11 +1,12 @@
 package net.lortservers.iris.listener;
 
 import net.lortservers.iris.checks.aimbot.*;
+import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.events.IrisCheckTriggerEvent;
+import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
-import net.lortservers.iris.wrap.ConfigurationDependent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.event.OnEvent;
@@ -30,6 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>A class responsible for triggering aimbot checks.</p>
  */
 @Service(dependsOn = {
+        ConfigurationManagerImpl.class,
         PunishmentManagerImpl.class,
         AimbotCheckH.class,
         AimbotCheckI.class,
@@ -38,7 +40,7 @@ import java.util.concurrent.atomic.AtomicReference;
         AimbotCheckF.class,
         AimbotCheckG.class
 })
-public class AimbotListener extends ConfigurationDependent {
+public class AimbotListener {
     private final @NonNull Map<UUID, Integer> count = new ConcurrentHashMap<>();
 
     /**
@@ -106,9 +108,9 @@ public class AimbotListener extends ConfigurationDependent {
             lastpitch.set(pitch.get());
             count.getAndIncrement();
         }).repeat(1, TaskerTime.TICKS).stopEvent(task -> {
-            if (r1 >= MathUtils.square(config().getValue("aimbotHFirstDistance", Double.class).orElse(3.75))) {
-                if (r2.get() >= MathUtils.square(config().getValue("aimbotHLastDistance", Double.class).orElse(3.5))) {
-                    if (count.get() == config().getValue("aimbotHCount", Integer.class).orElse(21)) {
+            if (r1 >= MathUtils.square(ConfigurationManager.getInstance().getValue("aimbotHFirstDistance", Double.class).orElse(3.75))) {
+                if (r2.get() >= MathUtils.square(ConfigurationManager.getInstance().getValue("aimbotHLastDistance", Double.class).orElse(3.5))) {
+                    if (count.get() == ConfigurationManager.getInstance().getValue("aimbotHCount", Integer.class).orElse(21)) {
                         final AimbotCheckH h = ServiceManager.get(AimbotCheckH.class);
                         if (!h.isOnCooldown(attacker) && h.isEligibleForCheck(attacker)) {
                             final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, h));
@@ -125,7 +127,7 @@ public class AimbotListener extends ConfigurationDependent {
             }
             if (count.get() <= 20) {
                 final int attackerCount = Math.abs(this.count.getOrDefault(attacker.getUuid(), 0) - count.get());
-                if (r1 >= MathUtils.square(config().getValue("aimbotIDistance", Double.class).orElse(3.5))) {
+                if (r1 >= MathUtils.square(ConfigurationManager.getInstance().getValue("aimbotIDistance", Double.class).orElse(3.5))) {
                     if (attackerCount >= 1 && attackerCount <= 3) {
                         if (victim.getLocation().getY() >= attacker.getLocation().getY() && !victim.isSprinting()) {
                             final AimbotCheckI i = ServiceManager.get(AimbotCheckI.class);
@@ -157,8 +159,8 @@ public class AimbotListener extends ConfigurationDependent {
                         }
                     }
                     final AimbotCheckA a = ServiceManager.get(AimbotCheckA.class);
-                    if (attackerCount <= config().getValue("aimbotAMaxCountDifference", Integer.class).orElse(1)) {
-                        if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(config().getValue("aimbotADistance", Double.class).orElse(0.5))) {
+                    if (attackerCount <= ConfigurationManager.getInstance().getValue("aimbotAMaxCountDifference", Integer.class).orElse(1)) {
+                        if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(ConfigurationManager.getInstance().getValue("aimbotADistance", Double.class).orElse(0.5))) {
                             if (!a.isOnCooldown(attacker) && a.isEligibleForCheck(attacker)) {
                                 final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, a));
                                 if (!evt.isCancelled()) {
@@ -194,7 +196,7 @@ public class AimbotListener extends ConfigurationDependent {
                 } else {
                     b.resetVL(attacker);
                 }
-                if (yawcount.get() >= config().getValue("aimbotEMinSimilarYaw", Integer.class).orElse(11) && pitchcount.get() >= config().getValue("aimbotEMinSimilarPitch", Integer.class).orElse(5)) {
+                if (yawcount.get() >= ConfigurationManager.getInstance().getValue("aimbotEMinSimilarYaw", Integer.class).orElse(11) && pitchcount.get() >= ConfigurationManager.getInstance().getValue("aimbotEMinSimilarPitch", Integer.class).orElse(5)) {
                     if (r1 == r2.get()) {
                         final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, b));
                         if (!evt.isCancelled()) {
@@ -223,7 +225,7 @@ public class AimbotListener extends ConfigurationDependent {
                     f.resetVL(attacker);
                 }
                 if (yawcount.get() < pitchcount.get()) {
-                    if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(config().getValue("aimbotGDistance", Double.class).orElse(0.5))) {
+                    if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(ConfigurationManager.getInstance().getValue("aimbotGDistance", Double.class).orElse(0.5))) {
                         final AimbotCheckG g = ServiceManager.get(AimbotCheckG.class);
                         if (!g.isOnCooldown(attacker) && g.isEligibleForCheck(attacker)) {
                             final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, g));

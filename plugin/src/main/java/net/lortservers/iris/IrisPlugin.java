@@ -20,12 +20,12 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
 @Plugin(
         id = "Iris",
         authors = {"zlataovce", "Lort533"},
-        version = "1.0-SNAPSHOT"
+        version = "0.0.1-SNAPSHOT"
 )
 @Init(services = {
         Tasker.class,
-        EventManager.class,
         ConfigurationManagerImpl.class,
+        EventManager.class,
         CooldownManager.class,
         CheckManagerImpl.class,
         AimbotListener.class,

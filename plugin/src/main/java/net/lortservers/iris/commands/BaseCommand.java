@@ -6,7 +6,6 @@ import cloud.commandframework.keys.SimpleCloudKey;
 import cloud.commandframework.permission.PredicatePermission;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.lortservers.iris.wrap.ConfigurationDependent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -24,7 +23,7 @@ import org.screamingsandals.lib.utils.annotations.parameters.ProvidedBy;
 @ServiceDependencies(dependsOn = {
         CommandService.class
 })
-public abstract class BaseCommand extends ConfigurationDependent {
+public abstract class BaseCommand {
     /**
      * <p>Command name.</p>
      */

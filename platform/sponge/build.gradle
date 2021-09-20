@@ -2,9 +2,6 @@ repositories {
     maven {
         url 'https://repo.spongepowered.org/maven'
     }
-    maven {
-        url 'https://jitpack.io'
-    }
 }
 
 dependencies {
@@ -15,5 +12,5 @@ dependencies {
     implementation "org.screamingsandals.lib:event-common:${SCREAMING_LIB_VERSION}"
     implementation "org.screamingsandals.lib:utils-common:${SCREAMING_LIB_VERSION}"
 
-    compileOnly "com.github.Minestom:Minestom:${MINESTOM_VERSION}"
+    compileOnly "org.spongepowered:spongeapi:${SPONGE_API_VERSION}"
 }

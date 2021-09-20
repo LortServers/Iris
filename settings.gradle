@@ -12,4 +12,4 @@ def registerModule(String name, String... platforms) {
 include 'plugin'
 include 'api'
 
-registerModule('platform', 'bukkit', 'minestom')
+registerModule('platform', 'bukkit', 'minestom', 'sponge')

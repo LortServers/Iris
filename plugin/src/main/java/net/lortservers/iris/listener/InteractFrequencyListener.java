@@ -3,14 +3,15 @@ package net.lortservers.iris.listener;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.interact.InteractFrequencyCheckA;
 import net.lortservers.iris.checks.interact.block.BlockingFrequencyCheckA;
+import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.events.IrisCheckTriggerEvent;
+import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.utils.IntegerPair;
 import net.lortservers.iris.utils.MaterialUtils;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
-import net.lortservers.iris.wrap.ConfigurationDependent;
 import net.lortservers.iris.wrap.IntegerPairImpl;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.EventPriority;
@@ -37,11 +38,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>A class responsible for triggering interact frequency checks.</p>
  */
 @Service(dependsOn = {
+        ConfigurationManagerImpl.class,
         PunishmentManagerImpl.class,
         InteractFrequencyCheckA.class,
         BlockingFrequencyCheckA.class
 })
-public class InteractFrequencyListener extends ConfigurationDependent {
+public class InteractFrequencyListener {
     /**
      * <p>Left click interact actions.</p>
      */
@@ -154,11 +156,11 @@ public class InteractFrequencyListener extends ConfigurationDependent {
     }
 
     private void performCheck(PlayerWrapper player, SPlayerInteractEvent.Action action) {
-        if (config().getValue("debug", boolean.class).orElse(false)) {
+        if (ConfigurationManager.getInstance().getValue("debug", boolean.class).orElse(false)) {
             IrisPlugin.getInstance().getLogger().info("LCPS: " + getCps(player).first() + ", RCPS: " + getCps(player).second());
         }
         final InteractFrequencyCheckA a = ServiceManager.get(InteractFrequencyCheckA.class);
-        if ((getCps(player).first() >= config().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16)) || (getCps(player).second() >= config().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16))) {
+        if ((getCps(player).first() >= ConfigurationManager.getInstance().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16)) || (getCps(player).second() >= ConfigurationManager.getInstance().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16))) {
             if (a.isEligibleForCheck(player)) {
                 final IrisCheckTriggerEvent evt1 = EventManager.fire(new IrisCheckTriggerEventImpl(player, a));
                 if (!evt1.isCancelled()) {
