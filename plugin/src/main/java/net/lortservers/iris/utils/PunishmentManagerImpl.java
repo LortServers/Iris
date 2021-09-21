@@ -93,7 +93,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
                     .field(
                             Embed.Field.builder()
                                     .name("Player details")
-                                    .value("```yaml\nPing: " + player.getPing() + "ms")
+                                    .value("```yaml\nPing: " + player.getPing() + "ms```")
                                     .build()
                     )
                     .timestamp(new Date(System.currentTimeMillis()));
