@@ -74,8 +74,8 @@ public class PunishmentManagerImpl implements PunishmentManager {
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
         PlayerMapper.getConsoleSender().sendMessage(component);
         if (ConfigurationManager.getInstance().getValue("discordWebhook", Boolean.class).orElse(false)) {
-            final Optional<Protocol> proto = ProtocolUtils.getProtocol(player.getProtocolVersion());
-            final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
+            // final Optional<Protocol> proto = ProtocolUtils.getProtocol(player.getProtocolVersion());
+            // final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
             final Embed.EmbedBuilder embed = Embed.builder()
                     .thumbnail(
                             Embed.Media.builder()
@@ -93,7 +93,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
                     .field(
                             Embed.Field.builder()
                                     .name("Player details")
-                                    .value("```yaml\nPing: " + player.getPing() + "ms\n" + "Protocol version: " + protocolString + "```")
+                                    .value("```yaml\nPing: " + player.getPing() + "ms")
                                     .build()
                     )
                     .timestamp(new Date(System.currentTimeMillis()));
