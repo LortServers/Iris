@@ -61,11 +61,11 @@ public class InteractFrequencyListener {
      */
     private final Map<UUID, Long> lastBreak = new HashMap<>();
 
-    public final IntegerPair getCps(PlayerWrapper player) {
-        if (cps.containsKey(player.getUuid())) {
-            return cps.get(player.getUuid());
+    public IntegerPair getCps(PlayerWrapper player) {
+        if (!cps.containsKey(player.getUuid())) {
+            cps.put(player.getUuid(), IntegerPairImpl.of(0, 0));
         }
-        return cps.put(player.getUuid(), IntegerPairImpl.of(0, 0));
+        return cps.get(player.getUuid());
     }
 
     /**
