@@ -7,7 +7,6 @@ import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.managers.PunishmentManager;
 import net.lortservers.iris.utils.Protocol;
 import net.lortservers.iris.utils.ProtocolUtils;
-import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.sender.permissions.SimplePermission;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -41,7 +40,7 @@ public class PlayerInfoCommand extends BaseCommand {
                 commandSenderWrapperBuilder
                         .argument(PlayerArgument.of("player"))
                         .handler(commandContext -> {
-                            final Optional<Protocol> proto = ProtocolUtils.getProtocol(PlayerMapper.wrapPlayer(commandContext.get("player")).getProtocolVersion());
+                            final Optional<Protocol> proto = ProtocolUtils.getProtocol(756);
                             final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
                             commandContext.getSender().sendMessage(
                                     ConfigurationManager.getInstance().getMessage("playerInfo", Map.of("protocol", protocolString))
