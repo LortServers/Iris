@@ -17,4 +17,8 @@ public class PlayerUtils {
     public static boolean isBlocking(SPlayerInteractEvent.Action action, PlayerWrapper player) {
         return (action == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || action == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) && (MaterialUtils.hasPart(player.getPlayerInventory().getItemInMainHand(), "sword") || player.getPlayerInventory().getItemInOffHand().getMaterial().is("minecraft:shield"));
     }
+
+    public static boolean isOnGround(PlayerWrapper player) {
+        return !(Math.abs(player.asEntity().getVelocity().getY()) > 0);
+    }
 }
