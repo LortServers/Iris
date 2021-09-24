@@ -9,7 +9,7 @@ import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.utils.IntegerPair;
-import net.lortservers.iris.utils.MaterialUtils;
+import net.lortservers.iris.utils.material.MaterialUtils;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import net.lortservers.iris.wrap.IntegerPairImpl;

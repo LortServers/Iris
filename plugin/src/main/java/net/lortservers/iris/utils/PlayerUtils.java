@@ -1,5 +1,6 @@
 package net.lortservers.iris.utils;
 
+import net.lortservers.iris.utils.material.MaterialUtils;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
@@ -19,6 +20,6 @@ public class PlayerUtils {
     }
 
     public static boolean isOnGround(PlayerWrapper player) {
-        return !(Math.abs(player.asEntity().getVelocity().getY()) > 0);
+        return !(Math.abs(player.asEntity().getVelocity().getY()) > 0) && !player.getLocation().getBlock().isEmpty();
     }
 }
