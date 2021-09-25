@@ -28,5 +28,6 @@ public interface ConfigurationManager {
         File toFile();
         void load();
         void save();
+        boolean isLoaded();
     }
 }

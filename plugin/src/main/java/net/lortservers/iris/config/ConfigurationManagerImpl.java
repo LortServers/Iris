@@ -8,6 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.managers.ConfigurationManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 
@@ -45,7 +46,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
      * @return the message component
      */
     public Component getMessage(String id) {
-        return ((Messages) getTrackedFile("messages.json").orElseThrow().getObject()).getMessage(id);
+        return getMessage(id, Map.of());
     }
 
     /**
@@ -56,11 +57,13 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
      * @return the message component
      */
     public Component getMessage(String id, Map<String, String> placeholders) {
-        return ((Messages) getTrackedFile("messages.json").orElseThrow().getObject()).getMessage(id, placeholders);
+        final FileDefinition msgs = getTrackedFile("messages.json").orElseThrow();
+        return (msgs.isLoaded()) ? ((Messages) msgs.getObject()).getMessage(id, placeholders) : Component.empty();
     }
 
     public <T> Optional<T> getValue(String key, Class<T> returnType) {
-        return ((Configuration) getTrackedFile("config.json").orElseThrow().getObject()).getValue(key, returnType);
+        final FileDefinition config = getTrackedFile("config.json").orElseThrow();
+        return (config.isLoaded()) ? ((Configuration) config.getObject()).getValue(key, returnType) : Optional.empty();
     }
 
     /**
@@ -71,9 +74,11 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             //noinspection ResultOfMethodCallIgnored
             IrisPlugin.getInstance().getDataFolder().toFile().mkdirs();
         }
-        for (ConfigurationManager.FileDefinition file : TRACKED_FILES) {
-            file.load();
-        }
+        Tasker.build(() -> {
+            for (ConfigurationManager.FileDefinition file : TRACKED_FILES) {
+                file.load();
+            }
+        }).afterOneTick().async().start();
     }
 
     /**
@@ -120,6 +125,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             }
         }
 
+        @Override
         public boolean isLoaded() {
             return object != null;
         }

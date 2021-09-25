@@ -11,6 +11,7 @@ import net.lortservers.iris.utils.CooldownManager;
 import net.lortservers.iris.utils.ProtocolUtils;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.tasker.Tasker;
+import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 
@@ -48,7 +49,7 @@ public class IrisPlugin extends PluginContainer {
 
     @Override
     public void enable() {
-        ProtocolUtils.updateProtocols();
+        Tasker.build(ProtocolUtils::updateProtocols).repeat(30, TaskerTime.MINUTES).async().start();
     }
 
     /**

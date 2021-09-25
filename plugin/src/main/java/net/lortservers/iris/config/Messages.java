@@ -39,7 +39,7 @@ public class Messages {
      * @return the message component
      */
     public Component getMessage(String id) {
-        return MINIMESSAGE.parse(prefix + Reflect.getField(this, id));
+        return getMessage(id, Map.of());
     }
 
     /**
