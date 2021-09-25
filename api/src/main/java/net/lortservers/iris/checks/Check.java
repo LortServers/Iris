@@ -3,6 +3,7 @@ package net.lortservers.iris.checks;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.plugin.ServiceManager;
 
 public interface Check {
     CheckAlphabet getType();
@@ -53,4 +54,13 @@ public interface Check {
     void putCooldown(PlayerWrapper player);
 
     boolean isEligibleForCheck(PlayerWrapper player);
+
+    static <T extends Check> T get(Class<T> clazz) {
+        return ServiceManager.get(clazz);
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T extends Check> T get(@NonNull String name, CheckAlphabet letter) {
+        return (T) ServiceManager.getAll(Check.class).stream().filter(e -> e.getName().equals(name) && e.getType().equals(letter)).findFirst().orElseThrow();
+    }
 }
