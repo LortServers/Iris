@@ -14,14 +14,13 @@ import net.lortservers.iris.utils.IntegerPair;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import net.lortservers.iris.utils.material.MaterialUtils;
-import net.lortservers.iris.wrap.IntegerPairImpl;
+import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
-import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.tasker.Tasker;
@@ -29,11 +28,7 @@ import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>A class responsible for triggering interact frequency checks.</p>
@@ -41,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service(dependsOn = {
         ConfigurationManagerImpl.class,
         PunishmentManagerImpl.class,
+        PlayerProfileManager.class,
         InteractFrequencyCheckA.class,
         BlockingFrequencyCheckA.class
 })
@@ -53,20 +49,9 @@ public class InteractFrequencyListener {
      * <p>Right click interact actions.</p>
      */
     private static final List<SPlayerInteractEvent.Action> rightActions = List.of(SPlayerInteractEvent.Action.RIGHT_CLICK_AIR, SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK);
-    /**
-     * <p>CPS holder.</p>
-     */
-    private final Map<UUID, IntegerPair> cps = new ConcurrentHashMap<>();
-    /**
-     * <p>Last block break time holder.</p>
-     */
-    private final Map<UUID, Long> lastBreak = new HashMap<>();
 
     public IntegerPair getCps(PlayerWrapper player) {
-        if (!cps.containsKey(player.getUuid())) {
-            cps.put(player.getUuid(), IntegerPairImpl.of(0, 0));
-        }
-        return cps.get(player.getUuid());
+        return PlayerProfileManager.ofPlayer(player).getCps();
     }
 
     /**
@@ -82,17 +67,6 @@ public class InteractFrequencyListener {
     }
 
     /**
-     * <p>Handles player leave events for cleaning up memory.</p>
-     *
-     * @param event the event
-     */
-    @OnEvent
-    public void onPlayerLeave(SPlayerLeaveEvent event) {
-        cps.remove(event.getPlayer().getUuid());
-        lastBreak.remove(event.getPlayer().getUuid());
-    }
-
-    /**
      * <p>Handles player block break events for check logic.</p>
      *
      * @param event the event
@@ -100,7 +74,7 @@ public class InteractFrequencyListener {
     @OnEvent
     public void onPlayerBlockBreak(SPlayerBlockBreakEvent event) {
         getCps(event.getPlayer()).modifyFirst(0);
-        lastBreak.put(event.getPlayer().getUuid(), System.currentTimeMillis());
+        PlayerProfileManager.ofPlayer(event.getPlayer()).setLastBreak(System.currentTimeMillis());
     }
 
     /**
@@ -112,7 +86,7 @@ public class InteractFrequencyListener {
     public void onEntityDamageByEntity(SEntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof EntityHuman) {
             final PlayerWrapper attacker = event.getDamager().as(PlayerWrapper.class);
-            final long diff = Math.abs(System.currentTimeMillis() - lastBreak.getOrDefault(attacker.getUuid(), 0L));
+            final long diff = Math.abs(System.currentTimeMillis() - PlayerProfileManager.ofPlayer(attacker).getLastBreak());
             if (diff <= 1500) {
                 return;
             }
@@ -132,7 +106,7 @@ public class InteractFrequencyListener {
             return;
         }
         final PlayerWrapper player = event.getPlayer();
-        final long diff = Math.abs(System.currentTimeMillis() - lastBreak.getOrDefault(player.getUuid(), 0L));
+        final long diff = Math.abs(System.currentTimeMillis() - PlayerProfileManager.ofPlayer(player).getLastBreak());
         if (diff <= 1500) {
             return;
         }
@@ -166,7 +140,7 @@ public class InteractFrequencyListener {
                 final IrisCheckTriggerEvent evt1 = EventManager.fire(new IrisCheckTriggerEventImpl(player, a));
                 if (!evt1.isCancelled()) {
                     a.increaseVL(player, 1);
-                    if (a.getVL(player) >= a.getVLThreshold() && (System.currentTimeMillis() - lastBreak.getOrDefault(player.getUuid(), System.currentTimeMillis())) >= 1500) {
+                    if (a.getVL(player) >= a.getVLThreshold() && (System.currentTimeMillis() - PlayerProfileManager.ofPlayer(player).getLastBreak()) >= 1500) {
                         if (PlayerUtils.isBlocking(action, player)) {
                             final BlockingFrequencyCheckA a1 = Check.get(BlockingFrequencyCheckA.class);
                             if (a1.isEligibleForCheck(player)) {

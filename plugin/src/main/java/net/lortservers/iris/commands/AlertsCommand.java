@@ -3,16 +3,15 @@ package net.lortservers.iris.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import net.lortservers.iris.managers.ConfigurationManager;
+import net.lortservers.iris.managers.PunishmentManager;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.sender.permissions.SimplePermission;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * <p>A class representing the alerts command.</p>
@@ -44,16 +43,9 @@ public class AlertsCommand extends BaseCommand {
         manager.command(
                 commandSenderWrapperBuilder
                         .handler(commandContext -> {
-                            final Optional<Boolean> now = ServiceManager.get(PunishmentManagerImpl.class).toggleAlerts(commandContext.getSender().as(PlayerWrapper.class));
-
-                            if (now.isEmpty()) {
-                                commandContext.getSender().sendMessage(
-                                        ConfigurationManager.getInstance().getMessage("noPermission")
-                                );
-                                return;
-                            }
+                            final boolean now = PunishmentManager.getInstance().toggleAlerts(commandContext.getSender().as(PlayerWrapper.class));
                             commandContext.getSender().sendMessage(
-                                    ConfigurationManager.getInstance().getMessage("alertsToggle", Collections.singletonMap("status", BOOL_ABBR.get(now.orElseThrow())))
+                                    ConfigurationManager.getInstance().getMessage("alertsToggle", Collections.singletonMap("status", BOOL_ABBR.get(now)))
                             );
                         })
         );

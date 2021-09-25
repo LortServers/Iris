@@ -9,21 +9,19 @@ import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.managers.PunishmentManager;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import net.lortservers.iris.utils.profiles.PlayerProfile;
+import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.screamingsandals.lib.event.OnEvent;
-import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
-import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
-import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,14 +29,10 @@ import java.util.stream.Stream;
  * <p>Class responsible for dispatching failed messages and punishing players.</p>
  */
 @Service(dependsOn = {
-        ConfigurationManagerImpl.class
+        ConfigurationManagerImpl.class,
+        PlayerProfileManager.class
 })
 public class PunishmentManagerImpl implements PunishmentManager {
-    /**
-     * <p>Alert subscribers.</p>
-     */
-    private final @NonNull List<UUID> subscribers = new ArrayList<>();
-
     /**
      * <p>Sends a failed message to alert subscribers.</p>
      *
@@ -71,7 +65,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
                     Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "info", info, "ping", Integer.toString(player.getPing()))
             );
         }
-        subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
+        getSubscribers().forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
         PlayerMapper.getConsoleSender().sendMessage(component);
         if (ConfigurationManager.getInstance().getValue("discordWebhook", Boolean.class).orElse(false)) {
             // final Optional<Protocol> proto = ProtocolUtils.getProtocol(player.getProtocolVersion());
@@ -123,79 +117,30 @@ public class PunishmentManagerImpl implements PunishmentManager {
         }
     }
 
-    /**
-     * <p>Subscribes all eligible players to alerts.</p>
-     */
-    @OnEnable
-    public void enable() {
-        PlayerMapper.getPlayers().forEach(this::subscribeAlerts);
+    @Override
+    public List<PlayerWrapper> getSubscribers() {
+        return PlayerProfileManager.all().stream().filter(PlayerProfile::isAlertSubscriber).map(PlayerProfile::toPlayer).toList();
     }
 
-    /**
-     * <p>Unsubscribes all eligible players from alerts.</p>
-     */
-    @OnDisable
-    public void disable() {
-        PlayerMapper.getPlayers().forEach(this::unsubscribeAlerts);
-    }
-
-    /**
-     * <p>Subscribes the joined player to alerts if he's eligible.</p>
-     *
-     * @param event the event
-     */
-    @OnEvent
-    public void onPlayerJoin(SPlayerJoinEvent event) {
-        subscribeAlerts(event.getPlayer());
-    }
-
-    /**
-     * <p>Unsubscribes the leaving player from alerts if he's subscribed.</p>
-     *
-     * @param event the event
-     */
-    @OnEvent
-    public void onPlayerLeave(SPlayerLeaveEvent event) {
-        unsubscribeAlerts(event.getPlayer());
-    }
-
-    /**
-     * <p>Subscribes the player to alerts.</p>
-     *
-     * @param player the player
-     */
-    public void subscribeAlerts(PlayerWrapper player) {
-        if (player.hasPermission("iris.alerts")) {
-            subscribers.add(player.getUuid());
-        }
-    }
-
-    /**
-     * <p>Unsubscribes the player from alerts.</p>
-     *
-     * @param player the player
-     */
-    public void unsubscribeAlerts(PlayerWrapper player) {
-        if (player.hasPermission("iris.alerts")) {
-            subscribers.remove(player.getUuid());
-        }
+    @Override
+    public boolean isSubscribed(PlayerWrapper player) {
+        return PlayerProfileManager.ofPlayer(player).isAlertSubscriber();
     }
 
     /**
      * <p>Toggles alerts for the player.</p>
      *
      * @param player the player
-     * @return the current alert status, empty if the player doesn't have the permission
+     * @return the current alert status
      */
-    public Optional<Boolean> toggleAlerts(PlayerWrapper player) {
-        if (player.hasPermission("iris.alerts")) {
-            if (subscribers.contains(player.getUuid())) {
-                subscribers.remove(player.getUuid());
-                return Optional.of(false);
-            }
-            subscribers.add(player.getUuid());
-            return Optional.of(true);
+    @Override
+    public boolean toggleAlerts(PlayerWrapper player) {
+        if (PunishmentManager.canSubscribe(player)) {
+            final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+            final boolean now = !profile.isAlertSubscriber();
+            profile.setAlertSubscriber(now);
+            return now;
         }
-        return Optional.empty();
+        return false;
     }
 }

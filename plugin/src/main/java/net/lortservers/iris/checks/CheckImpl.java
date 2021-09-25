@@ -3,27 +3,24 @@ package net.lortservers.iris.checks;
 import lombok.RequiredArgsConstructor;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.managers.ConfigurationManager;
-import net.lortservers.iris.utils.CooldownManager;
 import net.lortservers.iris.utils.CooldownMapping;
+import net.lortservers.iris.utils.profiles.PlayerProfile;
+import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
 import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * <p>A check base.</p>
  */
 @ServiceDependencies(dependsOn = {
         ConfigurationManagerImpl.class,
-        CheckManagerImpl.class,
-        CooldownManager.class
+        PlayerProfileManager.class
 })
 @RequiredArgsConstructor
 public abstract class CheckImpl implements Check {
@@ -59,17 +56,16 @@ public abstract class CheckImpl implements Check {
     @OnEnable
     public void enable() {
         Tasker.build(() -> {
-            final Map<UUID, Integer> vls = ServiceManager.get(CheckManagerImpl.class).getVls(CheckImpl.this.getClass());
-            for (final Map.Entry<UUID, Integer> entry : vls.entrySet()) {
-                int currentVl = entry.getValue();
+            for (PlayerProfile profile : PlayerProfileManager.all()) {
+                int currentVl = profile.getCheckVLs().getOrDefault(getClass(), 0);
                 if (currentVl >= decreaseBy) {
                     currentVl = currentVl - decreaseBy;
                 } else {
                     currentVl = 0;
                 }
-                vls.put(entry.getKey(), currentVl);
+                profile.getCheckVLs().put(getClass(), currentVl);
             }
-        }).repeat(decreaseTime, decreaseTimeType).start();
+        }).repeat(decreaseTime, decreaseTimeType).async().start();
     }
 
     /**
@@ -93,7 +89,7 @@ public abstract class CheckImpl implements Check {
      * @return the player's VL
      */
     public int getVL(PlayerWrapper player) {
-        return ServiceManager.get(CheckManagerImpl.class).getVls(getClass()).getOrDefault(player.getUuid(), 0);
+        return PlayerProfileManager.ofPlayer(player).getCheckVLs().getOrDefault(getClass(), 0);
     }
 
     /**
@@ -103,8 +99,8 @@ public abstract class CheckImpl implements Check {
      * @param vl the VL to add
      */
     public void increaseVL(PlayerWrapper player, int vl) {
-        final Map<UUID, Integer> vls = ServiceManager.get(CheckManagerImpl.class).getVls(getClass());
-        vls.put(player.getUuid(), vls.getOrDefault(player.getUuid(), 0) + vl);
+        final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+        profile.getCheckVLs().put(getClass(), profile.getCheckVLs().getOrDefault(getClass(), 0) + vl);
     }
 
     /**
@@ -114,14 +110,14 @@ public abstract class CheckImpl implements Check {
      * @param vl the VL to remove
      */
     public void decreaseVL(PlayerWrapper player, int vl) {
-        final Map<UUID, Integer> vls = ServiceManager.get(CheckManagerImpl.class).getVls(getClass());
-        int currentVl = vls.getOrDefault(player.getUuid(), 0);
+        final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+        int currentVl = profile.getCheckVLs().getOrDefault(getClass(), 0);
         if (currentVl >= vl) {
             currentVl = currentVl - vl;
         } else {
             currentVl = 0;
         }
-        vls.put(player.getUuid(), currentVl);
+        profile.getCheckVLs().put(getClass(), currentVl);
     }
 
     /**
@@ -130,7 +126,7 @@ public abstract class CheckImpl implements Check {
      * @param player the player
      */
     public void resetVL(PlayerWrapper player) {
-        ServiceManager.get(CheckManagerImpl.class).getVls(this.getClass()).put(player.getUuid(), 0);
+        PlayerProfileManager.ofPlayer(player).getCheckVLs().put(getClass(), 0);
     }
 
     /**
@@ -140,8 +136,8 @@ public abstract class CheckImpl implements Check {
      * @return is the check on cooldown for this player?
      */
     public boolean isOnCooldown(PlayerWrapper player) {
-        final Map<UUID, CooldownMapping> cooldowns = ServiceManager.get(CooldownManager.class).getCooldowns(getClass());
-        return cooldowns.containsKey(player.getUuid()) && cooldowns.get(player.getUuid()).isOnCooldown();
+        final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+        return profile.getCheckCooldowns().get(getClass()) != null && profile.getCheckCooldowns().get(getClass()).isOnCooldown();
     }
 
     /**
@@ -150,11 +146,11 @@ public abstract class CheckImpl implements Check {
      * @param player the player
      */
     public void putCooldown(PlayerWrapper player) {
-        final Map<UUID, CooldownMapping> cooldowns = ServiceManager.get(CooldownManager.class).getCooldowns(getClass());
-        if (!cooldowns.containsKey(player.getUuid())) {
-            cooldowns.put(player.getUuid(), new CooldownMapping(cooldown));
+        final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+        if (profile.getCheckCooldowns().get(getClass()) == null) {
+            profile.getCheckCooldowns().put(getClass(), new CooldownMapping(cooldown));
         }
-        cooldowns.get(player.getUuid()).putCooldown();
+        profile.getCheckCooldowns().get(getClass()).putCooldown();
     }
 
     /**

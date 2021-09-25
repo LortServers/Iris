@@ -6,6 +6,8 @@ import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 
+import java.util.List;
+
 public interface PunishmentManager {
     static PunishmentManager getInstance() {
         return ServiceManager.get(PunishmentManager.class);
@@ -22,4 +24,14 @@ public interface PunishmentManager {
     <T extends Check> void logWarn(PlayerWrapper player, T check);
 
     <T extends Check> void logWarn(PlayerWrapper player, T check, @Nullable String info);
+
+    boolean toggleAlerts(PlayerWrapper player);
+
+    List<PlayerWrapper> getSubscribers();
+
+    boolean isSubscribed(PlayerWrapper player);
+
+    static boolean canSubscribe(PlayerWrapper player) {
+        return player.hasPermission("iris.alerts");
+    }
 }

@@ -10,13 +10,13 @@ import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
+import net.lortservers.iris.utils.profiles.PlayerProfile;
+import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import net.lortservers.iris.wrap.AtomicDouble;
 import net.lortservers.iris.wrap.AtomicFloat;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
-import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -24,10 +24,7 @@ import org.screamingsandals.lib.utils.MathUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.world.LocationHolder;
 
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -36,6 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service(dependsOn = {
         ConfigurationManagerImpl.class,
         PunishmentManagerImpl.class,
+        PlayerProfileManager.class,
         AimbotCheckH.class,
         AimbotCheckI.class,
         AimbotCheckA.class,
@@ -44,18 +42,6 @@ import java.util.concurrent.atomic.AtomicInteger;
         AimbotCheckG.class
 })
 public class AimbotListener {
-    private final @NonNull Map<UUID, Integer> count = new ConcurrentHashMap<>();
-
-    /**
-     * <p>Handles player leave events for cleaning up memory.</p>
-     *
-     * @param event the event
-     */
-    @OnEvent
-    public void onPlayerLeave(SPlayerLeaveEvent event) {
-        count.remove(event.getPlayer().getUuid());
-    }
-
     /**
      * <p>Handles entity damage events for processing aimbot checks.</p>
      *
@@ -67,6 +53,7 @@ public class AimbotListener {
             return;
         }
         final PlayerWrapper attacker = event.getDamager().as(PlayerWrapper.class);
+        final PlayerProfile profile = PlayerProfileManager.ofPlayer(attacker);
         final PlayerWrapper victim = event.getEntity().as(PlayerWrapper.class);
         AtomicInteger count = new AtomicInteger(0);
         AtomicFloat pitch = new AtomicFloat(0F), lastpitch = new AtomicFloat(0F);
@@ -129,7 +116,7 @@ public class AimbotListener {
                 }
             }
             if (count.get() <= 20) {
-                final int attackerCount = Math.abs(this.count.getOrDefault(attacker.getUuid(), 0) - count.get());
+                final int attackerCount = Math.abs(profile.getAimbotCounter() - count.get());
                 if (r1 >= MathUtils.square(ConfigurationManager.getInstance().getValue("aimbotIDistance", Double.class).orElse(3.5))) {
                     final AimbotCheckI i = Check.get(AimbotCheckI.class);
                     if (attackerCount >= 1 && attackerCount <= 3) {
@@ -179,7 +166,7 @@ public class AimbotListener {
                         a.resetVL(attacker);
                     }
                 }
-                this.count.put(attacker.getUuid(), count.get());
+                profile.setAimbotCounter(count.get());
             }
             if (count.get() <= 14) {
                 final AimbotCheckB b = Check.get(AimbotCheckB.class);
