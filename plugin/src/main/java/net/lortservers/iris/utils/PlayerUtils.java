@@ -20,6 +20,6 @@ public class PlayerUtils {
     }
 
     public static boolean isOnGround(PlayerWrapper player) {
-        return !(Math.abs(player.asEntity().getVelocity().getY()) > 0) && !player.getLocation().getBlock().isEmpty();
+        return !(Math.abs(player.asEntity().getVelocity().getY()) > 0) && !player.getLocation().remove(0, 1, 0).getBlock().isEmpty();
     }
 }
