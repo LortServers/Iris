@@ -63,12 +63,12 @@ public class PunishmentManagerImpl implements PunishmentManager {
         if (info == null) {
             component = ConfigurationManager.getInstance().getMessage(
                     "shortFailedCheck",
-                    Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)))
+                    Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "ping", Integer.toString(player.getPing()))
             );
         } else {
             component = ConfigurationManager.getInstance().getMessage(
                     "failedCheck",
-                    Map.of("player", player.getName(), "name", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "info", info)
+                    Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "info", info, "ping", Integer.toString(player.getPing()))
             );
         }
         subscribers.forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));

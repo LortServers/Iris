@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.lortservers.iris.utils.MiscUtils;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.Map;
@@ -24,13 +25,13 @@ public class Messages {
     @Getter(AccessLevel.NONE)
     @JsonIgnore
     protected static final MiniMessage MINIMESSAGE = MiniMessage.get();
-    private String prefix = "<color:gray>(<color:red>!<color:gray>) ";
-    private String failedCheck = "<color:red><player> <color:white>failed <color:gold><name> <type> <color:gray>\\ <white><info> <color:gray>\\ <color:blue>VL: <vl>";
-    private String shortFailedCheck = "<color:red><player> <color:white>failed <color:gold><name> <type> <color:gray>\\ <color:blue>VL: <vl>";
-    private String noPermission = "<color:red>No permission!";
-    private String invalidCommand = "<color:red>Invalid command!";
-    private String alertsToggle = "<color:yellow>Turned alerts <color:green><status><color:yellow>!";
-    private String playerInfo = "<color:yellow>Connection protocol: <color:gray><protocol>";
+    private String prefix = "[<color:blue>Iris<color:white>]";
+    private String failedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:gray><info><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <x> <y> <z>, <color:#83A9B5>vl:<color:white> <vl>";
+    private String shortFailedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <x> <y> <z>, <color:#83A9B5>vl:<color:white> <vl>";
+    private String noPermission = "<prefix> <color:red>No permission!";
+    private String invalidCommand = "<prefix> <color:red>Invalid command!";
+    private String alertsToggle = "<prefix> <color:yellow>Turned alerts <color:green><status><color:yellow>!";
+    private String playerInfo = "<prefix> <color:yellow>Connection protocol: <color:gray><protocol>";
 
     /**
      * <p>Gets the message component from id.</p>
@@ -50,6 +51,6 @@ public class Messages {
      * @return the message component
      */
     public Component getMessage(String id, Map<String, String> placeholders) {
-        return MINIMESSAGE.parse(prefix + Reflect.getField(this, id), placeholders);
+        return MINIMESSAGE.parse((String) Reflect.getField(this, id), MiscUtils.collectionMerge(placeholders, Map.of("prefix", prefix)));
     }
 }
