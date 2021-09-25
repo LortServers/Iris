@@ -1,5 +1,6 @@
 package net.lortservers.iris.utils.material;
 
+import net.lortservers.iris.utils.MaterialGroup;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.item.Item;
@@ -14,8 +15,8 @@ import java.util.Map;
  * <p>Material utilities.</p>
  */
 public final class MaterialUtils {
-    private static final Map<String, ItemMaterialGroup> itemCache = new HashMap<>();
-    private static final Map<String, BlockMaterialGroup> blockCache = new HashMap<>();
+    private static final Map<String, MaterialGroup<ItemTypeHolder>> itemCache = new HashMap<>();
+    private static final Map<String, MaterialGroup<BlockTypeHolder>> blockCache = new HashMap<>();
 
     /**
      * <p>Checks if the material name has the specified part.</p>
@@ -55,7 +56,7 @@ public final class MaterialUtils {
         return Arrays.stream(parts).anyMatch(e -> hasPart(mat, e));
     }
 
-    private static BlockMaterialGroup cacheGetBlock(String... parts) {
+    private static MaterialGroup<BlockTypeHolder> cacheGetBlock(String... parts) {
         final String part = String.join(" ", parts);
         if (!blockCache.containsKey(part)) {
             blockCache.put(part, BlockMaterialGroup.withCommonPart(parts));
@@ -63,7 +64,7 @@ public final class MaterialUtils {
         return blockCache.get(part);
     }
 
-    private static ItemMaterialGroup cacheGetItem(String... parts) {
+    private static MaterialGroup<ItemTypeHolder> cacheGetItem(String... parts) {
         final String part = String.join(" ", parts);
         if (!itemCache.containsKey(part)) {
             itemCache.put(part, ItemMaterialGroup.withCommonPart(parts));
@@ -71,23 +72,23 @@ public final class MaterialUtils {
         return itemCache.get(part);
     }
 
-    public static BlockMaterialGroup getGrass() {
+    public static MaterialGroup<BlockTypeHolder> getGrass() {
         return cacheGetBlock("grass", "fern");
     }
 
-    public static BlockMaterialGroup getFlowers() {
+    public static MaterialGroup<BlockTypeHolder> getFlowers() {
         return cacheGetBlock("dandelion", "poppy", "blue_orchid", "allium", "azure_bluet", "tulip", "oxeye_daisy", "red_mushroom", "brown_mushroom", "sunflower", "lilac", "rose", "peony", "cornflower", "lily_of_the_valley", "roots", "fungus", "nether_sprouts", "azalea", "spore_blossom");
     }
 
-    public static BlockMaterialGroup getCarpets() {
+    public static MaterialGroup<BlockTypeHolder> getCarpets() {
         return cacheGetBlock("carpet");
     }
 
-    public static BlockMaterialGroup getFences() {
+    public static MaterialGroup<BlockTypeHolder> getFences() {
         return cacheGetBlock("fence").filter("fence_gate");
     }
 
-    public static BlockMaterialGroup getFenceGates() {
+    public static MaterialGroup<BlockTypeHolder> getFenceGates() {
         return cacheGetBlock("fence_gate");
     }
 }

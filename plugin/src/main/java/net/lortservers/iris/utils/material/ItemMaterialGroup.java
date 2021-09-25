@@ -3,15 +3,16 @@ package net.lortservers.iris.utils.material;
 import net.lortservers.iris.utils.MaterialGroup;
 import org.screamingsandals.lib.item.ItemTypeHolder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public record ItemMaterialGroup(List<ItemTypeHolder> materials) implements MaterialGroup<ItemTypeHolder> {
-    public static ItemMaterialGroup of(ItemTypeHolder... materials) {
+    public static MaterialGroup<ItemTypeHolder> of(ItemTypeHolder... materials) {
         return new ItemMaterialGroup(Arrays.asList(materials));
     }
 
-    public static ItemMaterialGroup withCommonPart(String... part) {
+    public static MaterialGroup<ItemTypeHolder> withCommonPart(String... part) {
         return new ItemMaterialGroup(ItemTypeHolder.all().stream().filter(e -> MaterialUtils.hasParts(e, part)).toList());
     }
 
@@ -21,7 +22,17 @@ public record ItemMaterialGroup(List<ItemTypeHolder> materials) implements Mater
     }
 
     @Override
-    public ItemMaterialGroup filter(String... parts) {
-        return ItemMaterialGroup.of(materials.stream().filter(e -> MaterialUtils.hasParts(e, parts)).toArray(ItemTypeHolder[]::new));
+    public MaterialGroup<ItemTypeHolder> filter(String... parts) {
+        return new ItemMaterialGroup(materials.stream().filter(e -> MaterialUtils.hasParts(e, parts)).toList());
+    }
+
+    @Override
+    public MaterialGroup<ItemTypeHolder> copy() {
+        return new ItemMaterialGroup(new ArrayList<>(materials));
+    }
+
+    @Override
+    public Class<ItemTypeHolder> getMaterialType() {
+        return ItemTypeHolder.class;
     }
 }
