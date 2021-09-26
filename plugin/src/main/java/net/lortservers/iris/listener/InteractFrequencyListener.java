@@ -15,13 +15,13 @@ import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import net.lortservers.iris.utils.material.MaterialUtils;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
 import org.screamingsandals.lib.event.player.SPlayerBlockBreakEvent;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
-import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -60,7 +60,7 @@ public class InteractFrequencyListener {
     @OnEnable
     public void enable() {
         Tasker.build(() -> {
-            for (PlayerWrapper player : PlayerMapper.getPlayers()) {
+            for (PlayerWrapper player : Server.getConnectedPlayers()) {
                 getCps(player).modifyFull(0, 0);
             }
         }).repeat(22, TaskerTime.TICKS).start();

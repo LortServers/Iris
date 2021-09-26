@@ -1,12 +1,10 @@
 package net.lortservers.iris.platform;
 
-import lombok.extern.slf4j.Slf4j;
 import net.lortservers.iris.managers.ConfigurationManager;
 import org.screamingsandals.lib.event.AbstractEvent;
 import org.screamingsandals.lib.utils.Wrapper;
 import org.screamingsandals.lib.utils.annotations.AbstractService;
 
-@Slf4j
 @AbstractService(replaceRule = "net.lortservers.iris.platform.{Platform}{className}")
 public abstract class EventManager {
     protected static EventManager defaultEventManager;

@@ -30,9 +30,9 @@ subprojects {
         compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
         annotationProcessor "org.projectlombok:lombok:${LOMBOK_VERSION}"
     }
-}
 
-configurations.all {
-    // Check for updates every build
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+        resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+    }
 }

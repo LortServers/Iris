@@ -41,6 +41,7 @@ test {
 
 shadowJar {
     baseName "${rootProject.name}-${project.name}"
+    minimize()
 
     relocate 'org.screamingsandals.lib', 'net.lortservers.iris.lib.slib'
     relocate 'com.fasterxml.jackson', 'net.lortservers.iris.lib.jackson'

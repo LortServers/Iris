@@ -9,6 +9,7 @@ import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.managers.PunishmentManager;
+import net.lortservers.iris.platform.ProtocolManager;
 import net.lortservers.iris.utils.profiles.PlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -23,6 +24,7 @@ import java.net.http.HttpResponse;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -69,8 +71,8 @@ public class PunishmentManagerImpl implements PunishmentManager {
         getSubscribers().forEach(e -> e.sendMessage(component));
         PlayerMapper.getConsoleSender().sendMessage(component);
         if (!ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse("").equals("")) {
-            // final Optional<Protocol> proto = ProtocolUtils.getProtocol(player.getProtocolVersion());
-            // final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
+            final Optional<Protocol> proto = ProtocolUtils.getProtocol(ProtocolManager.getProtocolVersion(player));
+            final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
             final Embed.EmbedBuilder embed = Embed.builder()
                     .thumbnail(
                             Embed.Media.builder()
@@ -88,14 +90,14 @@ public class PunishmentManagerImpl implements PunishmentManager {
                     .field(
                             Embed.Field.builder()
                                     .name("Player details")
-                                    .value("```yaml\nPing: " + player.getPing() + "ms```")
+                                    .value("```yaml\nPing: " + player.getPing() + "ms\nProtocol version: " + protocolString + "```")
                                     .build()
                     )
                     .timestamp(new Date(System.currentTimeMillis()));
             if (info != null) {
                 embed.field(
                         Embed.Field.builder()
-                                .name("Addítional information")
+                                .name("Additional information")
                                 .value("`" + info + "`")
                                 .build()
                 );
