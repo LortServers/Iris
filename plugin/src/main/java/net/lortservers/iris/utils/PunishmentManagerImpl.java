@@ -14,6 +14,7 @@ import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.net.MalformedURLException;
@@ -65,9 +66,9 @@ public class PunishmentManagerImpl implements PunishmentManager {
                     Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "info", info, "ping", Integer.toString(player.getPing()))
             );
         }
-        getSubscribers().forEach(e -> PlayerMapper.wrapPlayer(e).sendMessage(component));
+        getSubscribers().forEach(e -> e.sendMessage(component));
         PlayerMapper.getConsoleSender().sendMessage(component);
-        if (ConfigurationManager.getInstance().getValue("discordWebhook", Boolean.class).orElse(false)) {
+        if (!ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse("").equals("")) {
             // final Optional<Protocol> proto = ProtocolUtils.getProtocol(player.getProtocolVersion());
             // final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
             final Embed.EmbedBuilder embed = Embed.builder()
@@ -99,21 +100,23 @@ public class PunishmentManagerImpl implements PunishmentManager {
                                 .build()
                 );
             }
-            try {
-                final HttpResponse<String> response = WebhookRequestDispatcher.execute(
-                        ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElseThrow(),
-                        WebhookExecuteRequest.builder()
-                                .username("Iris")
-                                .avatarUrl(ConfigurationManager.getInstance().getValue("webhookAvatar", String.class).orElse(null))
-                                .embed(embed.build())
-                                .build()
-                );
-                if (ConfigurationManager.getInstance().getValue("debug", Boolean.class).orElse(false)) {
-                    IrisPlugin.getInstance().getLogger().info(response.body());
+            Tasker.build(() -> {
+                try {
+                    final HttpResponse<String> response = WebhookRequestDispatcher.execute(
+                            ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElseThrow(),
+                            WebhookExecuteRequest.builder()
+                                    .username("Iris")
+                                    .avatarUrl(ConfigurationManager.getInstance().getValue("webhookAvatar", String.class).orElse(null))
+                                    .embed(embed.build())
+                                    .build()
+                    );
+                    if (ConfigurationManager.getInstance().getValue("debug", Boolean.class).orElse(false)) {
+                        IrisPlugin.getInstance().getLogger().info(response.body());
+                    }
+                } catch (MalformedURLException | URISyntaxException e) {
+                    IrisPlugin.getInstance().getLogger().error("Malformed Discord webhook URL!");
                 }
-            } catch (MalformedURLException | URISyntaxException e) {
-                IrisPlugin.getInstance().getLogger().error("Malformed Discord webhook URL!");
-            }
+            }).afterOneTick().async().start();
         }
     }
 
