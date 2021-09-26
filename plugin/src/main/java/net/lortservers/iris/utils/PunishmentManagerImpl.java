@@ -9,10 +9,10 @@ import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.managers.PunishmentManager;
-import net.lortservers.iris.platform.ProtocolManager;
 import net.lortservers.iris.utils.profiles.PlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.screamingsandals.lib.packet.PacketMapper;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.tasker.Tasker;
@@ -71,7 +71,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
         getSubscribers().forEach(e -> e.sendMessage(component));
         PlayerMapper.getConsoleSender().sendMessage(component);
         if (!ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse("").equals("")) {
-            final Optional<Protocol> proto = ProtocolUtils.getProtocol(ProtocolManager.getProtocolVersion(player));
+            final Optional<Protocol> proto = ProtocolUtils.getProtocol(PacketMapper.getProtocolVersion(player));
             final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
             final Embed.EmbedBuilder embed = Embed.builder()
                     .thumbnail(
