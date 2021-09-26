@@ -19,15 +19,4 @@ public class AimbotCheckG extends AimbotCheck {
     public @NonNull CheckAlphabet getType() {
         return CheckAlphabet.G;
     }
-
-    /**
-     * <p>Gets the check VL threshold.</p>
-     * <p>Used for sending failed messages after the VL reaches a certain threshold.</p>
-     *
-     * @return the check VL threshold
-     */
-    @Override
-    public int getVLThreshold() {
-        return ConfigurationManager.getInstance().getValue("aimbotGVLThreshold", Integer.class).orElse(2);
-    }
 }

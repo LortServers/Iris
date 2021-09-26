@@ -1,6 +1,7 @@
 package net.lortservers.iris.managers;
 
 import net.kyori.adventure.text.Component;
+import net.lortservers.iris.checks.Check;
 import org.screamingsandals.lib.plugin.ServiceManager;
 
 import java.io.File;
@@ -15,11 +16,19 @@ public interface ConfigurationManager {
     @SuppressWarnings("rawtypes")
     Optional<FileDefinition> getTrackedFile(String relativePath);
 
+    <T> Optional<T> getTrackedFile(String file, Class<T> clazz);
+
     Component getMessage(String id);
 
     Component getMessage(String id, Map<String, String> placeholders);
 
     <T> Optional<T> getValue(String key, Class<T> returnType);
+
+    <T> Optional<T> getValue(Check check, String key, Class<T> returnType);
+
+    boolean isCheckEnabled(Check check);
+
+    int getVLMessageThreshold(Check check);
 
     interface FileDefinition<T> {
         Class<T> getType();

@@ -135,19 +135,19 @@ public class InteractFrequencyListener {
             IrisPlugin.getInstance().getLogger().info("LCPS: " + getCps(player).first() + ", RCPS: " + getCps(player).second());
         }
         final InteractFrequencyCheckA a = Check.get(InteractFrequencyCheckA.class);
-        if ((getCps(player).first() >= ConfigurationManager.getInstance().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16)) || (getCps(player).second() >= ConfigurationManager.getInstance().getValue("interactFrequencyAMaxCPS", Integer.class).orElse(16))) {
+        if ((getCps(player).first() >= ConfigurationManager.getInstance().getValue(a, "maxCPS", Double.class).orElse(16D).intValue()) || (getCps(player).second() >= ConfigurationManager.getInstance().getValue(a, "maxCPS", Double.class).orElse(16D).intValue())) {
             if (a.isEligibleForCheck(player)) {
                 final IrisCheckTriggerEvent evt1 = EventManager.fire(new IrisCheckTriggerEventImpl(player, a));
                 if (!evt1.isCancelled()) {
                     a.increaseVL(player, 1);
-                    if (a.getVL(player) >= a.getVLThreshold() && (System.currentTimeMillis() - PlayerProfileManager.ofPlayer(player).getLastBreak()) >= 1500) {
+                    if (a.getVL(player) >= a.getVLMessageThreshold() && (System.currentTimeMillis() - PlayerProfileManager.ofPlayer(player).getLastBreak()) >= 1500) {
                         if (PlayerUtils.isBlocking(action, player)) {
                             final BlockingFrequencyCheckA a1 = Check.get(BlockingFrequencyCheckA.class);
                             if (a1.isEligibleForCheck(player)) {
                                 final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(player, a1));
                                 if (!evt.isCancelled()) {
                                     a1.increaseVL(player, 1);
-                                    if (a1.getVL(player) >= a1.getVLThreshold()) {
+                                    if (a1.getVL(player) >= a1.getVLMessageThreshold()) {
                                         PunishmentManager.getInstance().logWarn(player, a1, "blocking too fast [RCPS: " + getCps(player).second() + "]");
                                     }
                                 }

@@ -11,7 +11,7 @@ public interface Check {
     @NonNull
     String getName();
 
-    int getVLThreshold();
+    int getVLMessageThreshold();
 
     default int getVL(Object player) {
         return getVL(PlayerMapper.wrapPlayer(player));

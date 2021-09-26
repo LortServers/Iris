@@ -7,6 +7,7 @@ import net.lortservers.iris.utils.CooldownMapping;
 import net.lortservers.iris.utils.profiles.PlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -46,9 +47,9 @@ public abstract class CheckImpl implements Check {
      */
     public CheckImpl() {
         this(
-                ConfigurationManager.getInstance().getValue("checkDecreaseAmount", Integer.class).orElse(10),
-                ConfigurationManager.getInstance().getValue("checkDecreaseFrequency", Integer.class).orElse(60),
-                ConfigurationManager.getInstance().getValue("checkCooldownPeriod", Integer.class).orElse(100),
+                ConfigurationManager.getInstance().getValue("decreaseAmount", Integer.class).orElse(10),
+                ConfigurationManager.getInstance().getValue("decreaseFrequency", Integer.class).orElse(60),
+                ConfigurationManager.getInstance().getValue("cooldownPeriod", Integer.class).orElse(100),
                 TaskerTime.SECONDS
         );
     }
@@ -56,16 +57,10 @@ public abstract class CheckImpl implements Check {
     @OnEnable
     public void enable() {
         Tasker.build(() -> {
-            for (PlayerProfile profile : PlayerProfileManager.all()) {
-                int currentVl = profile.getCheckVLs().getOrDefault(getClass(), 0);
-                if (currentVl >= decreaseBy) {
-                    currentVl = currentVl - decreaseBy;
-                } else {
-                    currentVl = 0;
-                }
-                profile.getCheckVLs().put(getClass(), currentVl);
+            for (PlayerWrapper player : PlayerMapper.getPlayers()) {
+                decreaseVL(player, decreaseBy);
             }
-        }).repeat(decreaseTime, decreaseTimeType).async().start();
+        }).repeat(decreaseTime, decreaseTimeType).start();
     }
 
     /**
@@ -172,5 +167,8 @@ public abstract class CheckImpl implements Check {
      *
      * @return the check VL threshold
      */
-    public abstract int getVLThreshold();
+    @Override
+    public int getVLMessageThreshold() {
+        return ConfigurationManager.getInstance().getVLMessageThreshold(this);
+    }
 }

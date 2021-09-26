@@ -98,15 +98,15 @@ public class AimbotListener {
             lastpitch.set(pitch.get());
             count.getAndIncrement();
         }).repeat(1, TaskerTime.TICKS).stopEvent(task -> {
-            if (r1 >= MathUtils.square(ConfigurationManager.getInstance().getValue("aimbotHFirstDistance", Double.class).orElse(3.75))) {
-                if (r2.get() >= MathUtils.square(ConfigurationManager.getInstance().getValue("aimbotHLastDistance", Double.class).orElse(3.5))) {
-                    if (count.get() == ConfigurationManager.getInstance().getValue("aimbotHCount", Integer.class).orElse(21)) {
-                        final AimbotCheckH h = Check.get(AimbotCheckH.class);
+            final AimbotCheckH h = Check.get(AimbotCheckH.class);
+            if (r1 >= MathUtils.square(ConfigurationManager.getInstance().getValue(h, "firstDistance", Double.class).orElse(3.75))) {
+                if (r2.get() >= MathUtils.square(ConfigurationManager.getInstance().getValue(h, "lastDistance", Double.class).orElse(3.5))) {
+                    if (count.get() == ConfigurationManager.getInstance().getValue(h, "count", Double.class).orElse(21D)) {
                         if (!h.isOnCooldown(attacker) && h.isEligibleForCheck(attacker)) {
                             final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, h));
                             if (!evt.isCancelled()) {
                                 h.increaseVL(attacker, 1);
-                                if (h.getVL(attacker) >= h.getVLThreshold()) {
+                                if (h.getVL(attacker) >= h.getVLMessageThreshold()) {
                                     PunishmentManager.getInstance().logWarn(attacker, h);
                                 }
                                 h.putCooldown(attacker);
@@ -117,15 +117,15 @@ public class AimbotListener {
             }
             if (count.get() <= 20) {
                 final int attackerCount = Math.abs(profile.getAimbotCounter() - count.get());
-                if (r1 >= MathUtils.square(ConfigurationManager.getInstance().getValue("aimbotIDistance", Double.class).orElse(3.5))) {
-                    final AimbotCheckI i = Check.get(AimbotCheckI.class);
+                final AimbotCheckI i = Check.get(AimbotCheckI.class);
+                if (r1 >= MathUtils.square(ConfigurationManager.getInstance().getValue(i, "distance", Double.class).orElse(3.5))) {
                     if (attackerCount >= 1 && attackerCount <= 3) {
                         if (victim.getLocation().getY() >= attacker.getLocation().getY() && !victim.isSprinting()) {
                             if (!i.isOnCooldown(attacker) && i.isEligibleForCheck(attacker)) {
                                 final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, i));
                                 if (!evt.isCancelled()) {
                                     i.increaseVL(attacker, 1);
-                                    if (i.getVL(attacker) >= i.getVLThreshold()) {
+                                    if (i.getVL(attacker) >= i.getVLMessageThreshold()) {
                                         PunishmentManager.getInstance().logWarn(attacker, i);
                                     }
                                     i.putCooldown(attacker);
@@ -138,7 +138,7 @@ public class AimbotListener {
                             final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, i));
                             if (!evt.isCancelled()) {
                                 i.increaseVL(attacker, 1);
-                                if (i.getVL(attacker) >= i.getVLThreshold()) {
+                                if (i.getVL(attacker) >= i.getVLMessageThreshold()) {
                                     if (victim.getLocation().getY() >= attacker.getLocation().getY()) {
                                         PunishmentManager.getInstance().logWarn(attacker, i);
                                     }
@@ -148,13 +148,13 @@ public class AimbotListener {
                         }
                     }
                     final AimbotCheckA a = Check.get(AimbotCheckA.class);
-                    if (attackerCount <= ConfigurationManager.getInstance().getValue("aimbotAMaxCountDifference", Integer.class).orElse(1)) {
-                        if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(ConfigurationManager.getInstance().getValue("aimbotADistance", Double.class).orElse(0.5))) {
+                    if (attackerCount <= ConfigurationManager.getInstance().getValue(a, "maxCountDifference", Double.class).orElse(1D)) {
+                        if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(ConfigurationManager.getInstance().getValue(a, "distance", Double.class).orElse(0.5))) {
                             if (!a.isOnCooldown(attacker) && a.isEligibleForCheck(attacker)) {
                                 final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, a));
                                 if (!evt.isCancelled()) {
                                     a.increaseVL(attacker, 1);
-                                    if (a.getVL(attacker) >= a.getVLThreshold()) {
+                                    if (a.getVL(attacker) >= a.getVLMessageThreshold()) {
                                         PunishmentManager.getInstance().logWarn(attacker, a);
                                         a.resetVL(attacker);
                                     }
@@ -175,7 +175,7 @@ public class AimbotListener {
                         final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, b));
                         if (!evt.isCancelled()) {
                             b.increaseVL(attacker, 1);
-                            if (b.getVL(attacker) >= b.getVLThreshold()) {
+                            if (b.getVL(attacker) >= b.getVLMessageThreshold()) {
                                 PunishmentManager.getInstance().logWarn(attacker, b);
                                 b.resetVL(attacker);
                             }
@@ -185,11 +185,12 @@ public class AimbotListener {
                 } else {
                     b.resetVL(attacker);
                 }
-                if (yawcount.get() >= ConfigurationManager.getInstance().getValue("aimbotEMinSimilarYaw", Integer.class).orElse(11) && pitchcount.get() >= ConfigurationManager.getInstance().getValue("aimbotEMinSimilarPitch", Integer.class).orElse(5)) {
+                final AimbotCheckE e = Check.get(AimbotCheckE.class);
+                if (yawcount.get() >= ConfigurationManager.getInstance().getValue(e, "minSimilarYaw", Double.class).orElse(11D) && pitchcount.get() >= ConfigurationManager.getInstance().getValue(e, "minSimilarPitch", Double.class).orElse(5D)) {
                     if (r1 == r2.get()) {
-                        final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, b));
+                        final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, e));
                         if (!evt.isCancelled()) {
-                            PunishmentManager.getInstance().logWarn(attacker, b);
+                            PunishmentManager.getInstance().logWarn(attacker, e);
                         }
                     }
                 }
@@ -200,7 +201,7 @@ public class AimbotListener {
                             final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, f));
                             if (!evt.isCancelled()) {
                                 f.increaseVL(attacker, 1);
-                                if (f.getVL(attacker) >= f.getVLThreshold()) {
+                                if (f.getVL(attacker) >= f.getVLMessageThreshold()) {
                                     PunishmentManager.getInstance().logWarn(attacker, f);
                                     f.resetVL(attacker);
                                 }
@@ -214,13 +215,13 @@ public class AimbotListener {
                     f.resetVL(attacker);
                 }
                 if (yawcount.get() < pitchcount.get()) {
-                    if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(ConfigurationManager.getInstance().getValue("aimbotGDistance", Double.class).orElse(0.5))) {
-                        final AimbotCheckG g = Check.get(AimbotCheckG.class);
+                    final AimbotCheckG g = Check.get(AimbotCheckG.class);
+                    if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(ConfigurationManager.getInstance().getValue(g, "distance", Double.class).orElse(0.5))) {
                         if (!g.isOnCooldown(attacker) && g.isEligibleForCheck(attacker)) {
                             final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, g));
                             if (!evt.isCancelled()) {
                                 g.increaseVL(attacker, 1);
-                                if (g.getVL(attacker) >= g.getVLThreshold()) {
+                                if (g.getVL(attacker) >= g.getVLMessageThreshold()) {
                                     PunishmentManager.getInstance().logWarn(attacker, g);
                                     g.resetVL(attacker);
                                 }

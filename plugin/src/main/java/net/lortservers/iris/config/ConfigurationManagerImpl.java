@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
+import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.managers.ConfigurationManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.tasker.Tasker;
@@ -35,8 +36,18 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             new FileDefinitionImpl<>(Messages.class, "messages.json")
     );
 
+    @Override
     public Optional<ConfigurationManager.FileDefinition> getTrackedFile(String relativePath) {
         return TRACKED_FILES.stream().filter(e -> e.getRelativePath().equals(relativePath)).findFirst();
+    }
+
+    @Override
+    public <T> Optional<T> getTrackedFile(String file, Class<T> clazz) {
+        final Optional<FileDefinition> definition = getTrackedFile(file);
+        if (definition.isEmpty()) {
+            return Optional.empty();
+        }
+        return (definition.orElseThrow().isLoaded()) ? Optional.of(clazz.cast(definition.orElseThrow().getObject())) : Optional.empty();
     }
 
     /**
@@ -45,8 +56,17 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
      * @param id the message id
      * @return the message component
      */
+    @Override
     public Component getMessage(String id) {
         return getMessage(id, Map.of());
+    }
+
+    public Optional<Messages> getMessages() {
+        return getTrackedFile("messages.json", Messages.class);
+    }
+
+    public Optional<Configuration> getConfiguration() {
+        return getTrackedFile("config.json", Configuration.class);
     }
 
     /**
@@ -56,14 +76,34 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
      * @param placeholders the message placeholders
      * @return the message component
      */
+    @Override
     public Component getMessage(String id, Map<String, String> placeholders) {
-        final FileDefinition msgs = getTrackedFile("messages.json").orElseThrow();
-        return (msgs.isLoaded()) ? ((Messages) msgs.getObject()).getMessage(id, placeholders) : Component.empty();
+        final Optional<Messages> msgs = getMessages();
+        return (msgs.isPresent()) ? msgs.orElseThrow().getMessage(id, placeholders) : Component.empty();
     }
 
+    @Override
     public <T> Optional<T> getValue(String key, Class<T> returnType) {
-        final FileDefinition config = getTrackedFile("config.json").orElseThrow();
-        return (config.isLoaded()) ? ((Configuration) config.getObject()).getValue(key, returnType) : Optional.empty();
+        final Optional<Configuration> config = getConfiguration();
+        return (config.isPresent()) ? config.orElseThrow().getValue(key, returnType) : Optional.empty();
+    }
+
+    @Override
+    public <T> Optional<T> getValue(Check check, String key, Class<T> returnType) {
+        final Optional<Configuration> config = getConfiguration();
+        return (config.isPresent()) ? config.orElseThrow().getValue(check, key, returnType) : Optional.empty();
+    }
+
+    @Override
+    public boolean isCheckEnabled(Check check) {
+        final Optional<Configuration> config = getConfiguration();
+        return config.isEmpty() || config.orElseThrow().isCheckEnabled(check);
+    }
+
+    @Override
+    public int getVLMessageThreshold(Check check) {
+        final Optional<Configuration> config = getConfiguration();
+        return (config.isPresent()) ? config.orElseThrow().getVLMessageThreshold(check) : 0;
     }
 
     /**
