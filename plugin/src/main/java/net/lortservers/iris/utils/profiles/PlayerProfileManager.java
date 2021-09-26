@@ -2,18 +2,21 @@ package net.lortservers.iris.utils.profiles;
 
 import net.lortservers.iris.managers.PunishmentManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.event.player.SPlayerLeaveEvent;
-import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class PlayerProfileManager {
@@ -35,7 +38,7 @@ public class PlayerProfileManager {
 
     @OnEnable
     public void enable() {
-        PlayerMapper.getPlayers().forEach(this::putPlayer);
+        Server.getConnectedPlayers().forEach(this::putPlayer);
     }
 
     @OnDisable

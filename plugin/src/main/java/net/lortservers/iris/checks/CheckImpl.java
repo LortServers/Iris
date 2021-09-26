@@ -7,7 +7,7 @@ import net.lortservers.iris.utils.CooldownMapping;
 import net.lortservers.iris.utils.profiles.PlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -57,7 +57,7 @@ public abstract class CheckImpl implements Check {
     @OnEnable
     public void enable() {
         Tasker.build(() -> {
-            for (PlayerWrapper player : PlayerMapper.getPlayers()) {
+            for (PlayerWrapper player : Server.getConnectedPlayers()) {
                 decreaseVL(player, decreaseBy);
             }
         }).repeat(decreaseTime, decreaseTimeType).start();
