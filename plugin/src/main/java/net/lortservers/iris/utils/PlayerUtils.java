@@ -21,10 +21,6 @@ public final class PlayerUtils {
         return (action == SPlayerInteractEvent.Action.RIGHT_CLICK_AIR || action == SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) && (MaterialUtils.hasPart(player.getPlayerInventory().getItemInMainHand(), "sword") || player.getPlayerInventory().getItemInOffHand().getMaterial().is("minecraft:shield"));
     }
 
-    public static boolean isOnGround(PlayerWrapper player) {
-        return !(Math.abs(player.asEntity().getVelocity().getY()) > 0) && !player.getLocation().remove(0, 1, 0).getBlock().isEmpty();
-    }
-
     public static boolean isHoldingMaterial(PlayerWrapper player, String mat) {
         return player.getPlayerInventory().getItemInMainHand().getMaterial().is(mat) || player.getPlayerInventory().getItemInOffHand().getMaterial().is(mat);
     }

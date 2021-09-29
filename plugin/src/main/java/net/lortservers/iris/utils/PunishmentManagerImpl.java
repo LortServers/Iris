@@ -36,6 +36,8 @@ import java.util.stream.Stream;
         PlayerProfileManager.class
 })
 public class PunishmentManagerImpl implements PunishmentManager {
+    private final CooldownMapping webhookCooldown = new CooldownMapping(10000);
+
     /**
      * <p>Sends a failed message to alert subscribers.</p>
      *
@@ -70,7 +72,8 @@ public class PunishmentManagerImpl implements PunishmentManager {
         }
         getSubscribers().forEach(e -> e.sendMessage(component));
         PlayerMapper.getConsoleSender().sendMessage(component);
-        if (!ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse("").equals("")) {
+        if (!ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse("").equals("") && !webhookCooldown.isOnCooldown()) {
+            webhookCooldown.putCooldown();
             final Optional<Protocol> proto = ProtocolUtils.getProtocol(PacketMapper.getProtocolVersion(player));
             final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
             final Embed.EmbedBuilder embed = Embed.builder()
