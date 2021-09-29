@@ -8,8 +8,8 @@ import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.managers.ConfigurationManager;
+import net.lortservers.iris.utils.tasks.AsyncExecutor;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 
@@ -114,11 +114,11 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             //noinspection ResultOfMethodCallIgnored
             IrisPlugin.getInstance().getDataFolder().toFile().mkdirs();
         }
-        Tasker.build(() -> {
+        AsyncExecutor.executeTask(() -> {
             for (ConfigurationManager.FileDefinition file : TRACKED_FILES) {
                 file.load();
             }
-        }).afterOneTick().async().start();
+        });
     }
 
     /**

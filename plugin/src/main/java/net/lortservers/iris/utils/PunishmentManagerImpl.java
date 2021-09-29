@@ -11,11 +11,11 @@ import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.managers.PunishmentManager;
 import net.lortservers.iris.utils.profiles.PlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
+import net.lortservers.iris.utils.tasks.AsyncExecutor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.screamingsandals.lib.packet.PacketMapper;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.net.MalformedURLException;
@@ -105,7 +105,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
                                 .build()
                 );
             }
-            Tasker.build(() -> {
+            AsyncExecutor.executeTask(() -> {
                 try {
                     final HttpResponse<String> response = WebhookRequestDispatcher.execute(
                             ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElseThrow(),
@@ -121,7 +121,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
                 } catch (MalformedURLException | URISyntaxException e) {
                     IrisPlugin.getInstance().getLogger().error("Malformed Discord webhook URL!");
                 }
-            }).afterOneTick().async().start();
+            });
         }
     }
 
