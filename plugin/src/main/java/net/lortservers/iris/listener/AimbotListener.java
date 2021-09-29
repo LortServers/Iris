@@ -76,7 +76,7 @@ public class AimbotListener {
                 taskBase.cancel();
                 return;
             }
-            if (attacker.getLocation().getDistanceSquared(victim.getLocation()) >= MathUtils.square(4.75)) {
+            if (attacker.getLocation().getDistanceSquared(victim.getLocation()) >= 4.75) {
                 taskBase.cancel();
                 return;
             }
@@ -149,7 +149,7 @@ public class AimbotListener {
                     }
                     final AimbotCheckA a = Check.get(AimbotCheckA.class);
                     if (attackerCount <= ConfigurationManager.getInstance().getValue(a, "maxCountDifference", Double.class).orElse(1D)) {
-                        if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(ConfigurationManager.getInstance().getValue(a, "distance", Double.class).orElse(0.5))) {
+                        if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > ConfigurationManager.getInstance().getValue(a, "distance", Double.class).orElse(0.5)) {
                             if (!a.isOnCooldown(attacker) && a.isEligibleForCheck(attacker)) {
                                 final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, a));
                                 if (!evt.isCancelled()) {
@@ -216,7 +216,7 @@ public class AimbotListener {
                 }
                 if (yawcount.get() < pitchcount.get()) {
                     final AimbotCheckG g = Check.get(AimbotCheckG.class);
-                    if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > MathUtils.square(ConfigurationManager.getInstance().getValue(g, "distance", Double.class).orElse(0.5))) {
+                    if (attacker.getLocation().getDistanceSquared(victim.getLocation()) > ConfigurationManager.getInstance().getValue(g, "distance", Double.class).orElse(0.5)) {
                         if (!g.isOnCooldown(attacker) && g.isEligibleForCheck(attacker)) {
                             final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, g));
                             if (!evt.isCancelled()) {
