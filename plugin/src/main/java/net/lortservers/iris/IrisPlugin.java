@@ -8,6 +8,7 @@ import net.lortservers.iris.listener.InteractFrequencyListener;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.utils.ProtocolUtils;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
+import org.screamingsandals.lib.packet.PacketMapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -24,6 +25,7 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
 )
 @Init(services = {
         Tasker.class,
+        PacketMapper.class,
         ConfigurationManagerImpl.class,
         PlayerProfileManager.class,
         EventManager.class,
