@@ -26,8 +26,8 @@ public class Messages {
     @JsonIgnore
     protected static final MiniMessage MINIMESSAGE = MiniMessage.get();
     private String prefix = "[<color:blue>Iris<color:white>]";
-    private String failedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:gray><info><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <x> <y> <z>, <color:#83A9B5>vl:<color:white> <vl>";
-    private String shortFailedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <x> <y> <z>, <color:#83A9B5>vl:<color:white> <vl>";
+    private String failedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:gray><info><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <loc>, <color:#83A9B5>vl:<color:white> <vl>";
+    private String shortFailedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <loc>, <color:#83A9B5>vl:<color:white> <vl>";
     private String noPermission = "<prefix> <color:red>No permission!";
     private String invalidCommand = "<prefix> <color:red>Invalid command!";
     private String alertsToggle = "<prefix> <color:yellow>Turned alerts <color:green><status><color:yellow>!";

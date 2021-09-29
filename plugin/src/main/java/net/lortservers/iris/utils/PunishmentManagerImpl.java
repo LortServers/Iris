@@ -58,16 +58,17 @@ public class PunishmentManagerImpl implements PunishmentManager {
      * @param info additional info to log
      */
     public <T extends Check> void logWarn(PlayerWrapper player, T check, @Nullable String info) {
+        final String loc = Stream.of(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ()).map(e -> Integer.toString(e)).collect(Collectors.joining(", ")) + ", " + player.getLocation().getWorld().getName();
         Component component;
         if (info == null) {
             component = ConfigurationManager.getInstance().getMessage(
                     "shortFailedCheck",
-                    Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "ping", Integer.toString(player.getPing()), "x", Double.toString(player.getLocation().getX()), "y", Double.toString(player.getLocation().getY()), "z", Double.toString(player.getLocation().getZ()))
+                    Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "ping", Integer.toString(player.getPing()), "loc", loc)
             );
         } else {
             component = ConfigurationManager.getInstance().getMessage(
                     "failedCheck",
-                    Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "info", info, "ping", Integer.toString(player.getPing()), "x", Double.toString(player.getLocation().getX()), "y", Double.toString(player.getLocation().getY()), "z", Double.toString(player.getLocation().getZ()))
+                    Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "info", info, "ping", Integer.toString(player.getPing()), "loc", loc)
             );
         }
         getSubscribers().forEach(e -> e.sendMessage(component));
