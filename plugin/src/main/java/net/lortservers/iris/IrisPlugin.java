@@ -6,7 +6,6 @@ import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.listener.AimbotListener;
 import net.lortservers.iris.listener.InteractFrequencyListener;
 import net.lortservers.iris.platform.EventManager;
-import net.lortservers.iris.platform.ProtocolManager;
 import net.lortservers.iris.utils.ProtocolUtils;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.screamingsandals.lib.plugin.PluginContainer;
@@ -28,7 +27,6 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
         ConfigurationManagerImpl.class,
         PlayerProfileManager.class,
         EventManager.class,
-        ProtocolManager.class,
         AimbotListener.class,
         InteractFrequencyListener.class,
         AlertsCommand.class,
