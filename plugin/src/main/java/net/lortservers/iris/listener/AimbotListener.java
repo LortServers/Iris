@@ -10,10 +10,11 @@ import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
+import net.lortservers.iris.utils.ThresholdType;
+import net.lortservers.iris.utils.misc.AtomicDouble;
+import net.lortservers.iris.utils.misc.AtomicFloat;
 import net.lortservers.iris.utils.profiles.PlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
-import net.lortservers.iris.wrap.AtomicDouble;
-import net.lortservers.iris.wrap.AtomicFloat;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
@@ -106,8 +107,8 @@ public class AimbotListener {
                             final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, h));
                             if (!evt.isCancelled()) {
                                 h.increaseVL(attacker, 1);
-                                if (h.getVL(attacker) >= h.getVLMessageThreshold()) {
-                                    PunishmentManager.getInstance().logWarn(attacker, h);
+                                if (h.getVL(attacker) >= h.getVLThreshold(ThresholdType.MESSAGE)) {
+                                    PunishmentManager.getInstance().log(attacker, h);
                                 }
                                 h.putCooldown(attacker);
                             }
@@ -125,8 +126,8 @@ public class AimbotListener {
                                 final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, i));
                                 if (!evt.isCancelled()) {
                                     i.increaseVL(attacker, 1);
-                                    if (i.getVL(attacker) >= i.getVLMessageThreshold()) {
-                                        PunishmentManager.getInstance().logWarn(attacker, i);
+                                    if (i.getVL(attacker) >= i.getVLThreshold(ThresholdType.MESSAGE)) {
+                                        PunishmentManager.getInstance().log(attacker, i);
                                     }
                                     i.putCooldown(attacker);
                                 }
@@ -138,9 +139,9 @@ public class AimbotListener {
                             final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, i));
                             if (!evt.isCancelled()) {
                                 i.increaseVL(attacker, 1);
-                                if (i.getVL(attacker) >= i.getVLMessageThreshold()) {
+                                if (i.getVL(attacker) >= i.getVLThreshold(ThresholdType.MESSAGE)) {
                                     if (victim.getLocation().getY() >= attacker.getLocation().getY()) {
-                                        PunishmentManager.getInstance().logWarn(attacker, i);
+                                        PunishmentManager.getInstance().log(attacker, i);
                                     }
                                 }
                                 i.putCooldown(attacker);
@@ -154,8 +155,8 @@ public class AimbotListener {
                                 final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, a));
                                 if (!evt.isCancelled()) {
                                     a.increaseVL(attacker, 1);
-                                    if (a.getVL(attacker) >= a.getVLMessageThreshold()) {
-                                        PunishmentManager.getInstance().logWarn(attacker, a);
+                                    if (a.getVL(attacker) >= a.getVLThreshold(ThresholdType.MESSAGE)) {
+                                        PunishmentManager.getInstance().log(attacker, a);
                                         a.resetVL(attacker);
                                     }
                                     a.putCooldown(attacker);
@@ -175,8 +176,8 @@ public class AimbotListener {
                         final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, b));
                         if (!evt.isCancelled()) {
                             b.increaseVL(attacker, 1);
-                            if (b.getVL(attacker) >= b.getVLMessageThreshold()) {
-                                PunishmentManager.getInstance().logWarn(attacker, b);
+                            if (b.getVL(attacker) >= b.getVLThreshold(ThresholdType.MESSAGE)) {
+                                PunishmentManager.getInstance().log(attacker, b);
                                 b.resetVL(attacker);
                             }
                             b.putCooldown(attacker);
@@ -190,7 +191,7 @@ public class AimbotListener {
                     if (r1 == r2.get()) {
                         final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, e));
                         if (!evt.isCancelled()) {
-                            PunishmentManager.getInstance().logWarn(attacker, e);
+                            PunishmentManager.getInstance().log(attacker, e);
                         }
                     }
                 }
@@ -201,8 +202,8 @@ public class AimbotListener {
                             final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, f));
                             if (!evt.isCancelled()) {
                                 f.increaseVL(attacker, 1);
-                                if (f.getVL(attacker) >= f.getVLMessageThreshold()) {
-                                    PunishmentManager.getInstance().logWarn(attacker, f);
+                                if (f.getVL(attacker) >= f.getVLThreshold(ThresholdType.MESSAGE)) {
+                                    PunishmentManager.getInstance().log(attacker, f);
                                     f.resetVL(attacker);
                                 }
                                 f.putCooldown(attacker);
@@ -221,8 +222,8 @@ public class AimbotListener {
                             final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(attacker, g));
                             if (!evt.isCancelled()) {
                                 g.increaseVL(attacker, 1);
-                                if (g.getVL(attacker) >= g.getVLMessageThreshold()) {
-                                    PunishmentManager.getInstance().logWarn(attacker, g);
+                                if (g.getVL(attacker) >= g.getVLThreshold(ThresholdType.MESSAGE)) {
+                                    PunishmentManager.getInstance().log(attacker, g);
                                     g.resetVL(attacker);
                                 }
                                 g.putCooldown(attacker);

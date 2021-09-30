@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.utils.CooldownMapping;
+import net.lortservers.iris.utils.ThresholdType;
 import net.lortservers.iris.utils.profiles.PlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -168,7 +169,7 @@ public abstract class CheckImpl implements Check {
      * @return the check VL threshold
      */
     @Override
-    public int getVLMessageThreshold() {
-        return ConfigurationManager.getInstance().getVLMessageThreshold(this);
+    public int getVLThreshold(ThresholdType type) {
+        return ConfigurationManager.getInstance().getVLThreshold(this, type);
     }
 }

@@ -2,6 +2,7 @@ package net.lortservers.iris.managers;
 
 import net.kyori.adventure.text.Component;
 import net.lortservers.iris.checks.Check;
+import net.lortservers.iris.utils.ThresholdType;
 import org.screamingsandals.lib.plugin.ServiceManager;
 
 import java.io.File;
@@ -28,7 +29,7 @@ public interface ConfigurationManager {
 
     boolean isCheckEnabled(Check check);
 
-    int getVLMessageThreshold(Check check);
+    int getVLThreshold(Check check, ThresholdType type);
 
     interface FileDefinition<T> {
         Class<T> getType();

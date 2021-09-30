@@ -2,8 +2,11 @@ package net.lortservers.iris.config;
 
 import lombok.*;
 import net.lortservers.iris.checks.Check;
+import net.lortservers.iris.checks.CheckAlphabet;
+import net.lortservers.iris.utils.ThresholdType;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -12,7 +15,6 @@ import java.util.Optional;
  * <p>A class holding the plugin configuration.</p>
  */
 @Getter
-@Setter
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,79 +25,120 @@ public class Configuration {
     private int decreaseFrequency = 60;
     private int decreaseAmount = 10;
     private int cooldownPeriod = 100;
-    private Map<String, Boolean> checks = Map.of(
-            "Aimbot", true,
-            "InteractFrequency", true,
-            "BlockingFrequency", true
+
+    private List<CheckConfiguration> checks = List.of(
+            CheckConfiguration.builder()
+                    .name("Aimbot")
+                    .type("A")
+                    .options(Map.of(
+                            "maxCountDifference", 1,
+                            "distance", 0.5
+                    ))
+                    .suspicionThresholds(Map.of(
+                            "message", 4
+                    ))
+                    .build(),
+            CheckConfiguration.builder()
+                    .name("Aimbot")
+                    .type("B")
+                    .suspicionThresholds(Map.of(
+                            "message", 5
+                    ))
+                    .build(),
+            CheckConfiguration.builder()
+                    .name("Aimbot")
+                    .type("E")
+                    .options(Map.of(
+                            "minSimilarYaw", 11,
+                            "minSimilarPitch", 5
+                    ))
+                    .suspicionThresholds(Map.of(
+                            "message", 0
+                    ))
+                    .build(),
+            CheckConfiguration.builder()
+                    .name("Aimbot")
+                    .type("F")
+                    .suspicionThresholds(Map.of(
+                            "message", 3
+                    ))
+                    .build(),
+            CheckConfiguration.builder()
+                    .name("Aimbot")
+                    .type("G")
+                    .options(Map.of(
+                            "distance", 0.5
+                    ))
+                    .suspicionThresholds(Map.of(
+                            "message", 2
+                    ))
+                    .build(),
+            CheckConfiguration.builder()
+                    .name("Aimbot")
+                    .type("H")
+                    .options(Map.of(
+                            "firstDistance", 3.75,
+                            "lastDistance", 3.5,
+                            "count", 21
+                    ))
+                    .suspicionThresholds(Map.of(
+                            "message", 2
+                    ))
+                    .build(),
+            CheckConfiguration.builder()
+                    .name("Aimbot")
+                    .type("I")
+                    .options(Map.of(
+                            "distance", 3.5
+                    ))
+                    .suspicionThresholds(Map.of(
+                            "message", 2
+                    ))
+                    .build(),
+            CheckConfiguration.builder()
+                    .name("InteractFrequency")
+                    .type("A")
+                    .options(Map.of(
+                            "maxCPS", 16
+                    ))
+                    .suspicionThresholds(Map.of(
+                            "message", 2
+                    ))
+                    .build(),
+            CheckConfiguration.builder()
+                    .name("BlockingFrequency")
+                    .type("A")
+                    .suspicionThresholds(Map.of(
+                            "message", 5
+                    ))
+                    .build()
     );
-    private Map<String, Map<String, Map<String, Integer>>> suspicionThresholds = Map.of(
-            "Aimbot", Map.of(
-                    "A", Map.of("message", 4),
-                    "B", Map.of("message", 5),
-                    "E", Map.of("message", 0),
-                    "F", Map.of("message", 3),
-                    "G", Map.of("message", 2),
-                    "H", Map.of("message", 2),
-                    "I", Map.of("message", 2)
-            ),
-            "InteractFrequency", Map.of(
-                    "A", Map.of("message", 2)
-            ),
-            "BlockingFrequency", Map.of(
-                    "A", Map.of("message", 5)
-            )
-    );
-    private Map<String, Map<String, Double>> aimbot = Map.of(
-            "A", Map.of(
-                    "maxCountDifference", 1D,
-                    "distance", 0.5
-            ),
-            "E", Map.of(
-                    "minSimilarYaw", 11D,
-                    "minSimilarPitch", 5D
-            ),
-            "G", Map.of(
-                    "distance", 0.5
-            ),
-            "H", Map.of(
-                    "firstDistance", 3.75,
-                    "lastDistance", 3.5,
-                    "count", 21D
-            ),
-            "I", Map.of(
-                    "distance", 3.5
-            )
-    );
-    private Map<String, Map<String, Double>> interactFrequency = Map.of(
-            "A", Map.of(
-                    "maxCPS", 16D
-            )
-    );
+
     private boolean discordWebhook = false;
     private String webhookUrl = "";
     private String webhookAvatar = "https://i.imgur.com/161mP3g.png";
+
+    public Optional<CheckConfiguration> getCheck(String name, CheckAlphabet letter) {
+        return checks.stream().filter(e -> e.getName().equals(name) && e.getType().toUpperCase(Locale.ROOT).equals(letter.name())).findFirst();
+    }
 
     public <T> Optional<T> getValue(String key, Class<T> returnType) {
         final Object result = Reflect.getField(this, key);
         return (result == null) ? Optional.empty() : Optional.of(returnType.cast(result));
     }
 
-    @SuppressWarnings("unchecked")
     public <T> Optional<T> getValue(Check check, String key, Class<T> returnType) {
-        final String fieldName = check.getName().substring(0, 1).toLowerCase(Locale.ROOT) + check.getName().substring(1);
-        final Map<String, Map<String, T>> result = (Map<String, Map<String, T>>) Reflect.getField(this, fieldName);
-        return (result == null) ? Optional.empty() : ((result.get(check.getType().name()) == null) ? Optional.empty() : Optional.ofNullable(result.get(check.getType().name()).get(key)));
+        final Optional<CheckConfiguration> result = getCheck(check.getName(), check.getType());
+        return (result.isEmpty()) ? Optional.empty() : Optional.of(returnType.cast(result.orElseThrow().getOptions().get(key)));
     }
 
     public boolean isCheckEnabled(Check check) {
-        return checks.getOrDefault(check.getName(), true);
+        final Optional<CheckConfiguration> result = getCheck(check.getName(), check.getType());
+        return result.isPresent() && result.orElseThrow().isEnabled();
     }
 
-    public int getVLMessageThreshold(Check check) {
-        final Map<String, Map<String, Integer>> checkBase = suspicionThresholds.get(check.getName());
-        if (checkBase == null || checkBase.get(check.getType().name()) == null) {
-            return 0;
-        }
-        return checkBase.get(check.getType().name()).getOrDefault("message", 0);
+    public int getVLThreshold(Check check, ThresholdType type) {
+        final Optional<CheckConfiguration> result = getCheck(check.getName(), check.getType());
+        return (result.isEmpty()) ? 0 : result.orElseThrow().getSuspicionThresholds().getOrDefault(type.getKey(), 0);
     }
 }

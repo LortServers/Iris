@@ -13,6 +13,7 @@ import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.utils.IntegerPair;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
+import net.lortservers.iris.utils.ThresholdType;
 import net.lortservers.iris.utils.material.MaterialUtils;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.screamingsandals.lib.Server;
@@ -140,20 +141,20 @@ public class InteractFrequencyListener {
                 final IrisCheckTriggerEvent evt1 = EventManager.fire(new IrisCheckTriggerEventImpl(player, a));
                 if (!evt1.isCancelled()) {
                     a.increaseVL(player, 1);
-                    if (a.getVL(player) >= a.getVLMessageThreshold() && (System.currentTimeMillis() - PlayerProfileManager.ofPlayer(player).getLastBreak()) >= 1500) {
+                    if (a.getVL(player) >= a.getVLThreshold(ThresholdType.MESSAGE) && (System.currentTimeMillis() - PlayerProfileManager.ofPlayer(player).getLastBreak()) >= 1500) {
                         if (PlayerUtils.isBlocking(action, player)) {
                             final BlockingFrequencyCheckA a1 = Check.get(BlockingFrequencyCheckA.class);
                             if (a1.isEligibleForCheck(player)) {
                                 final IrisCheckTriggerEvent evt = EventManager.fire(new IrisCheckTriggerEventImpl(player, a1));
                                 if (!evt.isCancelled()) {
                                     a1.increaseVL(player, 1);
-                                    if (a1.getVL(player) >= a1.getVLMessageThreshold()) {
-                                        PunishmentManager.getInstance().logWarn(player, a1, "blocking too fast [RCPS: " + getCps(player).second() + "]");
+                                    if (a1.getVL(player) >= a1.getVLThreshold(ThresholdType.MESSAGE)) {
+                                        PunishmentManager.getInstance().log(player, a1, "blocking too fast [RCPS: " + getCps(player).second() + "]");
                                     }
                                 }
                             }
                         } else {
-                            PunishmentManager.getInstance().logWarn(player, a, "seems to be using an autoclicker [LCPS: " + getCps(player).first() + ", RCPS: " + getCps(player).second() + "]");
+                            PunishmentManager.getInstance().log(player, a, "seems to be using an autoclicker [LCPS: " + getCps(player).first() + ", RCPS: " + getCps(player).second() + "]");
                         }
                     }
                 }

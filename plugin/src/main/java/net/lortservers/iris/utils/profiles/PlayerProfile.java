@@ -4,7 +4,7 @@ import lombok.Data;
 import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.utils.CooldownMapping;
 import net.lortservers.iris.utils.IntegerPair;
-import net.lortservers.iris.wrap.IntegerPairImpl;
+import net.lortservers.iris.utils.misc.IntegerPairImpl;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 

@@ -1,5 +1,6 @@
 package net.lortservers.iris.checks;
 
+import net.lortservers.iris.utils.ThresholdType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -11,7 +12,7 @@ public interface Check {
     @NonNull
     String getName();
 
-    int getVLMessageThreshold();
+    int getVLThreshold(ThresholdType type);
 
     default int getVL(Object player) {
         return getVL(PlayerMapper.wrapPlayer(player));

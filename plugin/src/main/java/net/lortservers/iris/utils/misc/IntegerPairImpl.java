@@ -1,4 +1,4 @@
-package net.lortservers.iris.wrap;
+package net.lortservers.iris.utils.misc;
 
 import net.lortservers.iris.utils.IntegerPair;
 

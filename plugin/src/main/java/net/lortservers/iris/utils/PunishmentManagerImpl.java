@@ -11,7 +11,9 @@ import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.managers.PunishmentManager;
 import net.lortservers.iris.utils.profiles.PlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
-import net.lortservers.iris.utils.tasks.AsyncExecutor;
+import net.lortservers.iris.utils.protocol.Protocol;
+import net.lortservers.iris.utils.protocol.ProtocolUtils;
+import net.lortservers.iris.utils.tasks.ThreadedExecutor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.screamingsandals.lib.packet.PacketMapper;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -45,8 +47,8 @@ public class PunishmentManagerImpl implements PunishmentManager {
      * @param check the check class
      * @param <T> the check class type
      */
-    public <T extends Check> void logWarn(PlayerWrapper player, T check) {
-        logWarn(player, check, null);
+    public <T extends Check> void log(PlayerWrapper player, T check) {
+        log(player, check, null);
     }
 
     /**
@@ -57,7 +59,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
      * @param <T> the check class type
      * @param info additional info to log
      */
-    public <T extends Check> void logWarn(PlayerWrapper player, T check, @Nullable String info) {
+    public <T extends Check> void log(PlayerWrapper player, T check, @Nullable String info) {
         final String loc = Stream.of(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ()).map(e -> Integer.toString(e)).collect(Collectors.joining(", ")) + ", " + player.getLocation().getWorld().getName();
         Component component;
         if (info == null) {
@@ -106,7 +108,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
                                 .build()
                 );
             }
-            AsyncExecutor.executeTask(() -> {
+            ThreadedExecutor.executeTask(() -> {
                 try {
                     final HttpResponse<String> response = WebhookRequestDispatcher.execute(
                             ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElseThrow(),

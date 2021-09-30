@@ -8,7 +8,8 @@ import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.managers.ConfigurationManager;
-import net.lortservers.iris.utils.tasks.AsyncExecutor;
+import net.lortservers.iris.utils.ThresholdType;
+import net.lortservers.iris.utils.tasks.ThreadedExecutor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
@@ -101,9 +102,9 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     }
 
     @Override
-    public int getVLMessageThreshold(Check check) {
+    public int getVLThreshold(Check check, ThresholdType type) {
         final Optional<Configuration> config = getConfiguration();
-        return (config.isPresent()) ? config.orElseThrow().getVLMessageThreshold(check) : 0;
+        return (config.isPresent()) ? config.orElseThrow().getVLThreshold(check, type) : 0;
     }
 
     /**
@@ -114,11 +115,9 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             //noinspection ResultOfMethodCallIgnored
             IrisPlugin.getInstance().getDataFolder().toFile().mkdirs();
         }
-        AsyncExecutor.executeTask(() -> {
-            for (ConfigurationManager.FileDefinition file : TRACKED_FILES) {
-                file.load();
-            }
-        });
+        for (ConfigurationManager.FileDefinition file : TRACKED_FILES) {
+            ThreadedExecutor.executeTask(file::load);
+        }
     }
 
     /**
