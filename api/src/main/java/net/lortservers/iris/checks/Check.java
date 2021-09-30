@@ -56,6 +56,8 @@ public interface Check {
 
     boolean isEligibleForCheck(PlayerWrapper player);
 
+    boolean isEnabled();
+
     static <T extends Check> T get(Class<T> clazz) {
         return ServiceManager.get(clazz);
     }

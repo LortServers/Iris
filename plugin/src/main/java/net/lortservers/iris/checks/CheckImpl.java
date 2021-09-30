@@ -159,7 +159,8 @@ public abstract class CheckImpl implements Check {
         return player.isOnline() &&
                 !player.asEntity().isDead() &&
                 player.getGameMode().is("survival") &&
-                !player.hasPermission("iris.bypass." + getName().toLowerCase(Locale.ROOT) + "." + getType().name().toLowerCase(Locale.ROOT));
+                !player.hasPermission("iris.bypass." + getName().toLowerCase(Locale.ROOT) + "." + getType().name().toLowerCase(Locale.ROOT)) &&
+                isEnabled();
     }
 
     /**
@@ -171,5 +172,10 @@ public abstract class CheckImpl implements Check {
     @Override
     public int getVLThreshold(ThresholdType type) {
         return ConfigurationManager.getInstance().getVLThreshold(this, type);
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return ConfigurationManager.getInstance().isCheckEnabled(this);
     }
 }
