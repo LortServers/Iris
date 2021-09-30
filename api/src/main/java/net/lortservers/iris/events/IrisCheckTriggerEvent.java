@@ -1,18 +1,7 @@
 package net.lortservers.iris.events;
 
 import net.lortservers.iris.checks.Check;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
-public interface IrisCheckTriggerEvent {
+public interface IrisCheckTriggerEvent extends IrisCancellableEvent, IrisPlayerEvent {
     Check getCheck();
-
-    default <T> T getPlatformPlayer(Class<T> clazz) {
-        return getPlayer().as(clazz);
-    }
-
-    PlayerWrapper getPlayer();
-
-    boolean isCancelled();
-
-    void setCancelled(boolean cancelled);
 }

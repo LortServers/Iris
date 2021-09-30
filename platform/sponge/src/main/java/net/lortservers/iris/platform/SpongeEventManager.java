@@ -22,7 +22,7 @@ public class SpongeEventManager extends EventManager {
 
     @Override
     protected <T extends AbstractEvent & Wrapper> void fireEvent0(T event) {
-        final Class<Event> clazz = Reflect.getClassSafe(event.getClass().getCanonicalName().replace("Impl", "SpongeImpl"));
+        final Class<Event> clazz = Reflect.getClassSafe(event.getClass().getName().replace("Impl", "SpongeImpl"));
         if (clazz != null) {
             final Event evt = event.as(clazz);
             if (Reflect.isInstance(event, Cancellable.class)) {
