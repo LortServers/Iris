@@ -1,5 +1,7 @@
 package net.lortservers.iris.platform;
 
+import net.lortservers.iris.platform.events.IrisCheckMessageSendEventImpl;
+import net.lortservers.iris.platform.events.IrisCheckMessageSendEventSpongeImpl;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventSpongeImpl;
 import org.screamingsandals.lib.event.AbstractEvent;
@@ -18,6 +20,9 @@ public class SpongeEventManager extends EventManager {
         IrisCheckTriggerEventImpl.getConverter()
                 .registerW2P(IrisCheckTriggerEventSpongeImpl.class, wrapper -> new IrisCheckTriggerEventSpongeImpl(wrapper.getPlayer(), wrapper.getCheck()))
                 .registerP2W(IrisCheckTriggerEventImpl.class, irisCheckTriggerEvent -> new IrisCheckTriggerEventImpl(irisCheckTriggerEvent.getPlayer(), irisCheckTriggerEvent.getCheck()));
+        IrisCheckMessageSendEventImpl.getConverter()
+                .registerW2P(IrisCheckMessageSendEventSpongeImpl.class, wrapper -> new IrisCheckMessageSendEventSpongeImpl(wrapper.getMessage(), wrapper.getRecipients()))
+                .registerP2W(IrisCheckMessageSendEventImpl.class, irisCheckMessageSendEvent -> new IrisCheckMessageSendEventImpl(irisCheckMessageSendEvent.getMessage(), irisCheckMessageSendEvent.getRecipients()));
     }
 
     @Override

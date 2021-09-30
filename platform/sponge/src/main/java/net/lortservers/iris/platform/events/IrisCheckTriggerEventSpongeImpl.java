@@ -1,8 +1,6 @@
 package net.lortservers.iris.platform.events;
 
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.events.IrisCheckTriggerEvent;
 import org.jetbrains.annotations.NotNull;
@@ -14,33 +12,15 @@ import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.impl.AbstractEvent;
 
+@Getter
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @RequiredArgsConstructor
 public class IrisCheckTriggerEventSpongeImpl extends AbstractEvent implements Cancellable, IrisCheckTriggerEvent {
+    @Setter
     private boolean cancelled = false;
     private final PlayerWrapper player;
     private final Check check;
-
-    @Override
-    public Check getCheck() {
-        return check;
-    }
-
-    @Override
-    public PlayerWrapper getPlayer() {
-        return player;
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
 
     @Override
     public @NotNull Cause getCause() {

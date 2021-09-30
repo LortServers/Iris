@@ -20,6 +20,7 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
  */
 @Plugin(
         id = "Iris",
+        name = "Iris",
         authors = {"zlataovce", "Lort533"},
         version = "0.0.1-SNAPSHOT"
 )

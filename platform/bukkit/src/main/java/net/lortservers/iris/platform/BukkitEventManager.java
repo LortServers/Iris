@@ -1,5 +1,7 @@
 package net.lortservers.iris.platform;
 
+import net.lortservers.iris.platform.events.IrisCheckMessageSendEventBukkitImpl;
+import net.lortservers.iris.platform.events.IrisCheckMessageSendEventImpl;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventBukkitImpl;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import org.bukkit.Bukkit;
@@ -18,6 +20,9 @@ public class BukkitEventManager extends EventManager {
         IrisCheckTriggerEventImpl.getConverter()
                 .registerW2P(IrisCheckTriggerEventBukkitImpl.class, wrapper -> new IrisCheckTriggerEventBukkitImpl(wrapper.getPlayer(), wrapper.getCheck()))
                 .registerP2W(IrisCheckTriggerEventImpl.class, irisCheckTriggerEvent -> new IrisCheckTriggerEventImpl(irisCheckTriggerEvent.getPlayer(), irisCheckTriggerEvent.getCheck()));
+        IrisCheckMessageSendEventImpl.getConverter()
+                .registerW2P(IrisCheckMessageSendEventBukkitImpl.class, wrapper -> new IrisCheckMessageSendEventBukkitImpl(wrapper.getMessage(), wrapper.getRecipients()))
+                .registerP2W(IrisCheckMessageSendEventImpl.class, irisCheckMessageSendEvent -> new IrisCheckMessageSendEventImpl(irisCheckMessageSendEvent.getMessage(), irisCheckMessageSendEvent.getRecipients()));
     }
 
     @Override

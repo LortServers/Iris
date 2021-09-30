@@ -7,8 +7,11 @@ import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
+import net.lortservers.iris.events.IrisCheckMessageSendEvent;
 import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.managers.PunishmentManager;
+import net.lortservers.iris.platform.EventManager;
+import net.lortservers.iris.platform.events.IrisCheckMessageSendEventImpl;
 import net.lortservers.iris.utils.profiles.PlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import net.lortservers.iris.utils.protocol.Protocol;
@@ -73,8 +76,11 @@ public class PunishmentManagerImpl implements PunishmentManager {
                     Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "info", info, "ping", Integer.toString(player.getPing()), "loc", loc)
             );
         }
-        getSubscribers().forEach(e -> e.sendMessage(component));
-        PlayerMapper.getConsoleSender().sendMessage(component);
+        final IrisCheckMessageSendEvent evt = EventManager.fire(new IrisCheckMessageSendEventImpl(component, getSubscribers()));
+        if (!evt.isCancelled()) {
+            getSubscribers().forEach(e -> e.sendMessage(component));
+            PlayerMapper.getConsoleSender().sendMessage(component);
+        }
         if (!ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse("").equals("") && !webhookCooldown.isOnCooldown()) {
             webhookCooldown.putCooldown();
             final Optional<Protocol> proto = ProtocolUtils.getProtocol(Reflections.defaultIfThrown(() -> PacketMapper.getProtocolVersion(player), ProtocolUtils.getServerProtocol().getVersion()));

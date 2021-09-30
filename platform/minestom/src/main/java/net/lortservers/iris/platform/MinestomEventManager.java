@@ -1,5 +1,7 @@
 package net.lortservers.iris.platform;
 
+import net.lortservers.iris.platform.events.IrisCheckMessageSendEventImpl;
+import net.lortservers.iris.platform.events.IrisCheckMessageSendEventMinestomImpl;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventMinestomImpl;
 import net.minestom.server.MinecraftServer;
@@ -19,6 +21,9 @@ public class MinestomEventManager extends EventManager {
         IrisCheckTriggerEventImpl.getConverter()
                 .registerW2P(IrisCheckTriggerEventMinestomImpl.class, wrapper -> new IrisCheckTriggerEventMinestomImpl(wrapper.getPlayer(), wrapper.getCheck()))
                 .registerP2W(IrisCheckTriggerEventImpl.class, irisCheckTriggerEvent -> new IrisCheckTriggerEventImpl(irisCheckTriggerEvent.getPlayer(), irisCheckTriggerEvent.getCheck()));
+        IrisCheckMessageSendEventImpl.getConverter()
+                .registerW2P(IrisCheckMessageSendEventMinestomImpl.class, wrapper -> new IrisCheckMessageSendEventMinestomImpl(wrapper.getMessage(), wrapper.getRecipients()))
+                .registerP2W(IrisCheckMessageSendEventImpl.class, irisCheckMessageSendEvent -> new IrisCheckMessageSendEventImpl(irisCheckMessageSendEvent.getMessage(), irisCheckMessageSendEvent.getRecipients()));
     }
 
     @Override
