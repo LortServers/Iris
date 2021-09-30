@@ -69,6 +69,7 @@ public abstract class CheckImpl implements Check {
      *
      * @return the check type
      */
+    @Override
     public abstract @NonNull CheckAlphabet getType();
 
     /**
@@ -76,6 +77,7 @@ public abstract class CheckImpl implements Check {
      *
      * @return the name
      */
+    @Override
     public abstract @NonNull String getName();
 
     /**
@@ -84,6 +86,7 @@ public abstract class CheckImpl implements Check {
      * @param player the player
      * @return the player's VL
      */
+    @Override
     public int getVL(PlayerWrapper player) {
         return PlayerProfileManager.ofPlayer(player).getCheckVLs().getOrDefault(getClass(), 0);
     }
@@ -94,6 +97,7 @@ public abstract class CheckImpl implements Check {
      * @param player the player
      * @param vl the VL to add
      */
+    @Override
     public void increaseVL(PlayerWrapper player, int vl) {
         final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
         profile.getCheckVLs().put(getClass(), profile.getCheckVLs().getOrDefault(getClass(), 0) + vl);
@@ -105,6 +109,7 @@ public abstract class CheckImpl implements Check {
      * @param player the player
      * @param vl the VL to remove
      */
+    @Override
     public void decreaseVL(PlayerWrapper player, int vl) {
         final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
         int currentVl = profile.getCheckVLs().getOrDefault(getClass(), 0);
@@ -121,6 +126,7 @@ public abstract class CheckImpl implements Check {
      *
      * @param player the player
      */
+    @Override
     public void resetVL(PlayerWrapper player) {
         PlayerProfileManager.ofPlayer(player).getCheckVLs().put(getClass(), 0);
     }
@@ -131,6 +137,7 @@ public abstract class CheckImpl implements Check {
      * @param player the player
      * @return is the check on cooldown for this player?
      */
+    @Override
     public boolean isOnCooldown(PlayerWrapper player) {
         final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
         return profile.getCheckCooldowns().get(getClass()) != null && profile.getCheckCooldowns().get(getClass()).isOnCooldown();
@@ -141,6 +148,7 @@ public abstract class CheckImpl implements Check {
      *
      * @param player the player
      */
+    @Override
     public void putCooldown(PlayerWrapper player) {
         final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
         if (profile.getCheckCooldowns().get(getClass()) == null) {
@@ -155,6 +163,7 @@ public abstract class CheckImpl implements Check {
      * @param player the player to check
      * @return is eligible for this check?
      */
+    @Override
     public boolean isEligibleForCheck(PlayerWrapper player) {
         return player.isOnline() &&
                 !player.asEntity().isDead() &&

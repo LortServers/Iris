@@ -114,7 +114,6 @@ public class Configuration {
                     .build()
     );
 
-    private boolean discordWebhook = false;
     private String webhookUrl = "";
     private String webhookAvatar = "https://i.imgur.com/161mP3g.png";
 
