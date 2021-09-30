@@ -77,7 +77,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
         PlayerMapper.getConsoleSender().sendMessage(component);
         if (!ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse("").equals("") && !webhookCooldown.isOnCooldown()) {
             webhookCooldown.putCooldown();
-            final Optional<Protocol> proto = ProtocolUtils.getProtocol(PacketMapper.getProtocolVersion(player));
+            final Optional<Protocol> proto = ProtocolUtils.getProtocol(Reflections.defaultIfThrown(() -> PacketMapper.getProtocolVersion(player), ProtocolUtils.getServerProtocol().getVersion()));
             final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
             final Embed.EmbedBuilder embed = Embed.builder()
                     .thumbnail(

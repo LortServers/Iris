@@ -3,6 +3,7 @@ package net.lortservers.iris.utils.protocol;
 import lombok.Getter;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
+import org.screamingsandals.lib.Server;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,7 +19,7 @@ import java.util.Optional;
 /**
  * <p>Minecraft protocol utilities.</p>
  */
-public class ProtocolUtils {
+public final class ProtocolUtils {
     /**
      * <p>Current Minecraft protocol versions.</p>
      */
@@ -47,5 +48,18 @@ public class ProtocolUtils {
      */
     public static Optional<Protocol> getProtocol(int version) {
         return protocolVersions.stream().filter(e -> Objects.equals(e.getVersion(), version)).findFirst();
+    }
+
+    public static Optional<Protocol> ver2Protocol(String versionString) {
+        return protocolVersions.stream().filter(e -> e.getMinecraftVersion().equals(versionString)).findFirst();
+    }
+
+    public static Optional<Integer> ver2ProtocolNum(String versionString) {
+        final Optional<Protocol> resultProtocol = ver2Protocol(versionString);
+        return (resultProtocol.isEmpty()) ? Optional.empty() : Optional.of(resultProtocol.orElseThrow().getVersion());
+    }
+
+    public static Protocol getServerProtocol() {
+        return ver2Protocol(Server.getVersion()).orElseThrow();
     }
 }
