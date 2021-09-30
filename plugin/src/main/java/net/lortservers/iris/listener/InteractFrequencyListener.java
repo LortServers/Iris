@@ -136,7 +136,7 @@ public class InteractFrequencyListener {
             IrisPlugin.getInstance().getLogger().info("LCPS: " + getCps(player).first() + ", RCPS: " + getCps(player).second());
         }
         final InteractFrequencyCheckA a = Check.get(InteractFrequencyCheckA.class);
-        if ((getCps(player).first() >= ConfigurationManager.getInstance().getValue(a, "maxCPS", Double.class).orElse(16D).intValue()) || (getCps(player).second() >= ConfigurationManager.getInstance().getValue(a, "maxCPS", Double.class).orElse(16D).intValue())) {
+        if ((getCps(player).first() >= ConfigurationManager.getInstance().getValue(a, "maxCPS", Integer.class).orElse(16)) || (getCps(player).second() >= ConfigurationManager.getInstance().getValue(a, "maxCPS", Integer.class).orElse(16))) {
             if (a.isEligibleForCheck(player)) {
                 final IrisCheckTriggerEvent evt1 = EventManager.fire(new IrisCheckTriggerEventImpl(player, a));
                 if (!evt1.isCancelled()) {
