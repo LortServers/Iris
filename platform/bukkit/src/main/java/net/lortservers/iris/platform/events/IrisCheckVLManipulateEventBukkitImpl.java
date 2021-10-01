@@ -1,9 +1,11 @@
 package net.lortservers.iris.platform.events;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import net.lortservers.iris.checks.Check;
-import net.lortservers.iris.events.IrisCheckTriggerEvent;
-import org.bukkit.event.Cancellable;
+import net.lortservers.iris.events.IrisCheckVLManipulateEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -13,12 +15,14 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @RequiredArgsConstructor
-public class IrisCheckTriggerEventBukkitImpl extends Event implements Cancellable, IrisCheckTriggerEvent {
+public class IrisCheckVLManipulateEventBukkitImpl extends Event implements IrisCheckVLManipulateEvent {
     private static final HandlerList HANDLERS = new HandlerList();
-    @Setter
-    private boolean cancelled = false;
     private final PlayerWrapper player;
     private final Check check;
+    private final int oldVL;
+    private final int newVL;
+    private final boolean scheduled;
+    private final ManipulateType action;
 
     @Override
     public @NonNull HandlerList getHandlers() {

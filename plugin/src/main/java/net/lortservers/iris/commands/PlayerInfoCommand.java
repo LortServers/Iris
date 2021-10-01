@@ -12,7 +12,6 @@ import org.screamingsandals.lib.sender.permissions.SimplePermission;
 import org.screamingsandals.lib.utils.annotations.Service;
 
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * <p>A class representing the alerts command.</p>
@@ -40,8 +39,8 @@ public class PlayerInfoCommand extends BaseCommand {
                 commandSenderWrapperBuilder
                         .argument(PlayerArgument.of("player"))
                         .handler(commandContext -> {
-                            final Optional<Protocol> proto = ProtocolUtils.getProtocol(756);
-                            final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
+                            final Protocol proto = ProtocolUtils.getPlayerProtocol(commandContext.get("player"));
+                            final String protocolString = proto.getVersion() + " (" + proto.getMinecraftVersion() + ")";
                             commandContext.getSender().sendMessage(
                                     ConfigurationManager.getInstance().getMessage("playerInfo", Map.of("protocol", protocolString))
                             );

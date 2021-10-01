@@ -1,8 +1,6 @@
 package net.lortservers.iris.platform.events;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import net.kyori.adventure.text.Component;
 import net.lortservers.iris.events.IrisCheckMessageSendEvent;
 import org.bukkit.event.Cancellable;
@@ -14,6 +12,8 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 import java.util.List;
 
 @Getter
+@EqualsAndHashCode(callSuper = true)
+@ToString
 @RequiredArgsConstructor
 public class IrisCheckMessageSendEventBukkitImpl extends Event implements Cancellable, IrisCheckMessageSendEvent {
     private static final HandlerList HANDLERS = new HandlerList();

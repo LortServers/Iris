@@ -1,9 +1,6 @@
 package net.lortservers.iris.platform;
 
-import net.lortservers.iris.platform.events.IrisCheckMessageSendEventImpl;
-import net.lortservers.iris.platform.events.IrisCheckMessageSendEventSpongeImpl;
-import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
-import net.lortservers.iris.platform.events.IrisCheckTriggerEventSpongeImpl;
+import net.lortservers.iris.platform.events.*;
 import org.screamingsandals.lib.event.AbstractEvent;
 import org.screamingsandals.lib.event.Cancellable;
 import org.screamingsandals.lib.utils.Wrapper;
@@ -23,6 +20,9 @@ public class SpongeEventManager extends EventManager {
         IrisCheckMessageSendEventImpl.getConverter()
                 .registerW2P(IrisCheckMessageSendEventSpongeImpl.class, wrapper -> new IrisCheckMessageSendEventSpongeImpl(wrapper.getMessage(), wrapper.getRecipients()))
                 .registerP2W(IrisCheckMessageSendEventImpl.class, irisCheckMessageSendEvent -> new IrisCheckMessageSendEventImpl(irisCheckMessageSendEvent.getMessage(), irisCheckMessageSendEvent.getRecipients()));
+        IrisCheckVLManipulateEventImpl.getConverter()
+                .registerW2P(IrisCheckVLManipulateEventSpongeImpl.class, wrapper -> new IrisCheckVLManipulateEventSpongeImpl(wrapper.getPlayer(), wrapper.getCheck(), wrapper.getOldVL(), wrapper.getNewVL(), wrapper.isScheduled(), wrapper.getAction()))
+                .registerP2W(IrisCheckVLManipulateEventImpl.class, irisCheckVLManipulateEvent -> new IrisCheckVLManipulateEventImpl(irisCheckVLManipulateEvent.getPlayer(), irisCheckVLManipulateEvent.getCheck(), irisCheckVLManipulateEvent.getOldVL(), irisCheckVLManipulateEvent.getNewVL(), irisCheckVLManipulateEvent.isScheduled(), irisCheckVLManipulateEvent.getAction()));
     }
 
     @Override

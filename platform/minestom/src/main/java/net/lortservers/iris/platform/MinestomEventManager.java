@@ -1,9 +1,6 @@
 package net.lortservers.iris.platform;
 
-import net.lortservers.iris.platform.events.IrisCheckMessageSendEventImpl;
-import net.lortservers.iris.platform.events.IrisCheckMessageSendEventMinestomImpl;
-import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
-import net.lortservers.iris.platform.events.IrisCheckTriggerEventMinestomImpl;
+import net.lortservers.iris.platform.events.*;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.trait.CancellableEvent;
@@ -24,6 +21,9 @@ public class MinestomEventManager extends EventManager {
         IrisCheckMessageSendEventImpl.getConverter()
                 .registerW2P(IrisCheckMessageSendEventMinestomImpl.class, wrapper -> new IrisCheckMessageSendEventMinestomImpl(wrapper.getMessage(), wrapper.getRecipients()))
                 .registerP2W(IrisCheckMessageSendEventImpl.class, irisCheckMessageSendEvent -> new IrisCheckMessageSendEventImpl(irisCheckMessageSendEvent.getMessage(), irisCheckMessageSendEvent.getRecipients()));
+        IrisCheckVLManipulateEventImpl.getConverter()
+                .registerW2P(IrisCheckVLManipulateEventMinestomImpl.class, wrapper -> new IrisCheckVLManipulateEventMinestomImpl(wrapper.getPlayer(), wrapper.getCheck(), wrapper.getOldVL(), wrapper.getNewVL(), wrapper.isScheduled(), wrapper.getAction()))
+                .registerP2W(IrisCheckVLManipulateEventImpl.class, irisCheckVLManipulateEvent -> new IrisCheckVLManipulateEventImpl(irisCheckVLManipulateEvent.getPlayer(), irisCheckVLManipulateEvent.getCheck(), irisCheckVLManipulateEvent.getOldVL(), irisCheckVLManipulateEvent.getNewVL(), irisCheckVLManipulateEvent.isScheduled(), irisCheckVLManipulateEvent.getAction()));
     }
 
     @Override

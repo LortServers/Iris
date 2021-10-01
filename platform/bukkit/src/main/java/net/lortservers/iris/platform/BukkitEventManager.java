@@ -1,9 +1,6 @@
 package net.lortservers.iris.platform;
 
-import net.lortservers.iris.platform.events.IrisCheckMessageSendEventBukkitImpl;
-import net.lortservers.iris.platform.events.IrisCheckMessageSendEventImpl;
-import net.lortservers.iris.platform.events.IrisCheckTriggerEventBukkitImpl;
-import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
+import net.lortservers.iris.platform.events.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.screamingsandals.lib.event.AbstractEvent;
@@ -23,6 +20,9 @@ public class BukkitEventManager extends EventManager {
         IrisCheckMessageSendEventImpl.getConverter()
                 .registerW2P(IrisCheckMessageSendEventBukkitImpl.class, wrapper -> new IrisCheckMessageSendEventBukkitImpl(wrapper.getMessage(), wrapper.getRecipients()))
                 .registerP2W(IrisCheckMessageSendEventImpl.class, irisCheckMessageSendEvent -> new IrisCheckMessageSendEventImpl(irisCheckMessageSendEvent.getMessage(), irisCheckMessageSendEvent.getRecipients()));
+        IrisCheckVLManipulateEventImpl.getConverter()
+                .registerW2P(IrisCheckVLManipulateEventBukkitImpl.class, wrapper -> new IrisCheckVLManipulateEventBukkitImpl(wrapper.getPlayer(), wrapper.getCheck(), wrapper.getOldVL(), wrapper.getNewVL(), wrapper.isScheduled(), wrapper.getAction()))
+                .registerP2W(IrisCheckVLManipulateEventImpl.class, irisCheckVLManipulateEvent -> new IrisCheckVLManipulateEventImpl(irisCheckVLManipulateEvent.getPlayer(), irisCheckVLManipulateEvent.getCheck(), irisCheckVLManipulateEvent.getOldVL(), irisCheckVLManipulateEvent.getNewVL(), irisCheckVLManipulateEvent.isScheduled(), irisCheckVLManipulateEvent.getAction()));
     }
 
     @Override

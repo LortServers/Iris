@@ -2,13 +2,15 @@ package net.lortservers.iris.checks;
 
 import lombok.RequiredArgsConstructor;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
+import net.lortservers.iris.events.IrisCheckVLManipulateEvent;
 import net.lortservers.iris.managers.ConfigurationManager;
+import net.lortservers.iris.platform.EventManager;
+import net.lortservers.iris.platform.events.IrisCheckVLManipulateEventImpl;
 import net.lortservers.iris.utils.CooldownMapping;
 import net.lortservers.iris.utils.ThresholdType;
 import net.lortservers.iris.utils.profiles.PlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
@@ -58,8 +60,15 @@ public abstract class CheckImpl implements Check {
     @OnEnable
     public void enable() {
         Tasker.build(() -> {
-            for (PlayerWrapper player : Server.getConnectedPlayers()) {
-                decreaseVL(player, decreaseBy);
+            for (PlayerProfile profile : PlayerProfileManager.all()) {
+                int currentVl = profile.getCheckVLs().getOrDefault(getClass(), 0);
+                if (currentVl >= decreaseBy) {
+                    currentVl = currentVl - decreaseBy;
+                } else {
+                    currentVl = 0;
+                }
+                EventManager.fire(new IrisCheckVLManipulateEventImpl(profile.toPlayer(), CheckImpl.this, profile.getCheckVLs().getOrDefault(getClass(), 0), currentVl, true, IrisCheckVLManipulateEvent.ManipulateType.DECREASE));
+                profile.getCheckVLs().put(getClass(), currentVl);
             }
         }).repeat(decreaseTime, decreaseTimeType).start();
     }
@@ -100,6 +109,7 @@ public abstract class CheckImpl implements Check {
     @Override
     public void increaseVL(PlayerWrapper player, int vl) {
         final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+        EventManager.fire(new IrisCheckVLManipulateEventImpl(player, this, profile.getCheckVLs().getOrDefault(getClass(), 0), profile.getCheckVLs().getOrDefault(getClass(), 0) + vl, false, IrisCheckVLManipulateEvent.ManipulateType.INCREASE));
         profile.getCheckVLs().put(getClass(), profile.getCheckVLs().getOrDefault(getClass(), 0) + vl);
     }
 
@@ -118,6 +128,7 @@ public abstract class CheckImpl implements Check {
         } else {
             currentVl = 0;
         }
+        EventManager.fire(new IrisCheckVLManipulateEventImpl(player, this, profile.getCheckVLs().getOrDefault(getClass(), 0), currentVl, false, IrisCheckVLManipulateEvent.ManipulateType.DECREASE));
         profile.getCheckVLs().put(getClass(), currentVl);
     }
 
@@ -128,7 +139,9 @@ public abstract class CheckImpl implements Check {
      */
     @Override
     public void resetVL(PlayerWrapper player) {
-        PlayerProfileManager.ofPlayer(player).getCheckVLs().put(getClass(), 0);
+        final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+        EventManager.fire(new IrisCheckVLManipulateEventImpl(player, this, profile.getCheckVLs().getOrDefault(getClass(), 0), 0, false, IrisCheckVLManipulateEvent.ManipulateType.RESET));
+        profile.getCheckVLs().put(getClass(), 0);
     }
 
     /**
