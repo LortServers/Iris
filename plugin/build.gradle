@@ -1,5 +1,6 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'xyz.jpenilla.run-paper' version '1.0.4'
 }
 
 repositories {
@@ -46,4 +47,12 @@ shadowJar {
     relocate 'cloud.commandframework.minecraft.extras', 'net.lortservers.iris.lib.cloudextras'
     relocate 'me.zlataovce.hook', 'net.lortservers.iris.lib.hook'
     relocate 'net.kyori.adventure', 'net.lortservers.iris.lib.adventure'
+}
+
+tasks {
+    runServer {
+        // noinspection GroovyAssignabilityCheck
+        runDirectory file("$buildDir/run")
+        minecraftVersion "1.12.2"
+    }
 }
