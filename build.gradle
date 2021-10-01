@@ -53,9 +53,17 @@ subprojects {
         resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
     }
 
-    ext.slib = { String module, String... platforms ->
-        platforms.each {
-            dependencies.api "org.screamingsandals.lib:" + module + "-" + it + ":$screamingLibVersion"
+    ext {
+        slibPlatformsForModule = { String module, String... platforms ->
+            platforms.each {
+                dependencies.api "org.screamingsandals.lib:" + module + "-" + it + ":$screamingLibVersion"
+            }
+        }
+
+        slibModulesForPlatform = { String platform, String... modules ->
+            modules.each {
+                dependencies.api "org.screamingsandals.lib:" + it + "-" + platform + ":$screamingLibVersion"
+            }
         }
     }
 }

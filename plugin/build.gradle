@@ -20,12 +20,8 @@ dependencies {
 
     implementation "net.kyori:adventure-text-minimessage:$miniMessageVersion"
     implementation "cloud.commandframework:cloud-minecraft-extras:$cloudExtrasVersion"
-    slib('core', 'bukkit')
-    slib('event', 'bukkit')
-    slib('tasker', 'bukkit')
-    slib('plugin', 'bukkit')
-    slib('command', 'bukkit')
-    slib('utils', 'common')
+    slibModulesForPlatform('bukkit', 'core', 'event', 'tasker', 'plugin', 'command')
+    slibModulesForPlatform('common', 'utils')
     annotationProcessor "org.screamingsandals.lib:screaming-annotation:$screamingLibVersion"
 
     implementation "me.zlataovce:hook:$hookVersion"

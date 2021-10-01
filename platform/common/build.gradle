@@ -1,7 +1,5 @@
 dependencies {
     implementation project(':api')
 
-    slib('core', 'common')
-    slib('event', 'common')
-    slib('utils', 'common')
+    slibModulesForPlatform('common', 'core', 'event', 'utils')
 }

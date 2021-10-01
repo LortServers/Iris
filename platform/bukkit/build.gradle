@@ -1,9 +1,5 @@
 dependencies {
     implementation project(":api")
     implementation project(":platform-common")
-
-    slib('core', 'common')
-    slib('event', 'common')
-    slib('utils', 'common')
-    implementation "org.screamingsandals.lib:nms:$screamingLibVersion"
+    slibModulesForPlatform('common', 'core', 'event', 'utils')
 }
