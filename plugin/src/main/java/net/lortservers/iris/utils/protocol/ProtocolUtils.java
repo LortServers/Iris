@@ -22,6 +22,8 @@ import java.util.*;
  * <p>Minecraft protocol utilities.</p>
  */
 public final class ProtocolUtils {
+    private static final HttpClient CLIENT = HttpClient.newHttpClient();
+    
     /**
      * <p>Current Minecraft protocol versions.</p>
      */
@@ -34,7 +36,7 @@ public final class ProtocolUtils {
                     .uri(new URI("https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/pc/common/protocolVersions.json"))
                     .GET()
                     .build();
-            final String body = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString()).body();
+            final String body = CLIENT.send(request, HttpResponse.BodyHandlers.ofString()).body();
             protocolVersions = ConfigurationManagerImpl.MAPPER.readValue(body, ConfigurationManagerImpl.MAPPER.getTypeFactory().constructCollectionType(List.class, Protocol.class));
         } catch (URISyntaxException | IOException | InterruptedException e) {
             IrisPlugin.getInstance().getLogger().error("Could not retrieve protocol data!", e);
