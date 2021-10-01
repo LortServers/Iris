@@ -25,7 +25,6 @@ dependencies {
     slibModulesForPlatform('common', 'utils')
     annotationProcessor "org.screamingsandals.lib:screaming-annotation:$screamingLibVersion"
 
-    implementation "me.zlataovce:hook:$hookVersion"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
@@ -45,7 +44,6 @@ shadowJar {
     relocate 'org.screamingsandals.lib', 'net.lortservers.iris.lib.slib'
     relocate 'com.fasterxml.jackson', 'net.lortservers.iris.lib.jackson'
     relocate 'cloud.commandframework.minecraft.extras', 'net.lortservers.iris.lib.cloudextras'
-    relocate 'me.zlataovce.hook', 'net.lortservers.iris.lib.hook'
     relocate 'net.kyori.adventure', 'net.lortservers.iris.lib.adventure'
 }
 

@@ -10,7 +10,6 @@ buildscript {
         lombokVersion = "1.18.20"
         miniMessageVersion = "4.1.0-SNAPSHOT"
         cloudExtrasVersion = "1.5.0"
-        hookVersion = "1.1-SNAPSHOT"
         nettyVersion = "4.1.68.Final"
     }
 }

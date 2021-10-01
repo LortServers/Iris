@@ -9,7 +9,6 @@ import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.utils.ThresholdType;
-import net.lortservers.iris.utils.tasks.ThreadedExecutor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
@@ -20,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * <p>A class responsible for managing the configuration.</p>
@@ -116,7 +116,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             IrisPlugin.getInstance().getDataFolder().toFile().mkdirs();
         }
         for (ConfigurationManager.FileDefinition file : TRACKED_FILES) {
-            ThreadedExecutor.executeTask(file::load);
+            CompletableFuture.runAsync(file::load);
         }
     }
 

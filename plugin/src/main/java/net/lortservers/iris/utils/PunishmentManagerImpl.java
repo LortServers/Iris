@@ -1,8 +1,5 @@
 package net.lortservers.iris.utils;
 
-import me.zlataovce.hook.WebhookRequestDispatcher;
-import me.zlataovce.hook.data.Embed;
-import me.zlataovce.hook.requests.WebhookExecuteRequest;
 import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.checks.Check;
@@ -16,15 +13,14 @@ import net.lortservers.iris.utils.profiles.PlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import net.lortservers.iris.utils.protocol.Protocol;
 import net.lortservers.iris.utils.protocol.ProtocolUtils;
-import net.lortservers.iris.utils.tasks.ThreadedExecutor;
+import net.lortservers.iris.utils.webhooks.WebhookDispatcher;
+import net.lortservers.iris.utils.webhooks.WebhookExecuteRequest;
+import net.lortservers.iris.utils.webhooks.data.Embed;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.http.HttpResponse;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -112,21 +108,15 @@ public class PunishmentManagerImpl implements PunishmentManager {
                                 .build()
                 );
             }
-            ThreadedExecutor.executeTask(() -> {
-                try {
-                    final HttpResponse<String> response = WebhookRequestDispatcher.execute(
-                            ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElseThrow(),
-                            WebhookExecuteRequest.builder()
-                                    .username("Iris")
-                                    .avatarUrl(ConfigurationManager.getInstance().getValue("webhookAvatar", String.class).orElse(null))
-                                    .embed(embed.build())
-                                    .build()
-                    );
-                    if (ConfigurationManager.getInstance().getValue("debug", Boolean.class).orElse(false)) {
-                        IrisPlugin.getInstance().getLogger().info(response.body());
-                    }
-                } catch (MalformedURLException | URISyntaxException e) {
-                    IrisPlugin.getInstance().getLogger().error("Malformed Discord webhook URL!");
+            WebhookDispatcher.execute(
+                    WebhookExecuteRequest.builder()
+                            .username("Iris")
+                            .avatarUrl(ConfigurationManager.getInstance().getValue("webhookAvatar", String.class).orElse(null))
+                            .embed(embed.build())
+                            .build()
+            ).thenAccept(e -> {
+                if (ConfigurationManager.getInstance().getValue("debug", Boolean.class).orElse(false)) {
+                    IrisPlugin.getInstance().getLogger().info(e.body());
                 }
             });
         }
