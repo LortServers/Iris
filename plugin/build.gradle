@@ -49,10 +49,15 @@ shadowJar {
     relocate 'net.kyori.adventure', 'net.lortservers.iris.lib.adventure'
 }
 
+runPaper.disablePluginJarDetection()
+
 tasks {
     runServer {
         // noinspection GroovyAssignabilityCheck
         runDirectory file("$buildDir/run")
+        // noinspection GroovyAssignabilityCheck
+        pluginJars shadowJar.archiveFile
         minecraftVersion "1.12.2"
+        dependsOn shadowJar
     }
 }
