@@ -12,5 +12,5 @@ dependencies {
     slib('event', 'common')
     slib('utils', 'common')
 
-    compileOnly "org.spongepowered:spongeapi:${SPONGE_API_VERSION}"
+    compileOnly "org.spongepowered:spongeapi:$spongeApiVersion"
 }

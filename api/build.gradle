@@ -1,4 +1,4 @@
 dependencies {
-    compileOnly "org.screamingsandals.lib:core-common:${SCREAMING_LIB_VERSION}"
-    compileOnly "org.screamingsandals.lib:plugin-common:${SCREAMING_LIB_VERSION}"
+    compileOnly "org.screamingsandals.lib:core-common:$screamingLibVersion"
+    compileOnly "org.screamingsandals.lib:plugin-common:$screamingLibVersion"
 }

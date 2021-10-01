@@ -1,3 +1,20 @@
+buildscript {
+    ext {
+        screamingLibVersion = "2.0.1-SNAPSHOT"
+        paperApiVersion = "1.17.1-R0.1-SNAPSHOT"
+        spongeApiVersion = "7.3.0"
+        minestomVersion = "master-SNAPSHOT"
+        junitVersion = "5.8.1"
+        jacksonVersion = "2.12.5"
+        checkerFrameworkVersion = "3.18.0"
+        lombokVersion = "1.18.20"
+        miniMessageVersion = "4.1.0-SNAPSHOT"
+        cloudExtrasVersion = "1.5.0"
+        hookVersion = "1.1-SNAPSHOT"
+        nettyVersion = "4.1.68.Final"
+    }
+}
+
 plugins {
     id 'java-library'
 }
@@ -25,10 +42,10 @@ subprojects {
     }
 
     dependencies {
-        compileOnly "io.papermc.paper:paper-api:${PAPER_API_VERSION}"
-        compileOnly "org.checkerframework:checker-qual:${CHECKER_FRAMEWORK_VERSION}"
-        compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
-        annotationProcessor "org.projectlombok:lombok:${LOMBOK_VERSION}"
+        compileOnly "io.papermc.paper:paper-api:$paperApiVersion"
+        compileOnly "org.checkerframework:checker-qual:$checkerFrameworkVersion"
+        compileOnly "org.projectlombok:lombok:$lombokVersion"
+        annotationProcessor "org.projectlombok:lombok:$lombokVersion"
     }
 
     configurations.all {
@@ -38,7 +55,7 @@ subprojects {
 
     ext.slib = { String module, String... platforms ->
         platforms.each {
-            dependencies.api "org.screamingsandals.lib:" + module + "-" + it + ":${SCREAMING_LIB_VERSION}"
+            dependencies.api "org.screamingsandals.lib:" + module + "-" + it + ":$screamingLibVersion"
         }
     }
 }

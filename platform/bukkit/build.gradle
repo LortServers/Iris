@@ -5,5 +5,5 @@ dependencies {
     slib('core', 'common')
     slib('event', 'common')
     slib('utils', 'common')
-    implementation "org.screamingsandals.lib:nms:${SCREAMING_LIB_VERSION}"
+    implementation "org.screamingsandals.lib:nms:$screamingLibVersion"
 }

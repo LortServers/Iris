@@ -15,5 +15,5 @@ dependencies {
     slib('event', 'common')
     slib('utils', 'common')
 
-    compileOnly "com.github.Minestom:Minestom:${MINESTOM_VERSION}"
+    compileOnly "com.github.Minestom:Minestom:$minestomVersion"
 }
