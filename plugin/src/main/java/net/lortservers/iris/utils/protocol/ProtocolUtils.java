@@ -4,17 +4,19 @@ import lombok.Getter;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import org.screamingsandals.lib.Server;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.utils.reflect.ClassMethod;
+import org.screamingsandals.lib.utils.reflect.InstanceMethod;
+import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.io.IOException;
+import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * <p>Minecraft protocol utilities.</p>
@@ -61,5 +63,16 @@ public final class ProtocolUtils {
 
     public static Protocol getServerProtocol() {
         return ver2Protocol(Server.getVersion()).orElseThrow();
+    }
+
+    public static Protocol getPlayerProtocol(PlayerWrapper player) {
+        final InstanceMethod viaMethod = ViaVersionAccessor.getViaApiMethod("getPlayerVersion", UUID.class);
+        final ClassMethod psMethod = ProtocolSupportAccessor.getPsApiMethod("getProtocolVersion", SocketAddress.class);
+        if (viaMethod != null) return getProtocol((int) viaMethod.invoke(player.getUuid())).orElseThrow();
+        if (psMethod != null) {
+            final int protocolVersion = (int) Reflect.fastInvoke(psMethod.invokeStatic(player.getChannel().remoteAddress()), "getId");
+            return getProtocol((protocolVersion != -1) ? protocolVersion : getServerProtocol().getVersion()).orElseThrow();
+        }
+        return getServerProtocol();
     }
 }

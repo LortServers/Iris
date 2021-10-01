@@ -25,7 +25,6 @@ dependencies {
     slib('tasker', 'bukkit')
     slib('plugin', 'bukkit')
     slib('command', 'bukkit')
-    slib('packets', 'bukkit')
     slib('utils', 'common')
     annotationProcessor "org.screamingsandals.lib:screaming-annotation:${SCREAMING_LIB_VERSION}"
 
@@ -34,6 +33,8 @@ dependencies {
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${JUNIT_VERSION}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${JUNIT_VERSION}"
+
+    compileOnly "io.netty:netty-all:${NETTY_VERSION}"
 }
 
 test {

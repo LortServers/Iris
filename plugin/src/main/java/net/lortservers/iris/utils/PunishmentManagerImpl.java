@@ -18,7 +18,6 @@ import net.lortservers.iris.utils.protocol.Protocol;
 import net.lortservers.iris.utils.protocol.ProtocolUtils;
 import net.lortservers.iris.utils.tasks.ThreadedExecutor;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.screamingsandals.lib.packet.PacketMapper;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -29,7 +28,6 @@ import java.net.http.HttpResponse;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,8 +81,8 @@ public class PunishmentManagerImpl implements PunishmentManager {
         }
         if (!ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse("").equals("") && !webhookCooldown.isOnCooldown()) {
             webhookCooldown.putCooldown();
-            final Optional<Protocol> proto = ProtocolUtils.getProtocol(Reflections.defaultIfThrown(() -> PacketMapper.getProtocolVersion(player), ProtocolUtils.getServerProtocol().getVersion()));
-            final String protocolString = (proto.isPresent()) ? proto.orElseThrow().getVersion() + " (" + proto.orElseThrow().getMinecraftVersion() + ")" : "Unknown";
+            final Protocol proto = ProtocolUtils.getPlayerProtocol(player);
+            final String protocolString = proto.getVersion() + " (" + proto.getMinecraftVersion() + ")";
             final Embed.EmbedBuilder embed = Embed.builder()
                     .thumbnail(
                             Embed.Media.builder()

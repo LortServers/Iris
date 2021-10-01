@@ -6,14 +6,15 @@ import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.listener.AimbotListener;
 import net.lortservers.iris.listener.InteractFrequencyListener;
 import net.lortservers.iris.platform.EventManager;
-import net.lortservers.iris.utils.protocol.ProtocolUtils;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
-import org.screamingsandals.lib.packet.PacketMapper;
+import net.lortservers.iris.utils.protocol.ProtocolUtils;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
+import org.screamingsandals.lib.utils.PlatformType;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
+import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 
 /**
  * <p>The main plugin container class.</p>
@@ -24,9 +25,12 @@ import org.screamingsandals.lib.utils.annotations.Plugin;
         authors = {"zlataovce", "Lort533"},
         version = "0.0.1-SNAPSHOT"
 )
+@PluginDependencies(platform = PlatformType.BUKKIT, softDependencies = {
+        "ViaVersion",
+        "ProtocolSupport"
+})
 @Init(services = {
         Tasker.class,
-        PacketMapper.class,
         ConfigurationManagerImpl.class,
         PlayerProfileManager.class,
         EventManager.class,
