@@ -13,7 +13,7 @@ import net.lortservers.iris.utils.PunishmentManagerImpl;
 import net.lortservers.iris.utils.ThresholdType;
 import net.lortservers.iris.utils.misc.AtomicDouble;
 import net.lortservers.iris.utils.misc.AtomicFloat;
-import net.lortservers.iris.utils.profiles.PlayerProfile;
+import net.lortservers.iris.utils.profiles.EphemeralPlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.event.OnEvent;
@@ -54,7 +54,7 @@ public class AimbotListener {
             return;
         }
         final PlayerWrapper attacker = event.getDamager().as(PlayerWrapper.class);
-        final PlayerProfile profile = PlayerProfileManager.ofPlayer(attacker);
+        final EphemeralPlayerProfile profile = PlayerProfileManager.ofEphemeral(attacker);
         final PlayerWrapper victim = event.getEntity().as(PlayerWrapper.class);
         AtomicInteger count = new AtomicInteger(0);
         AtomicFloat pitch = new AtomicFloat(0F), lastpitch = new AtomicFloat(0F);

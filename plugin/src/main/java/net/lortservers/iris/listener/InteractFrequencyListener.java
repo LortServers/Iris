@@ -52,7 +52,7 @@ public class InteractFrequencyListener {
     private static final List<SPlayerInteractEvent.Action> rightActions = List.of(SPlayerInteractEvent.Action.RIGHT_CLICK_AIR, SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK);
 
     public IntegerPair getCps(PlayerWrapper player) {
-        return PlayerProfileManager.ofPlayer(player).getCps();
+        return PlayerProfileManager.ofEphemeral(player).getCps();
     }
 
     /**
@@ -75,7 +75,7 @@ public class InteractFrequencyListener {
     @OnEvent
     public void onPlayerBlockBreak(SPlayerBlockBreakEvent event) {
         getCps(event.getPlayer()).modifyFirst(0);
-        PlayerProfileManager.ofPlayer(event.getPlayer()).setLastBreak(System.currentTimeMillis());
+        PlayerProfileManager.ofEphemeral(event.getPlayer()).setLastBreak(System.currentTimeMillis());
     }
 
     /**
@@ -87,7 +87,7 @@ public class InteractFrequencyListener {
     public void onEntityDamageByEntity(SEntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof EntityHuman) {
             final PlayerWrapper attacker = event.getDamager().as(PlayerWrapper.class);
-            final long diff = Math.abs(System.currentTimeMillis() - PlayerProfileManager.ofPlayer(attacker).getLastBreak());
+            final long diff = Math.abs(System.currentTimeMillis() - PlayerProfileManager.ofEphemeral(attacker).getLastBreak());
             if (diff <= 1500) {
                 return;
             }
@@ -107,7 +107,7 @@ public class InteractFrequencyListener {
             return;
         }
         final PlayerWrapper player = event.getPlayer();
-        final long diff = Math.abs(System.currentTimeMillis() - PlayerProfileManager.ofPlayer(player).getLastBreak());
+        final long diff = Math.abs(System.currentTimeMillis() - PlayerProfileManager.ofEphemeral(player).getLastBreak());
         if (diff <= 1500) {
             return;
         }
@@ -141,7 +141,7 @@ public class InteractFrequencyListener {
                 final IrisCheckTriggerEvent evt1 = EventManager.fire(new IrisCheckTriggerEventImpl(player, a));
                 if (!evt1.isCancelled()) {
                     a.increaseVL(player, 1);
-                    if (a.getVL(player) >= a.getVLThreshold(ThresholdType.MESSAGE) && (System.currentTimeMillis() - PlayerProfileManager.ofPlayer(player).getLastBreak()) >= 1500) {
+                    if (a.getVL(player) >= a.getVLThreshold(ThresholdType.MESSAGE) && (System.currentTimeMillis() - PlayerProfileManager.ofEphemeral(player).getLastBreak()) >= 1500) {
                         if (PlayerUtils.isBlocking(action, player)) {
                             final BlockingFrequencyCheckA a1 = Check.get(BlockingFrequencyCheckA.class);
                             if (a1.isEligibleForCheck(player)) {

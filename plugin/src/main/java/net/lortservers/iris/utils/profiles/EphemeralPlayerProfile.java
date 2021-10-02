@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.UUID;
 
 @Data(staticConstructor = "of")
-public class PlayerProfile {
-    private final UUID playerUUID;
+public class EphemeralPlayerProfile {
+    private final UUID player;
     private final Map<Class<? extends Check>, Integer> checkVLs = new HashMap<>();
     private final Map<Class<? extends Check>, CooldownMapping> checkCooldowns = new HashMap<>();
     private final IntegerPair cps = IntegerPairImpl.of(0, 0);
@@ -23,6 +23,6 @@ public class PlayerProfile {
     private boolean alertSubscriber = false;
 
     public PlayerWrapper toPlayer() {
-        return PlayerMapper.wrapPlayer(playerUUID);
+        return PlayerMapper.wrapPlayer(player);
     }
 }

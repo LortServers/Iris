@@ -8,7 +8,7 @@ import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckVLManipulateEventImpl;
 import net.lortservers.iris.utils.CooldownMapping;
 import net.lortservers.iris.utils.ThresholdType;
-import net.lortservers.iris.utils.profiles.PlayerProfile;
+import net.lortservers.iris.utils.profiles.EphemeralPlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -60,7 +60,7 @@ public abstract class CheckImpl implements Check {
     @OnEnable
     public void enable() {
         Tasker.build(() -> {
-            for (PlayerProfile profile : PlayerProfileManager.all()) {
+            for (EphemeralPlayerProfile profile : PlayerProfileManager.allEphemeral()) {
                 int currentVl = profile.getCheckVLs().getOrDefault(getClass(), 0);
                 if (currentVl >= decreaseBy) {
                     currentVl = currentVl - decreaseBy;
@@ -97,7 +97,7 @@ public abstract class CheckImpl implements Check {
      */
     @Override
     public int getVL(PlayerWrapper player) {
-        return PlayerProfileManager.ofPlayer(player).getCheckVLs().getOrDefault(getClass(), 0);
+        return PlayerProfileManager.ofEphemeral(player).getCheckVLs().getOrDefault(getClass(), 0);
     }
 
     /**
@@ -108,7 +108,7 @@ public abstract class CheckImpl implements Check {
      */
     @Override
     public void increaseVL(PlayerWrapper player, int vl) {
-        final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+        final EphemeralPlayerProfile profile = PlayerProfileManager.ofEphemeral(player);
         EventManager.fire(new IrisCheckVLManipulateEventImpl(player, this, profile.getCheckVLs().getOrDefault(getClass(), 0), profile.getCheckVLs().getOrDefault(getClass(), 0) + vl, false, IrisCheckVLManipulateEvent.ManipulateType.INCREASE));
         profile.getCheckVLs().put(getClass(), profile.getCheckVLs().getOrDefault(getClass(), 0) + vl);
     }
@@ -121,7 +121,7 @@ public abstract class CheckImpl implements Check {
      */
     @Override
     public void decreaseVL(PlayerWrapper player, int vl) {
-        final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+        final EphemeralPlayerProfile profile = PlayerProfileManager.ofEphemeral(player);
         int currentVl = profile.getCheckVLs().getOrDefault(getClass(), 0);
         if (currentVl >= vl) {
             currentVl = currentVl - vl;
@@ -139,7 +139,7 @@ public abstract class CheckImpl implements Check {
      */
     @Override
     public void resetVL(PlayerWrapper player) {
-        final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+        final EphemeralPlayerProfile profile = PlayerProfileManager.ofEphemeral(player);
         EventManager.fire(new IrisCheckVLManipulateEventImpl(player, this, profile.getCheckVLs().getOrDefault(getClass(), 0), 0, false, IrisCheckVLManipulateEvent.ManipulateType.RESET));
         profile.getCheckVLs().put(getClass(), 0);
     }
@@ -152,7 +152,7 @@ public abstract class CheckImpl implements Check {
      */
     @Override
     public boolean isOnCooldown(PlayerWrapper player) {
-        final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+        final EphemeralPlayerProfile profile = PlayerProfileManager.ofEphemeral(player);
         return profile.getCheckCooldowns().get(getClass()) != null && profile.getCheckCooldowns().get(getClass()).isOnCooldown();
     }
 
@@ -163,7 +163,7 @@ public abstract class CheckImpl implements Check {
      */
     @Override
     public void putCooldown(PlayerWrapper player) {
-        final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+        final EphemeralPlayerProfile profile = PlayerProfileManager.ofEphemeral(player);
         if (profile.getCheckCooldowns().get(getClass()) == null) {
             profile.getCheckCooldowns().put(getClass(), new CooldownMapping(cooldown));
         }

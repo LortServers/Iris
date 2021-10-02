@@ -9,7 +9,7 @@ import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.managers.PunishmentManager;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckMessageSendEventImpl;
-import net.lortservers.iris.utils.profiles.PlayerProfile;
+import net.lortservers.iris.utils.profiles.EphemeralPlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import net.lortservers.iris.utils.protocol.Protocol;
 import net.lortservers.iris.utils.protocol.ProtocolUtils;
@@ -124,12 +124,12 @@ public class PunishmentManagerImpl implements PunishmentManager {
 
     @Override
     public List<PlayerWrapper> getSubscribers() {
-        return PlayerProfileManager.all().stream().filter(PlayerProfile::isAlertSubscriber).map(PlayerProfile::toPlayer).toList();
+        return PlayerProfileManager.allEphemeral().stream().filter(EphemeralPlayerProfile::isAlertSubscriber).map(EphemeralPlayerProfile::toPlayer).toList();
     }
 
     @Override
     public boolean isSubscribed(PlayerWrapper player) {
-        return PlayerProfileManager.ofPlayer(player).isAlertSubscriber();
+        return PlayerProfileManager.ofEphemeral(player).isAlertSubscriber();
     }
 
     /**
@@ -141,7 +141,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
     @Override
     public boolean toggleAlerts(PlayerWrapper player) {
         if (PunishmentManager.canSubscribe(player)) {
-            final PlayerProfile profile = PlayerProfileManager.ofPlayer(player);
+            final EphemeralPlayerProfile profile = PlayerProfileManager.ofEphemeral(player);
             final boolean now = !profile.isAlertSubscriber();
             profile.setAlertSubscriber(now);
             return now;
