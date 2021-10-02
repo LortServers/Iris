@@ -58,11 +58,10 @@ public class FilePersistenceAdapter implements PersistenceAdapter<PersistentPlay
                     profileCache.put(player, result);
                     return result;
                 }
-                return PersistentPlayerProfile.of(player);
             } catch (IOException e) {
                 IrisPlugin.getInstance().getLogger().error("Could not retrieve player profile: " + player, e);
-                throw new RuntimeException("Could not retrieve player profile: " + player);
             }
+            return PersistentPlayerProfile.of(player);
         });
     }
 

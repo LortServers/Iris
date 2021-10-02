@@ -18,11 +18,9 @@ import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnDisable;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 @Service
 public class PlayerProfileManager {
@@ -66,7 +64,7 @@ public class PlayerProfileManager {
     }
 
     public static @Nullable CompletableFuture<PersistentPlayerProfile> ofPersistent(PlayerWrapper player) {
-        return (getInstance().adapter == null) ? fallbackAdapter.retrieve(player.getUuid()) : getInstance().adapter.retrieve(player.getUuid());
+        return Objects.requireNonNullElse(getInstance().adapter, fallbackAdapter).retrieve(player.getUuid());
     }
 
     public static List<EphemeralPlayerProfile> allEphemeral() {
@@ -74,7 +72,7 @@ public class PlayerProfileManager {
     }
 
     public static CompletableFuture<List<PersistentPlayerProfile>> allPersistent() {
-        return (getInstance().adapter == null) ? fallbackAdapter.all() : getInstance().adapter.all();
+        return Objects.requireNonNullElse(getInstance().adapter, fallbackAdapter).all();
     }
 
     public static void setAdapter(PersistenceAdapter<PersistentPlayerProfile> adapter) {
@@ -82,8 +80,10 @@ public class PlayerProfileManager {
     }
 
     public static void persist(PersistentPlayerProfile profile) {
-        if (getInstance().adapter != null) {
-            getInstance().adapter.persist(profile);
-        }
+        Objects.requireNonNullElse(getInstance().adapter, fallbackAdapter).persist(profile);
+    }
+
+    public static void modify(PlayerWrapper player, Function<@NonNull PersistentPlayerProfile, @NonNull PersistentPlayerProfile> func) {
+        Objects.requireNonNullElse(getInstance().adapter, fallbackAdapter).modify(player.getUuid(), func);
     }
 }
