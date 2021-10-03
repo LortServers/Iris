@@ -18,7 +18,14 @@ public interface PersistenceAdapter<T> {
                 .toList()
         );
     }
-    default void modify(UUID player, Function<@NonNull T, @NonNull T> func) {
-        persist(func.apply(retrieve(player).join()));
+    default CompletableFuture<Void> modify(UUID player, Function<@NonNull T, @NonNull T> func) {
+        return retrieve(player).thenAcceptAsync(e -> persist(func.apply(e)));
+    }
+    default CompletableFuture<Void> modifyAll(Function<@NonNull T, @NonNull T> func) {
+        return all().thenAcceptAsync(e -> {
+            for (T profile : e) {
+                persist(func.apply(profile));
+            }
+        });
     }
 }

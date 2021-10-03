@@ -63,7 +63,7 @@ public class PlayerProfileManager {
         return getInstance().ephemeralPlayerProfiles.get(player.getUuid());
     }
 
-    public static @Nullable CompletableFuture<PersistentPlayerProfile> ofPersistent(PlayerWrapper player) {
+    public static @NonNull CompletableFuture<PersistentPlayerProfile> ofPersistent(PlayerWrapper player) {
         return Objects.requireNonNullElse(getInstance().adapter, fallbackAdapter).retrieve(player.getUuid());
     }
 
@@ -83,7 +83,11 @@ public class PlayerProfileManager {
         Objects.requireNonNullElse(getInstance().adapter, fallbackAdapter).persist(profile);
     }
 
-    public static void modify(PlayerWrapper player, Function<@NonNull PersistentPlayerProfile, @NonNull PersistentPlayerProfile> func) {
-        Objects.requireNonNullElse(getInstance().adapter, fallbackAdapter).modify(player.getUuid(), func);
+    public static CompletableFuture<Void> modify(PlayerWrapper player, Function<@NonNull PersistentPlayerProfile, @NonNull PersistentPlayerProfile> func) {
+        return Objects.requireNonNullElse(getInstance().adapter, fallbackAdapter).modify(player.getUuid(), func);
+    }
+
+    public static CompletableFuture<Void> modifyAll(Function<@NonNull PersistentPlayerProfile, @NonNull PersistentPlayerProfile> func) {
+        return Objects.requireNonNullElse(getInstance().adapter, fallbackAdapter).modifyAll(func);
     }
 }

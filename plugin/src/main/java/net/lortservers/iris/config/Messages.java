@@ -32,6 +32,8 @@ public class Messages {
     private String invalidCommand = "<prefix> <color:red>Invalid command!";
     private String alertsToggle = "<prefix> <color:yellow>Turned alerts <color:green><status><color:yellow>!";
     private String playerInfo = "<prefix> <color:yellow>Connection protocol: <color:gray><protocol>";
+    private String judgementDaySet = "<prefix> <color:#FFA500>Set the Judgement Day status for player <color:red><player><color:#FFA500> to <color:red><status><color:#FFA500>.";
+    private String judgementDayComplete = "<prefix> <color:#FFA500>Banned <color:red><count><color:#FFA500> players.";
 
     /**
      * <p>Gets the message component from id.</p>

@@ -10,6 +10,7 @@ import java.util.UUID;
 @Data(staticConstructor = "of")
 public class PersistentPlayerProfile {
     private final UUID player;
+    private boolean judgementDay = false;
 
     public PlayerWrapper toPlayer() {
         return PlayerMapper.wrapPlayer(player);

@@ -56,13 +56,13 @@ public class AimbotListener {
         final PlayerWrapper attacker = event.getDamager().as(PlayerWrapper.class);
         final EphemeralPlayerProfile profile = PlayerProfileManager.ofEphemeral(attacker);
         final PlayerWrapper victim = event.getEntity().as(PlayerWrapper.class);
-        AtomicInteger count = new AtomicInteger(0);
-        AtomicFloat pitch = new AtomicFloat(0F), lastpitch = new AtomicFloat(0F);
-        AtomicDouble yaw = new AtomicDouble(), lastyaw = new AtomicDouble();
-        AtomicInteger pitchcount = new AtomicInteger(0), yawcount = new AtomicInteger(0);
+        final AtomicInteger count = new AtomicInteger(0);
+        final AtomicFloat pitch = new AtomicFloat(), lastpitch = new AtomicFloat();
+        final AtomicDouble yaw = new AtomicDouble(), lastyaw = new AtomicDouble();
+        final AtomicInteger pitchcount = new AtomicInteger(0), yawcount = new AtomicInteger(0);
         LocationHolder loc = attacker.getLocation();
         double r1 = victim.getLocation().getDistanceSquared(loc);
-        AtomicDouble r2 = new AtomicDouble();
+        final AtomicDouble r2 = new AtomicDouble();
         final Optional<EntityLiving> target1 = attacker.getTarget();
         if (target1.isEmpty() || !PlayerUtils.isPlayer(target1.orElseThrow()) || !target1.orElseThrow().as(PlayerWrapper.class).getUuid().equals(victim.getUuid())) {
             return;

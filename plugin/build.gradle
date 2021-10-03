@@ -25,7 +25,7 @@ dependencies {
     slibModulesForPlatform('common', 'utils')
     annotationProcessor "org.screamingsandals.lib:screaming-annotation:$screamingLibVersion"
 
-    api "com.google.guava:guava:$guavaVersion"
+    implementation "com.google.guava:guava:$guavaVersion"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"

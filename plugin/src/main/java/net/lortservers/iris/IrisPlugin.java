@@ -1,6 +1,8 @@
 package net.lortservers.iris;
 
 import net.lortservers.iris.commands.AlertsCommand;
+import net.lortservers.iris.commands.JudgementDaySetCommand;
+import net.lortservers.iris.commands.JudgementDayStartCommand;
 import net.lortservers.iris.commands.PlayerInfoCommand;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.listener.AimbotListener;
@@ -34,10 +36,14 @@ import org.screamingsandals.lib.utils.annotations.PluginDependencies;
         ConfigurationManagerImpl.class,
         PlayerProfileManager.class,
         EventManager.class,
+        // listeners
         AimbotListener.class,
         InteractFrequencyListener.class,
+        // commands
         AlertsCommand.class,
-        PlayerInfoCommand.class
+        PlayerInfoCommand.class,
+        JudgementDaySetCommand.class,
+        JudgementDayStartCommand.class
 })
 public class IrisPlugin extends PluginContainer {
     /**
