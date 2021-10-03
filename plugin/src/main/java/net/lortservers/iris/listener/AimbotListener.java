@@ -1,5 +1,6 @@
 package net.lortservers.iris.listener;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.checks.aimbot.*;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
@@ -11,7 +12,6 @@ import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import net.lortservers.iris.utils.ThresholdType;
-import net.lortservers.iris.utils.misc.AtomicDouble;
 import net.lortservers.iris.utils.misc.AtomicFloat;
 import net.lortservers.iris.utils.profiles.EphemeralPlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
@@ -58,7 +58,7 @@ public class AimbotListener {
         final PlayerWrapper victim = event.getEntity().as(PlayerWrapper.class);
         AtomicInteger count = new AtomicInteger(0);
         AtomicFloat pitch = new AtomicFloat(0F), lastpitch = new AtomicFloat(0F);
-        AtomicDouble yaw = new AtomicDouble(0D), lastyaw = new AtomicDouble(0D);
+        AtomicDouble yaw = new AtomicDouble(), lastyaw = new AtomicDouble();
         AtomicInteger pitchcount = new AtomicInteger(0), yawcount = new AtomicInteger(0);
         LocationHolder loc = attacker.getLocation();
         double r1 = victim.getLocation().getDistanceSquared(loc);
@@ -92,7 +92,7 @@ public class AimbotListener {
                 pitchcount.getAndIncrement();
             }
             yaw.set(Math.floor(attacker.getLocation().getYaw()));
-            if (yaw.get().equals(lastyaw.get())) {
+            if (yaw.get() == lastyaw.get()) {
                 yawcount.getAndIncrement();
             }
             lastyaw.set(yaw.get());
