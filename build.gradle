@@ -8,7 +8,7 @@ buildscript {
         jacksonVersion = "2.12.5"
         checkerFrameworkVersion = "3.18.0"
         lombokVersion = "1.18.20"
-        miniMessageVersion = "4.1.0-SNAPSHOT"
+        miniMessageVersion = "4.2.0-SNAPSHOT"
         cloudExtrasVersion = "1.5.0"
         nettyVersion = "4.1.68.Final"
         guavaVersion = "31.0.1-jre"
