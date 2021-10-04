@@ -5,7 +5,7 @@ buildscript {
         spongeApiVersion = "7.3.0"
         minestomVersion = "master-SNAPSHOT"
         junitVersion = "5.8.1"
-        jacksonVersion = "2.12.5"
+        jacksonVersion = "2.13.0"
         checkerFrameworkVersion = "3.18.0"
         lombokVersion = "1.18.20"
         miniMessageVersion = "4.2.0-SNAPSHOT"
