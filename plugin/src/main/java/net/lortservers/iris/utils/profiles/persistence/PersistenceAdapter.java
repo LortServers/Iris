@@ -1,5 +1,6 @@
 package net.lortservers.iris.utils.profiles.persistence;
 
+import net.lortservers.iris.IrisPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.Server;
 
@@ -13,19 +14,18 @@ public interface PersistenceAdapter<T> {
     CompletableFuture<T> retrieve(UUID player);
     CompletableFuture<List<T>> all();
     default CompletableFuture<List<T>> fromOnline() {
-        return CompletableFuture.supplyAsync(() -> Server.getConnectedPlayers().stream()
-                .map(e -> retrieve(e.getUuid()).join())
-                .toList()
-        );
+        final List<CompletableFuture<T>> futures = Server.getConnectedPlayers().stream().map(e -> retrieve(e.getUuid())).toList();
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new))
+                .thenApplyAsync(i -> futures.stream().map(CompletableFuture::join).toList(), IrisPlugin.THREAD_POOL);
     }
     default CompletableFuture<Void> modify(UUID player, Function<@NonNull T, @NonNull T> func) {
-        return retrieve(player).thenAcceptAsync(e -> persist(func.apply(e)));
+        return retrieve(player).thenAcceptAsync(e -> persist(func.apply(e)), IrisPlugin.THREAD_POOL);
     }
     default CompletableFuture<Void> modifyAll(Function<@NonNull T, @NonNull T> func) {
         return all().thenAcceptAsync(e -> {
             for (T profile : e) {
                 persist(func.apply(profile));
             }
-        });
+        }, IrisPlugin.THREAD_POOL);
     }
 }

@@ -42,7 +42,7 @@ public class FilePersistenceAdapter implements PersistenceAdapter<PersistentPlay
             } catch (IOException e) {
                 IrisPlugin.getInstance().getLogger().error("Could not persist player profile: " + profile.getPlayer(), e);
             }
-        });
+        }, IrisPlugin.THREAD_POOL);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class FilePersistenceAdapter implements PersistenceAdapter<PersistentPlay
                 IrisPlugin.getInstance().getLogger().error("Could not retrieve player profile: " + player, e);
             }
             return PersistentPlayerProfile.of(player);
-        });
+        }, IrisPlugin.THREAD_POOL);
     }
 
     @Override
@@ -92,6 +92,6 @@ public class FilePersistenceAdapter implements PersistenceAdapter<PersistentPlay
                 IrisPlugin.getInstance().getLogger().error("Could not read player profiles, using only cached ones.", e);
                 return Lists.newArrayList(profileCache.values());
             }
-        });
+        }, IrisPlugin.THREAD_POOL);
     }
 }

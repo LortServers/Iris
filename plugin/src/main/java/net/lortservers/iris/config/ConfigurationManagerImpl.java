@@ -33,8 +33,8 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     public static final @NonNull ObjectMapper MAPPER = new ObjectMapper(new JsonFactory());
 
     private static final List<ConfigurationManager.FileDefinition> TRACKED_FILES = List.of(
-            new FileDefinitionImpl<>(Configuration.class, "config.json"),
-            new FileDefinitionImpl<>(Messages.class, "messages.json")
+            FileDefinitionImpl.of(Configuration.class, "config.json"),
+            FileDefinitionImpl.of(Messages.class, "messages.json")
     );
 
     @Override
@@ -116,7 +116,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             IrisPlugin.getInstance().getDataFolder().toFile().mkdirs();
         }
         for (ConfigurationManager.FileDefinition file : TRACKED_FILES) {
-            CompletableFuture.runAsync(file::load);
+            CompletableFuture.runAsync(file::load, IrisPlugin.THREAD_POOL);
         }
     }
 
@@ -130,21 +130,24 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
         }
     }
 
-    @Data
+    @Data(staticConstructor = "of")
     public static class FileDefinitionImpl<T> implements ConfigurationManager.FileDefinition<T> {
         private final Class<T> type;
         private final String relativePath;
         private T object;
 
+        @Override
         public File toFile() {
             return Paths.get(IrisPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), relativePath.split("/")).toFile();
         }
 
+        @Override
         @SneakyThrows
         public void load() {
-            if (toFile().exists() && !toFile().isDirectory()) {
+            final File file = toFile();
+            if (file.exists() && file.isFile()) {
                 try {
-                    object = MAPPER.readValue(toFile(), type);
+                    object = MAPPER.readValue(file, type);
                 } catch (IOException e) {
                     object = type.cast(type.getDeclaredConstructor().newInstance());
                     IrisPlugin.getInstance().getLogger().error("Could not load " + relativePath + ".", e);
@@ -154,11 +157,13 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             }
         }
 
+        @Override
         public void save() {
+            final File file = toFile();
             // noinspection ResultOfMethodCallIgnored
-            toFile().delete();
+            file.delete();
             try {
-                MAPPER.writerWithDefaultPrettyPrinter().writeValue(toFile(), object);
+                MAPPER.writerWithDefaultPrettyPrinter().writeValue(file, object);
             } catch (IOException e) {
                 IrisPlugin.getInstance().getLogger().error("Could not save " + relativePath + ".", e);
             }

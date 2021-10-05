@@ -18,6 +18,8 @@ import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 
+import java.util.concurrent.*;
+
 /**
  * <p>The main plugin container class.</p>
  */
@@ -46,6 +48,7 @@ import org.screamingsandals.lib.utils.annotations.PluginDependencies;
         JudgementDayStartCommand.class
 })
 public class IrisPlugin extends PluginContainer {
+    public static final ExecutorService THREAD_POOL = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<>());
     /**
      * <p>The plugin instance.</p>
      */
