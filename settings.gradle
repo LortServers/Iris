@@ -13,3 +13,4 @@ include 'plugin'
 include 'api'
 
 registerModule('platform', 'bukkit', 'minestom', 'sponge')
+registerModule('adapter', 'mongodb')

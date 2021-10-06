@@ -1,0 +1,12 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
+}
+
+dependencies {
+    compileOnly project(":api")
+    compileOnly project(":plugin")
+
+    implementation "org.mongodb:mongo-java-driver:$mongoDbDriverVersion"
+
+    slibCompileOnly('core', 'plugin', 'utils')
+}

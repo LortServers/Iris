@@ -12,6 +12,7 @@ buildscript {
         cloudExtrasVersion = "1.5.0"
         nettyVersion = "4.1.68.Final"
         guavaVersion = "31.0.1-jre"
+        mongoDbDriverVersion = "3.12.10"
     }
 }
 
@@ -63,6 +64,12 @@ subprojects {
         slibModulesForPlatform = { String platform, String... modules ->
             modules.each {
                 dependencies.api "org.screamingsandals.lib:" + it + "-" + platform + ":$screamingLibVersion"
+            }
+        }
+
+        slibCompileOnly = { String... modules ->
+            modules.each {
+                dependencies.compileOnly "org.screamingsandals.lib:common-" + it + ":$screamingLibVersion"
             }
         }
     }
