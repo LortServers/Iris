@@ -1,10 +1,10 @@
 package net.lortservers.iris.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.ImmutableMap;
 import lombok.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.lortservers.iris.utils.MiscUtils;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.Map;
@@ -24,7 +24,7 @@ public class Messages {
      */
     @Getter(AccessLevel.NONE)
     @JsonIgnore
-    protected static final MiniMessage MINIMESSAGE = MiniMessage.get();
+    protected static final MiniMessage MINIMESSAGE = MiniMessage.miniMessage();
     private String prefix = "[<color:blue>Iris<color:white>]";
     private String failedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:gray><info><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <loc>, <color:#83A9B5>vl:<color:white> <vl>";
     private String shortFailedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <loc>, <color:#83A9B5>vl:<color:white> <vl>";
@@ -53,6 +53,6 @@ public class Messages {
      * @return the message component
      */
     public Component getMessage(String id, Map<String, String> placeholders) {
-        return MINIMESSAGE.parse((String) Reflect.getField(this, id), MiscUtils.collectionMerge(placeholders, Map.of("prefix", prefix)));
+        return MINIMESSAGE.parse((String) Reflect.getField(this, id), ImmutableMap.builder().putAll(placeholders).put("prefix", prefix).build());
     }
 }

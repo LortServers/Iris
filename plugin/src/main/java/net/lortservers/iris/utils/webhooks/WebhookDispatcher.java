@@ -1,7 +1,9 @@
 package net.lortservers.iris.utils.webhooks;
 
+import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.managers.ConfigurationManager;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -14,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 public final class WebhookDispatcher {
     private static final HttpClient CLIENT = HttpClient.newHttpClient();
 
-    public static CompletableFuture<HttpResponse<String>> execute(WebhookExecuteRequest executeRequest) {
+    public static CompletableFuture<@Nullable HttpResponse<String>> execute(WebhookExecuteRequest executeRequest) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 final HttpRequest request = HttpRequest.newBuilder()
@@ -28,6 +30,6 @@ public final class WebhookDispatcher {
                 // ignored
             }
             return null;
-        });
+        }, IrisPlugin.THREAD_POOL);
     }
 }

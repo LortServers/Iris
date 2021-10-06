@@ -96,7 +96,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
                     .field(
                             Embed.Field.builder()
                                     .name("Player details")
-                                    .value("```yaml\nPing: " + player.getPing() + "ms\nProtocol version: " + protocolString + "```")
+                                    .value("```yaml\nPing: " + player.getPing() + "ms\nProtocol version: " + protocolString + "\n```")
                                     .build()
                     )
                     .timestamp(new Date(System.currentTimeMillis()));
@@ -116,7 +116,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
                             .build()
             ).thenAccept(e -> {
                 if (ConfigurationManager.getInstance().getValue("debug", Boolean.class).orElse(false)) {
-                    IrisPlugin.getInstance().getLogger().info(e.body());
+                    IrisPlugin.getInstance().getLogger().info((e != null) ? e.body() : "");
                 }
             });
         }

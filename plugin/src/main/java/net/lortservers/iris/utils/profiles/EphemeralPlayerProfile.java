@@ -1,20 +1,24 @@
 package net.lortservers.iris.utils.profiles;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import net.lortservers.iris.checks.Check;
+import net.lortservers.iris.profiles.AbstractPlayerProfile;
 import net.lortservers.iris.utils.CooldownMapping;
 import net.lortservers.iris.utils.IntegerPair;
 import net.lortservers.iris.utils.misc.IntegerPairImpl;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Data(staticConstructor = "of")
-public class EphemeralPlayerProfile {
-    private final UUID player;
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(callSuper = false)
+public class EphemeralPlayerProfile extends AbstractPlayerProfile {
     private final Map<Class<? extends Check>, Integer> checkVLs = new HashMap<>();
     private final Map<Class<? extends Check>, CooldownMapping> checkCooldowns = new HashMap<>();
     private final IntegerPair cps = IntegerPairImpl.of(0, 0);
@@ -22,7 +26,11 @@ public class EphemeralPlayerProfile {
     private int aimbotCounter = 0;
     private boolean alertSubscriber = false;
 
-    public PlayerWrapper toPlayer() {
-        return PlayerMapper.wrapPlayer(player);
+    private EphemeralPlayerProfile(UUID player) {
+        super(player);
+    }
+
+    public static EphemeralPlayerProfile of(UUID player) {
+        return new EphemeralPlayerProfile(player);
     }
 }

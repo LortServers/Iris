@@ -1,19 +1,24 @@
 package net.lortservers.iris.utils.profiles.persistence;
 
-import lombok.Data;
+import lombok.*;
+import net.lortservers.iris.profiles.AbstractPlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.UUID;
 
-@Data(staticConstructor = "of")
-public class PersistentPlayerProfile {
-    private final UUID player;
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(callSuper = false)
+public class PersistentPlayerProfile extends AbstractPlayerProfile {
     private boolean judgementDay = false;
 
-    public PlayerWrapper toPlayer() {
-        return PlayerMapper.wrapPlayer(player);
+    private PersistentPlayerProfile(UUID player) {
+        super(player);
+    }
+
+    public static PersistentPlayerProfile of(UUID player) {
+        return new PersistentPlayerProfile(player);
     }
 
     public void save() {
