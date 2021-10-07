@@ -13,6 +13,7 @@ dependencies {
 }
 
 shadowJar {
+    baseName "${rootProject.name}-${project.name}"
     minimize()
 
     relocate 'com.mongodb', 'net.lortservers.iris.adapters.mongodb.lib.mongodb'
