@@ -69,7 +69,7 @@ subprojects {
 
         slibCompileOnly = { String platform, String... modules ->
             modules.each {
-                dependencies.compileOnly "org.screamingsandals.lib:" + platform + "-" + it + ":$screamingLibVersion"
+                dependencies.compileOnly "org.screamingsandals.lib:" + it + "-" + platform + ":$screamingLibVersion"
             }
         }
     }
