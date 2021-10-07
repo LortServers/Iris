@@ -9,6 +9,7 @@ dependencies {
     implementation "org.mongodb:mongo-java-driver:$mongoDbDriverVersion"
 
     slibCompileOnly('bukkit', 'core', 'plugin', 'utils')
+    slibCompileOnly('common', 'utils')
     annotationProcessor "org.screamingsandals.lib:screaming-annotation:$screamingLibVersion"
 }
 
