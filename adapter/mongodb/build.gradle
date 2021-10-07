@@ -19,4 +19,5 @@ shadowJar {
 
     relocate 'com.mongodb', 'net.lortservers.iris.adapters.mongodb.lib.mongodb'
     relocate 'org.bson', 'net.lortservers.iris.adapters.mongodb.lib.bson'
+    relocate 'org.screamingsandals.lib', 'net.lortservers.iris.lib.slib'
 }
