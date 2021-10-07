@@ -9,8 +9,15 @@ def registerModule(String name, String... platforms) {
     }
 }
 
+def registerModuleIndependent(String name, String... platforms) {
+    platforms.each {
+        include(':' + name + '-' + it)
+        project(':' + name + '-' + it).projectDir = file(name + '/' + it)
+    }
+}
+
 include 'plugin'
 include 'api'
 
 registerModule('platform', 'bukkit', 'minestom', 'sponge')
-registerModule('adapter', 'mongodb')
+registerModuleIndependent('adapter', 'mongodb')

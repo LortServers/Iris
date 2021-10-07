@@ -14,6 +14,8 @@ import java.util.Optional;
 /**
  * <p>A class holding the plugin configuration.</p>
  */
+@Getter
+@Setter
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
