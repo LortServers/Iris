@@ -90,4 +90,8 @@ public class PlayerProfileManager {
     public static CompletableFuture<Void> modifyAll(Function<@NonNull PersistentPlayerProfile, @NonNull PersistentPlayerProfile> func) {
         return Objects.requireNonNullElse(getInstance().adapter, fallbackAdapter).modifyAll(func);
     }
+
+    public static boolean hasAdapter() {
+        return getInstance().adapter != null;
+    }
 }

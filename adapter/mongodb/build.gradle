@@ -8,5 +8,13 @@ dependencies {
 
     implementation "org.mongodb:mongo-java-driver:$mongoDbDriverVersion"
 
-    slibCompileOnly('core', 'plugin', 'utils')
+    slibCompileOnly('bukkit', 'core', 'plugin', 'utils')
+    annotationProcessor "org.screamingsandals.lib:screaming-annotation:$screamingLibVersion"
+}
+
+shadowJar {
+    minimize()
+
+    relocate 'com.mongodb', 'net.lortservers.iris.adapters.mongodb.lib.mongodb'
+    relocate 'org.bson', 'net.lortservers.iris.adapters.mongodb.lib.bson'
 }

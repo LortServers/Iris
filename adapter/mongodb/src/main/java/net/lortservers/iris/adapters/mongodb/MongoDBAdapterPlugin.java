@@ -1,21 +1,35 @@
 package net.lortservers.iris.adapters.mongodb;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoNamespace;
+import com.mongodb.client.MongoClients;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.screamingsandals.lib.plugin.PluginContainer;
 import org.screamingsandals.lib.utils.PlatformType;
-import org.screamingsandals.lib.utils.annotations.Init;
+import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.Optional;
 
-@Init(services = {})
+@Plugin(
+        id = "Iris-MongoDBAdapter",
+        name = "Iris-MongoDBAdapter",
+        version = "0.0.1-SNAPSHOT",
+        authors = {"zlataovce", "Lort533"}
+)
 @PluginDependencies(platform = PlatformType.BUKKIT, dependencies = {
+        "Iris"
+})
+@PluginDependencies(platform = PlatformType.MINESTOM, dependencies = {
+        "Iris"
+})
+@PluginDependencies(platform = PlatformType.SPONGE, dependencies = {
         "Iris"
 })
 public class MongoDBAdapterPlugin extends PluginContainer {
@@ -33,8 +47,17 @@ public class MongoDBAdapterPlugin extends PluginContainer {
         if (!isValid) {
             getLogger().error("Invalid database name, cannot continue.");
         }
-        if (!connectionUri.equals("") && isValid) {
-            PlayerProfileManager.setAdapter(new MongoDBPersistenceAdapter(new MongoClient(new MongoClientURI(connectionUri)).getDatabase(databaseName)));
+        if (!connectionUri.equals("") && isValid && !PlayerProfileManager.hasAdapter()) {
+            PlayerProfileManager.setAdapter(
+                    new MongoDBPersistenceAdapter(
+                            MongoClients.create(
+                                    MongoClientSettings.builder()
+                                            .applyConnectionString(new ConnectionString(connectionUri))
+                                            .codecRegistry(CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build())))
+                                            .build()
+                            ).getDatabase(databaseName)
+                    )
+            );
         }
     }
 

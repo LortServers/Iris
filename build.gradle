@@ -67,9 +67,9 @@ subprojects {
             }
         }
 
-        slibCompileOnly = { String... modules ->
+        slibCompileOnly = { String platform, String... modules ->
             modules.each {
-                dependencies.compileOnly "org.screamingsandals.lib:common-" + it + ":$screamingLibVersion"
+                dependencies.compileOnly "org.screamingsandals.lib:" + platform + "-" + it + ":$screamingLibVersion"
             }
         }
     }
