@@ -7,6 +7,7 @@ import net.lortservers.iris.commands.PlayerInfoCommand;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.listener.AimbotListener;
 import net.lortservers.iris.listener.InteractFrequencyListener;
+import net.lortservers.iris.listener.ReachListener;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import net.lortservers.iris.utils.protocol.ProtocolUtils;
@@ -41,6 +42,7 @@ import java.util.concurrent.*;
         // listeners
         AimbotListener.class,
         InteractFrequencyListener.class,
+        ReachListener.class,
         // commands
         AlertsCommand.class,
         PlayerInfoCommand.class,

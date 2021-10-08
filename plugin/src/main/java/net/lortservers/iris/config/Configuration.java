@@ -112,6 +112,40 @@ public class Configuration {
                     .suspicionThresholds(Map.of(
                             "message", 5
                     ))
+                    .build(),
+            CheckConfiguration.builder()
+                    .name("RigidEntity")
+                    .type("A")
+                    .suspicionThresholds(Map.of(
+                            "message", 4
+                    ))
+                    .build(),
+            CheckConfiguration.builder()
+                    .name("RigidEntity")
+                    .type("B")
+                    .suspicionThresholds(Map.of(
+                            "message", 4
+                    ))
+                    .build(),
+            CheckConfiguration.builder()
+                    .name("Reach")
+                    .type("F")
+                    .options(Map.of(
+                            "minDistance", 3.75
+                    ))
+                    .suspicionThresholds(Map.of(
+                            "message", 4
+                    ))
+                    .build(),
+            CheckConfiguration.builder()
+                    .name("Reach")
+                    .type("G")
+                    .options(Map.of(
+                            "minDistance", 3.75
+                    ))
+                    .suspicionThresholds(Map.of(
+                            "message", 4
+                    ))
                     .build()
     );
 
