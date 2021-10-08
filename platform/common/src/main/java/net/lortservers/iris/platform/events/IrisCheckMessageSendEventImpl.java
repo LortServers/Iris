@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import net.kyori.adventure.text.Component;
-import net.lortservers.iris.events.IrisCheckMessageSendEvent;
+import net.lortservers.iris.api.events.IrisCheckMessageSendEvent;
 import org.screamingsandals.lib.event.CancellableAbstractEvent;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.BidirectionalConverter;

@@ -2,10 +2,10 @@ package net.lortservers.iris.adapters.mongodb;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoNamespace;
 import com.mongodb.client.MongoClients;
+import lombok.*;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
-import net.lortservers.iris.managers.ConfigurationManager;
+import net.lortservers.iris.api.managers.ConfigurationManager;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -33,7 +33,7 @@ import java.util.Optional;
         "Iris"
 })
 public class MongoDBAdapterPlugin extends PluginContainer {
-    private static final ConfigurationManager.FileDefinition<MongoDBAdapterConfig> CONFIG = ConfigurationManagerImpl.FileDefinitionImpl.of(MongoDBAdapterConfig.class, "mongodb.json");
+    private static final ConfigurationManager.FileDefinition<AdapterConfig> CONFIG = ConfigurationManagerImpl.FileDefinitionImpl.of(AdapterConfig.class, "mongodb.json");
 
     @Override
     public void enable() {
@@ -43,19 +43,14 @@ public class MongoDBAdapterPlugin extends PluginContainer {
         }
         final String connectionUri = getConfigValue("connectionUri", String.class).orElse("");
         final String databaseName = getConfigValue("databaseName", String.class).orElse("iris");
-        final boolean isValid = isNamespaceValid(databaseName);
-        if (!isValid) {
-            getLogger().error("Invalid database name, cannot continue.");
-        }
-        if (!connectionUri.equals("") && isValid && !PlayerProfileManager.hasAdapter()) {
+        if (!connectionUri.equals("") && !PlayerProfileManager.hasAdapter()) {
             PlayerProfileManager.setAdapter(
                     new MongoDBPersistenceAdapter(
-                            MongoClients.create(
-                                    MongoClientSettings.builder()
+                            MongoClients.create(MongoClientSettings.builder()
                                             .applyConnectionString(new ConnectionString(connectionUri))
                                             .codecRegistry(CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build())))
-                                            .build()
-                            ).getDatabase(databaseName)
+                                            .build())
+                                    .getDatabase(databaseName)
                     )
             );
         }
@@ -65,12 +60,14 @@ public class MongoDBAdapterPlugin extends PluginContainer {
         return (CONFIG.getObject() == null) ? Optional.empty() : Optional.of(returnType.cast(Reflect.getField(CONFIG.getObject(), key)));
     }
 
-    private boolean isNamespaceValid(String name) {
-        try {
-            MongoNamespace.checkDatabaseNameValidity(name);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+    @Getter
+    @Setter
+    @EqualsAndHashCode
+    @ToString
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public class AdapterConfig {
+        private String connectionUri = "";
+        private String databaseName = "iris";
     }
 }

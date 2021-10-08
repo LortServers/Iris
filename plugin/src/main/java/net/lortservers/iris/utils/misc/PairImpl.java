@@ -1,6 +1,6 @@
 package net.lortservers.iris.utils.misc;
 
-import net.lortservers.iris.utils.Pair;
+import net.lortservers.iris.api.utils.Pair;
 
 public class PairImpl<A, B> implements Pair<A, B> {
     private A first;

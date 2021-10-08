@@ -1,6 +1,6 @@
 package net.lortservers.iris.utils.misc;
 
-import net.lortservers.iris.utils.IntegerPair;
+import net.lortservers.iris.api.utils.IntegerPair;
 
 public class IntegerPairImpl implements IntegerPair {
     private Integer first;

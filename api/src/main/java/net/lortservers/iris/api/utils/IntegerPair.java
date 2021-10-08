@@ -1,4 +1,4 @@
-package net.lortservers.iris.utils;
+package net.lortservers.iris.api.utils;
 
 public interface IntegerPair extends Pair<Integer, Integer> {
     IntegerPair incrementFirst(int val);

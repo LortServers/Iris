@@ -1,7 +1,6 @@
 package net.lortservers.iris.checks.aimbot;
 
-import net.lortservers.iris.checks.CheckAlphabet;
-import net.lortservers.iris.managers.ConfigurationManager;
+import net.lortservers.iris.api.checks.CheckAlphabet;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.utils.annotations.Service;
 

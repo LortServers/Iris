@@ -1,6 +1,6 @@
-package net.lortservers.iris.checks;
+package net.lortservers.iris.api.checks;
 
-import net.lortservers.iris.utils.ThresholdType;
+import net.lortservers.iris.api.utils.ThresholdType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;

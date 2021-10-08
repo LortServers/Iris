@@ -5,7 +5,7 @@ import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import lombok.experimental.UtilityClass;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
-import net.lortservers.iris.managers.ConfigurationManager;
+import net.lortservers.iris.api.managers.ConfigurationManager;
 import org.screamingsandals.lib.command.CloudConstructor;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;

@@ -1,17 +1,17 @@
 package net.lortservers.iris.listener;
 
 import com.google.common.util.concurrent.AtomicDouble;
-import net.lortservers.iris.checks.Check;
+import net.lortservers.iris.api.checks.Check;
 import net.lortservers.iris.checks.aimbot.*;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
-import net.lortservers.iris.events.IrisCheckTriggerEvent;
-import net.lortservers.iris.managers.ConfigurationManager;
-import net.lortservers.iris.managers.PunishmentManager;
+import net.lortservers.iris.api.events.IrisCheckTriggerEvent;
+import net.lortservers.iris.api.managers.ConfigurationManager;
+import net.lortservers.iris.api.managers.PunishmentManager;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
-import net.lortservers.iris.utils.ThresholdType;
+import net.lortservers.iris.api.utils.ThresholdType;
 import net.lortservers.iris.utils.misc.AtomicFloat;
 import net.lortservers.iris.utils.profiles.EphemeralPlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;

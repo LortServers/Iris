@@ -1,6 +1,6 @@
-package net.lortservers.iris.managers;
+package net.lortservers.iris.api.managers;
 
-import net.lortservers.iris.checks.Check;
+import net.lortservers.iris.api.checks.Check;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;

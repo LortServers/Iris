@@ -1,6 +1,5 @@
 package net.lortservers.iris.checks.interact;
 
-import net.lortservers.iris.checks.Check;
 import net.lortservers.iris.checks.CheckImpl;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

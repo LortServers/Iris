@@ -1,9 +1,9 @@
 package net.lortservers.iris.config;
 
 import lombok.*;
-import net.lortservers.iris.checks.Check;
-import net.lortservers.iris.checks.CheckAlphabet;
-import net.lortservers.iris.utils.ThresholdType;
+import net.lortservers.iris.api.checks.Check;
+import net.lortservers.iris.api.checks.CheckAlphabet;
+import net.lortservers.iris.api.utils.ThresholdType;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.List;

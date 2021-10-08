@@ -1,7 +1,7 @@
 package net.lortservers.iris.utils.profiles.persistence;
 
 import lombok.*;
-import net.lortservers.iris.profiles.AbstractPlayerProfile;
+import net.lortservers.iris.api.profiles.AbstractPlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 
 import java.util.UUID;

@@ -2,7 +2,7 @@ package net.lortservers.iris.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import net.lortservers.iris.managers.ConfigurationManager;
+import net.lortservers.iris.api.managers.ConfigurationManager;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.sender.permissions.SimplePermission;

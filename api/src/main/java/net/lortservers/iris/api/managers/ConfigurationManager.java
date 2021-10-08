@@ -1,8 +1,8 @@
-package net.lortservers.iris.managers;
+package net.lortservers.iris.api.managers;
 
 import net.kyori.adventure.text.Component;
-import net.lortservers.iris.checks.Check;
-import net.lortservers.iris.utils.ThresholdType;
+import net.lortservers.iris.api.checks.Check;
+import net.lortservers.iris.api.utils.ThresholdType;
 import org.screamingsandals.lib.plugin.ServiceManager;
 
 import java.io.File;

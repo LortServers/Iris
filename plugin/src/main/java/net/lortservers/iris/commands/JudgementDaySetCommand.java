@@ -4,7 +4,7 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.BooleanArgument;
 import cloud.commandframework.bukkit.parsers.PlayerArgument;
-import net.lortservers.iris.managers.ConfigurationManager;
+import net.lortservers.iris.api.managers.ConfigurationManager;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;

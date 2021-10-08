@@ -1,19 +1,19 @@
 package net.lortservers.iris.listener;
 
 import net.lortservers.iris.IrisPlugin;
-import net.lortservers.iris.checks.Check;
+import net.lortservers.iris.api.checks.Check;
 import net.lortservers.iris.checks.interact.InteractFrequencyCheckA;
 import net.lortservers.iris.checks.interact.block.BlockingFrequencyCheckA;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
-import net.lortservers.iris.events.IrisCheckTriggerEvent;
-import net.lortservers.iris.managers.ConfigurationManager;
-import net.lortservers.iris.managers.PunishmentManager;
+import net.lortservers.iris.api.events.IrisCheckTriggerEvent;
+import net.lortservers.iris.api.managers.ConfigurationManager;
+import net.lortservers.iris.api.managers.PunishmentManager;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
-import net.lortservers.iris.utils.IntegerPair;
+import net.lortservers.iris.api.utils.IntegerPair;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
-import net.lortservers.iris.utils.ThresholdType;
+import net.lortservers.iris.api.utils.ThresholdType;
 import net.lortservers.iris.utils.material.MaterialUtils;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.screamingsandals.lib.Server;

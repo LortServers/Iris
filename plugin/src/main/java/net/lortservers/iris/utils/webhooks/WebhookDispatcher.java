@@ -2,7 +2,7 @@ package net.lortservers.iris.utils.webhooks;
 
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
-import net.lortservers.iris.managers.ConfigurationManager;
+import net.lortservers.iris.api.managers.ConfigurationManager;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;

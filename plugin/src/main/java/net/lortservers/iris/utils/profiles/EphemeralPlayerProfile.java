@@ -4,10 +4,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.lortservers.iris.checks.Check;
-import net.lortservers.iris.profiles.AbstractPlayerProfile;
+import net.lortservers.iris.api.checks.Check;
+import net.lortservers.iris.api.profiles.AbstractPlayerProfile;
 import net.lortservers.iris.utils.CooldownMapping;
-import net.lortservers.iris.utils.IntegerPair;
+import net.lortservers.iris.api.utils.IntegerPair;
 import net.lortservers.iris.utils.misc.IntegerPairImpl;
 
 import java.util.HashMap;

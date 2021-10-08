@@ -2,11 +2,11 @@ package net.lortservers.iris.utils;
 
 import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
-import net.lortservers.iris.checks.Check;
+import net.lortservers.iris.api.checks.Check;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
-import net.lortservers.iris.events.IrisCheckMessageSendEvent;
-import net.lortservers.iris.managers.ConfigurationManager;
-import net.lortservers.iris.managers.PunishmentManager;
+import net.lortservers.iris.api.events.IrisCheckMessageSendEvent;
+import net.lortservers.iris.api.managers.ConfigurationManager;
+import net.lortservers.iris.api.managers.PunishmentManager;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckMessageSendEventImpl;
 import net.lortservers.iris.utils.profiles.EphemeralPlayerProfile;

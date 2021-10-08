@@ -1,4 +1,4 @@
-package net.lortservers.iris.events;
+package net.lortservers.iris.api.events;
 
 import org.screamingsandals.lib.player.PlayerWrapper;
 

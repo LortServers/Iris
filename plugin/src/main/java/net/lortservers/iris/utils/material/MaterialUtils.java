@@ -1,6 +1,6 @@
 package net.lortservers.iris.utils.material;
 
-import net.lortservers.iris.utils.MaterialGroup;
+import net.lortservers.iris.api.utils.MaterialGroup;
 import org.screamingsandals.lib.block.BlockHolder;
 import org.screamingsandals.lib.block.BlockTypeHolder;
 import org.screamingsandals.lib.item.Item;

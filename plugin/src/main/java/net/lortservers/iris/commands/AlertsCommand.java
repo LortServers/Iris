@@ -2,8 +2,8 @@ package net.lortservers.iris.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import net.lortservers.iris.managers.ConfigurationManager;
-import net.lortservers.iris.managers.PunishmentManager;
+import net.lortservers.iris.api.managers.ConfigurationManager;
+import net.lortservers.iris.api.managers.PunishmentManager;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;

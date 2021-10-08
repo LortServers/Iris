@@ -4,8 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import net.lortservers.iris.checks.Check;
-import net.lortservers.iris.events.IrisCheckVLManipulateEvent;
+import net.lortservers.iris.api.checks.Check;
+import net.lortservers.iris.api.events.IrisCheckVLManipulateEvent;
 import net.minestom.server.event.Event;
 import org.screamingsandals.lib.player.PlayerWrapper;
 

@@ -1,8 +1,8 @@
 package net.lortservers.iris.platform.events;
 
 import lombok.*;
-import net.lortservers.iris.checks.Check;
-import net.lortservers.iris.events.IrisCheckTriggerEvent;
+import net.lortservers.iris.api.checks.Check;
+import net.lortservers.iris.api.events.IrisCheckTriggerEvent;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.spongepowered.api.entity.living.player.Player;

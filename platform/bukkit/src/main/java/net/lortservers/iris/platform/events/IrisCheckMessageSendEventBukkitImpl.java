@@ -2,7 +2,7 @@ package net.lortservers.iris.platform.events;
 
 import lombok.*;
 import net.kyori.adventure.text.Component;
-import net.lortservers.iris.events.IrisCheckMessageSendEvent;
+import net.lortservers.iris.api.events.IrisCheckMessageSendEvent;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

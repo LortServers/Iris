@@ -1,7 +1,7 @@
 package net.lortservers.iris.utils.profiles;
 
 import com.google.common.collect.Lists;
-import net.lortservers.iris.managers.PunishmentManager;
+import net.lortservers.iris.api.managers.PunishmentManager;
 import net.lortservers.iris.utils.profiles.persistence.FilePersistenceAdapter;
 import net.lortservers.iris.utils.profiles.persistence.PersistenceAdapter;
 import net.lortservers.iris.utils.profiles.persistence.PersistentPlayerProfile;

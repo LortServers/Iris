@@ -1,4 +1,4 @@
-package net.lortservers.iris.utils;
+package net.lortservers.iris.api.utils;
 
 import lombok.AccessLevel;
 import lombok.Getter;

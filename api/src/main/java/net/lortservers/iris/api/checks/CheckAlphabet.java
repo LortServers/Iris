@@ -1,4 +1,4 @@
-package net.lortservers.iris.checks;
+package net.lortservers.iris.api.checks;
 
 /**
  * <p>The alphabet for check types.</p>

@@ -1,4 +1,4 @@
-package net.lortservers.iris.profiles;
+package net.lortservers.iris.api.profiles;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

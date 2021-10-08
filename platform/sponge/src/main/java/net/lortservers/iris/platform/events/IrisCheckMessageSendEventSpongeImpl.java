@@ -2,7 +2,7 @@ package net.lortservers.iris.platform.events;
 
 import lombok.*;
 import net.kyori.adventure.text.Component;
-import net.lortservers.iris.events.IrisCheckMessageSendEvent;
+import net.lortservers.iris.api.events.IrisCheckMessageSendEvent;
 import org.jetbrains.annotations.NotNull;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.spongepowered.api.Sponge;

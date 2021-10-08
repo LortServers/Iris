@@ -1,8 +1,8 @@
 package net.lortservers.iris.config;
 
 import lombok.*;
-import net.lortservers.iris.checks.Check;
-import net.lortservers.iris.checks.CheckAlphabet;
+import net.lortservers.iris.api.checks.Check;
+import net.lortservers.iris.api.checks.CheckAlphabet;
 
 import java.util.Locale;
 import java.util.Map;

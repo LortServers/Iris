@@ -1,13 +1,15 @@
 package net.lortservers.iris.checks;
 
 import lombok.RequiredArgsConstructor;
+import net.lortservers.iris.api.checks.Check;
+import net.lortservers.iris.api.checks.CheckAlphabet;
+import net.lortservers.iris.api.events.IrisCheckVLManipulateEvent;
+import net.lortservers.iris.api.managers.ConfigurationManager;
+import net.lortservers.iris.api.utils.ThresholdType;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
-import net.lortservers.iris.events.IrisCheckVLManipulateEvent;
-import net.lortservers.iris.managers.ConfigurationManager;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckVLManipulateEventImpl;
 import net.lortservers.iris.utils.CooldownMapping;
-import net.lortservers.iris.utils.ThresholdType;
 import net.lortservers.iris.utils.profiles.EphemeralPlayerProfile;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.checkerframework.checker.nullness.qual.NonNull;

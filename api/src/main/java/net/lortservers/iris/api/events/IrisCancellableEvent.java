@@ -1,4 +1,4 @@
-package net.lortservers.iris.events;
+package net.lortservers.iris.api.events;
 
 public interface IrisCancellableEvent {
     boolean isCancelled();

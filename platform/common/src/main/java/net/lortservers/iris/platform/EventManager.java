@@ -1,6 +1,6 @@
 package net.lortservers.iris.platform;
 
-import net.lortservers.iris.managers.ConfigurationManager;
+import net.lortservers.iris.api.managers.ConfigurationManager;
 import org.screamingsandals.lib.event.AbstractEvent;
 import org.screamingsandals.lib.utils.Wrapper;
 import org.screamingsandals.lib.utils.annotations.AbstractService;
