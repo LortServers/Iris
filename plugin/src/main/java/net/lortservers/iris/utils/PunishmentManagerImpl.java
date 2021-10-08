@@ -3,10 +3,10 @@ package net.lortservers.iris.utils;
 import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.api.checks.Check;
-import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.api.events.IrisCheckMessageSendEvent;
 import net.lortservers.iris.api.managers.ConfigurationManager;
 import net.lortservers.iris.api.managers.PunishmentManager;
+import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckMessageSendEventImpl;
 import net.lortservers.iris.utils.profiles.EphemeralPlayerProfile;
@@ -17,6 +17,9 @@ import net.lortservers.iris.utils.webhooks.WebhookDispatcher;
 import net.lortservers.iris.utils.webhooks.WebhookExecuteRequest;
 import net.lortservers.iris.utils.webhooks.data.Embed;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.screamingsandals.lib.event.EventPriority;
+import org.screamingsandals.lib.event.OnEvent;
+import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -123,6 +126,20 @@ public class PunishmentManagerImpl implements PunishmentManager {
     }
 
     @Override
+    public void kick(PlayerWrapper player, String message) {
+        player.kick(ConfigurationManager.getInstance().getMessage("banMessage", Map.of("message", message)));
+    }
+
+    // TODO: ban event
+    @Override
+    public void ban(PlayerWrapper player, String message) {
+        PlayerProfileManager.modify(player, e -> {
+            e.setBanMessage(message);
+            return e;
+        }).thenRun(() -> kick(player, message));
+    }
+
+    @Override
     public List<PlayerWrapper> getSubscribers() {
         return PlayerProfileManager.allEphemeral().stream().filter(EphemeralPlayerProfile::isAlertSubscriber).map(EphemeralPlayerProfile::toPlayer).toList();
     }
@@ -147,5 +164,14 @@ public class PunishmentManagerImpl implements PunishmentManager {
             return now;
         }
         return false;
+    }
+
+    @OnEvent(priority = EventPriority.HIGHEST)
+    public void onPlayerJoin(SPlayerJoinEvent event) {
+        PlayerProfileManager.ofPersistent(event.getPlayer()).thenAccept(e -> {
+            if (e.isBanned()) {
+                kick(event.getPlayer(), e.getBanMessage());
+            }
+        });
     }
 }

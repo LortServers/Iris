@@ -84,6 +84,12 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     }
 
     @Override
+    public String getRawMessage(String id) {
+        final Optional<Messages> msgs = getMessages();
+        return (msgs.isPresent()) ? msgs.orElseThrow().getRawMessage(id) : "";
+    }
+
+    @Override
     public <T> Optional<T> getValue(String key, Class<T> returnType) {
         final Optional<Configuration> config = getConfiguration();
         return (config.isPresent()) ? config.orElseThrow().getValue(key, returnType) : Optional.empty();

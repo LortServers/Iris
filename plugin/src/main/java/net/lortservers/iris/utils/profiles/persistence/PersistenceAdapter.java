@@ -2,6 +2,7 @@ package net.lortservers.iris.utils.profiles.persistence;
 
 import net.lortservers.iris.IrisPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.screamingsandals.lib.Server;
 
 import java.util.List;
@@ -21,10 +22,13 @@ public interface PersistenceAdapter<T> {
     default CompletableFuture<Void> modify(UUID player, Function<@NonNull T, @NonNull T> func) {
         return retrieve(player).thenAcceptAsync(e -> persist(func.apply(e)), IrisPlugin.THREAD_POOL);
     }
-    default CompletableFuture<Void> modifyAll(Function<@NonNull T, @NonNull T> func) {
+    default CompletableFuture<Void> modifyAll(Function<@NonNull T, @Nullable T> func) {
         return all().thenAcceptAsync(e -> {
             for (T profile : e) {
-                persist(func.apply(profile));
+                final T result = func.apply(profile);
+                if (result != null) {
+                    persist(result);
+                }
             }
         }, IrisPlugin.THREAD_POOL);
     }

@@ -23,6 +23,8 @@ public interface ConfigurationManager {
 
     Component getMessage(String id, Map<String, String> placeholders);
 
+    String getRawMessage(String id);
+
     <T> Optional<T> getValue(String key, Class<T> returnType);
 
     <T> Optional<T> getValue(Check check, String key, Class<T> returnType);

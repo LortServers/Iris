@@ -12,6 +12,7 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = false)
 public class PersistentPlayerProfile extends AbstractPlayerProfile {
     private boolean judgementDay = false;
+    private String banMessage = null;
 
     private PersistentPlayerProfile(UUID player) {
         super(player);
@@ -23,5 +24,9 @@ public class PersistentPlayerProfile extends AbstractPlayerProfile {
 
     public void save() {
         PlayerProfileManager.persist(this);
+    }
+
+    public boolean isBanned() {
+        return banMessage != null;
     }
 }

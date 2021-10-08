@@ -25,6 +25,10 @@ public interface PunishmentManager {
 
     <T extends Check> void log(PlayerWrapper player, T check, @Nullable String info);
 
+    void kick(PlayerWrapper player, String message);
+
+    void ban(PlayerWrapper player, String message);
+
     boolean toggleAlerts(PlayerWrapper player);
 
     List<PlayerWrapper> getSubscribers();

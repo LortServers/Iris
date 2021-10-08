@@ -34,6 +34,8 @@ public class Messages {
     private String playerInfo = "<prefix> <color:yellow>Connection protocol: <color:gray><protocol>";
     private String judgementDaySet = "<prefix> <color:#FFA500>Set the Judgement Day status for player <color:red><player><color:#FFA500> to <color:red><status><color:#FFA500>.";
     private String judgementDayComplete = "<prefix> <color:#FFA500>Banned <color:red><count><color:#FFA500> players.";
+    private String banMessage = "<prefix> <color:red><message>";
+    private String banMessageCheating = "Banned for unfair advantage.";
 
     /**
      * <p>Gets the message component from id.</p>
@@ -53,6 +55,10 @@ public class Messages {
      * @return the message component
      */
     public Component getMessage(String id, Map<String, String> placeholders) {
-        return MINIMESSAGE.parse((String) Reflect.getField(this, id), ImmutableMap.builder().putAll(placeholders).put("prefix", prefix).build());
+        return MINIMESSAGE.parse(getRawMessage(id), ImmutableMap.builder().putAll(placeholders).put("prefix", prefix).build());
+    }
+
+    public String getRawMessage(String id) {
+        return (String) Reflect.getField(this, id);
     }
 }
