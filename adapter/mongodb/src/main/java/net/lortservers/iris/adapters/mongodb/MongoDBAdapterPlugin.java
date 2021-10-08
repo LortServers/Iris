@@ -41,9 +41,9 @@ public class MongoDBAdapterPlugin extends PluginContainer {
         if (!CONFIG.toFile().exists()) {
             CONFIG.save();
         }
-        final String connectionUri = getConfigValue("connectionUri", String.class).orElse("");
+        final String connectionUri = getConfigValue("connectionUri", String.class).orElse(null);
         final String databaseName = getConfigValue("databaseName", String.class).orElse("iris");
-        if (!connectionUri.equals("") && !PlayerProfileManager.hasAdapter()) {
+        if (connectionUri != null && !PlayerProfileManager.hasAdapter()) {
             PlayerProfileManager.setAdapter(
                     new MongoDBPersistenceAdapter(
                             MongoClients.create(MongoClientSettings.builder()
@@ -67,7 +67,7 @@ public class MongoDBAdapterPlugin extends PluginContainer {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public class AdapterConfig {
-        private String connectionUri = "";
+        private String connectionUri = null;
         private String databaseName = "iris";
     }
 }

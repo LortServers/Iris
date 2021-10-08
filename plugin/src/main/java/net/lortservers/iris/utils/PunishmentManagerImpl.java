@@ -78,7 +78,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
             getSubscribers().forEach(e -> e.sendMessage(component));
             PlayerMapper.getConsoleSender().sendMessage(component);
         }
-        if (!ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse("").equals("") && !webhookCooldown.isOnCooldown()) {
+        if (ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse(null) != null && !webhookCooldown.isOnCooldown()) {
             webhookCooldown.putCooldown();
             final Protocol proto = ProtocolUtils.getPlayerProtocol(player);
             final String protocolString = proto.getVersion() + " (" + proto.getMinecraftVersion() + ")";

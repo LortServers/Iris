@@ -149,7 +149,7 @@ public class Configuration {
                     .build()
     );
 
-    private String webhookUrl = "";
+    private String webhookUrl = null;
     private String webhookAvatar = "https://i.imgur.com/161mP3g.png";
 
     public Optional<CheckConfiguration> getCheck(String name, CheckAlphabet letter) {
