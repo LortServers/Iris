@@ -8,7 +8,9 @@ import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.sender.permissions.SimplePermission;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
+import java.util.Optional;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,7 +33,10 @@ public class JudgementDayStartCommand extends BaseCommand {
                                 if (e.isJudgementDay()) {
                                     e.setJudgementDay(false);
                                     e.setBanMessage(cheatMessage);
-                                    PunishmentManager.getInstance().kick(e.toPlayer(), cheatMessage);
+                                    final Optional<PlayerWrapper> player = e.toPlayer();
+                                    if (player.isPresent()) {
+                                        PunishmentManager.getInstance().kick(player.orElseThrow(), cheatMessage);
+                                    }
                                     count.getAndIncrement();
                                     return e;
                                 }

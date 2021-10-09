@@ -69,7 +69,7 @@ public abstract class CheckImpl implements Check {
                 } else {
                     currentVl = 0;
                 }
-                EventManager.fire(new IrisCheckVLManipulateEventImpl(profile.toPlayer(), CheckImpl.this, profile.getCheckVLs().getOrDefault(getClass(), 0), currentVl, true, IrisCheckVLManipulateEvent.ManipulateType.DECREASE));
+                EventManager.fire(new IrisCheckVLManipulateEventImpl(profile.toPlayer().orElseThrow(), CheckImpl.this, profile.getCheckVLs().getOrDefault(getClass(), 0), currentVl, true, IrisCheckVLManipulateEvent.ManipulateType.DECREASE));
                 profile.getCheckVLs().put(getClass(), currentVl);
             }
         }).repeat(decreaseTime, decreaseTimeType).start();

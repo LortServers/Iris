@@ -24,6 +24,7 @@ import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
+import java.util.Optional;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -141,7 +142,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
 
     @Override
     public List<PlayerWrapper> getSubscribers() {
-        return PlayerProfileManager.allEphemeral().stream().filter(EphemeralPlayerProfile::isAlertSubscriber).map(EphemeralPlayerProfile::toPlayer).toList();
+        return PlayerProfileManager.allEphemeral().stream().filter(EphemeralPlayerProfile::isAlertSubscriber).map(EphemeralPlayerProfile::toPlayer).map(Optional::orElseThrow).toList();
     }
 
     @Override
