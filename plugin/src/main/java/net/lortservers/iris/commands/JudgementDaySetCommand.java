@@ -25,6 +25,7 @@ public class JudgementDaySetCommand extends BaseCommand {
     protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
+                        .literal("set")
                         .argument(PlayerArgument.of("player"))
                         .argument(BooleanArgument.of("state"))
                         .handler(commandContext -> PlayerProfileManager.modify(commandContext.get("player"), e -> {

@@ -26,6 +26,7 @@ public class JudgementDayStartCommand extends BaseCommand {
     protected void construct(Command.Builder<CommandSenderWrapper> commandSenderWrapperBuilder, CommandManager<CommandSenderWrapper> manager) {
         manager.command(
                 commandSenderWrapperBuilder
+                        .literal("start")
                         .handler(commandContext -> {
                             final AtomicInteger count = new AtomicInteger(0);
                             final String cheatMessage = ConfigurationManager.getInstance().getRawMessage("banMessageCheating");
