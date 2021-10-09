@@ -37,7 +37,7 @@ public class FilePersistenceAdapter implements PersistenceAdapter<PersistentPlay
         }
         CompletableFuture.runAsync(() -> {
             try {
-                ConfigurationManagerImpl.MAPPER.writeValue(profileFile, PersistentPlayerProfile.class);
+                ConfigurationManagerImpl.MAPPER.writeValue(profileFile, profile);
             } catch (IOException e) {
                 IrisPlugin.getInstance().getLogger().error("Could not persist player profile: " + profile.getPlayer(), e);
             }
