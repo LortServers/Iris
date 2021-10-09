@@ -1,7 +1,5 @@
 package net.lortservers.iris.utils.profiles.persistence;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import org.screamingsandals.lib.event.EventManager;
@@ -15,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 public class FilePersistenceAdapter implements PersistenceAdapter<PersistentPlayerProfile> {
     private static final Path profileFolder = Paths.get(IrisPlugin.getInstance().getDataFolder().toAbsolutePath().toString(), "profiles");
@@ -69,28 +68,25 @@ public class FilePersistenceAdapter implements PersistenceAdapter<PersistentPlay
     public CompletableFuture<List<PersistentPlayerProfile>> all() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return Lists.newArrayList(
-                        Iterables.concat(
-                                Files.walk(profileFolder)
-                                        .map(Path::toFile)
-                                        .filter(e -> e.getName().endsWith(".json") && e.isFile())
-                                        .filter(e -> !profileCache.containsKey(UUID.fromString(e.getName().replace(".json", ""))))
-                                        .map(e -> {
-                                            try {
-                                                return ConfigurationManagerImpl.MAPPER.readValue(e, PersistentPlayerProfile.class);
-                                            } catch (IOException ex) {
-                                                IrisPlugin.getInstance().getLogger().error("Could not retrieve player profile: " + e.getName(), ex);
-                                            }
-                                            return null;
-                                        })
-                                        .filter(Objects::nonNull)
-                                        .toList(),
-                                profileCache.values()
-                        )
-                );
+                return Stream.concat(
+                        Files.walk(profileFolder)
+                                .map(Path::toFile)
+                                .filter(e -> e.getName().endsWith(".json") && e.isFile())
+                                .filter(e -> !profileCache.containsKey(UUID.fromString(e.getName().replace(".json", ""))))
+                                .map(e -> {
+                                    try {
+                                        return ConfigurationManagerImpl.MAPPER.readValue(e, PersistentPlayerProfile.class);
+                                    } catch (IOException ex) {
+                                        IrisPlugin.getInstance().getLogger().error("Could not retrieve player profile: " + e.getName(), ex);
+                                    }
+                                    return null;
+                                })
+                                .filter(Objects::nonNull),
+                        profileCache.values().stream()
+                ).toList();
             } catch (IOException e) {
                 IrisPlugin.getInstance().getLogger().error("Could not read player profiles, using only cached ones.", e);
-                return Lists.newArrayList(profileCache.values());
+                return new ArrayList<>(profileCache.values());
             }
         }, IrisPlugin.THREAD_POOL);
     }
