@@ -10,7 +10,6 @@ import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.sender.permissions.SimplePermission;
 import org.screamingsandals.lib.utils.annotations.Service;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -45,7 +44,7 @@ public class AlertsCommand extends BaseCommand {
                         .handler(commandContext -> {
                             final boolean now = PunishmentManager.getInstance().toggleAlerts(commandContext.getSender().as(PlayerWrapper.class));
                             commandContext.getSender().sendMessage(
-                                    ConfigurationManager.getInstance().getMessage("alertsToggle", Collections.singletonMap("status", BOOL_ABBR.get(now)))
+                                    ConfigurationManager.getInstance().getMessage("alertsToggle", Map.of("status", BOOL_ABBR.get(now)))
                             );
                         })
         );
