@@ -7,7 +7,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * <p>A class holding the message strings.</p>
@@ -30,6 +29,7 @@ public class Messages {
     private String shortFailedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <loc>, <color:#83A9B5>vl:<color:white> <vl>";
     private String noPermission = "<prefix> <color:red>No permission!";
     private String invalidCommand = "<prefix> <color:red>Invalid command!";
+    private String invalidPlayer = "<prefix> <color:red>Invalid player!";
     private String alertsToggle = "<prefix> <color:yellow>Turned alerts <color:green><status><color:yellow>!";
     private String playerInfo = "<prefix> <color:yellow>Connection protocol: <color:gray><protocol>";
     private String judgementDaySet = "<prefix> <color:#FFA500>Set the Judgement Day status for player <color:red><player><color:#FFA500> to <color:red><status><color:#FFA500>.";
@@ -55,12 +55,18 @@ public class Messages {
      * @return the message component
      */
     public Component getMessage(String id, Map<String, String> placeholders) {
-        final Map<String, String> mergedMap = new HashMap(placeholders);
-        mergedMap.putIfAbsent("prefix", prefix);
-        return MINIMESSAGE.parse(getRawMessage(id), mergedMap);
+        return MINIMESSAGE.parse(componentPlaceholder(getRawMessage(id), Map.of("prefix", prefix)), placeholders);
     }
 
     public String getRawMessage(String id) {
         return (String) Reflect.getField(this, id);
+    }
+
+    public static String componentPlaceholder(String s, Map<String, String> placeholders) {
+        String newStr = s;
+        for (Map.Entry<String, String> e : placeholders.entrySet()) {
+            newStr = newStr.replaceAll("<" + e.getKey() + ">", e.getValue());
+        }
+        return newStr;
     }
 }

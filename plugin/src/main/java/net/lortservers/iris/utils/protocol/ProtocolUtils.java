@@ -58,11 +58,6 @@ public final class ProtocolUtils {
         return protocolVersions.stream().filter(e -> e.getMinecraftVersion().equals(versionString)).findFirst();
     }
 
-    public static Optional<Integer> ver2ProtocolNum(String versionString) {
-        final Optional<Protocol> resultProtocol = ver2Protocol(versionString);
-        return (resultProtocol.isEmpty()) ? Optional.empty() : Optional.of(resultProtocol.orElseThrow().getVersion());
-    }
-
     public static Protocol getServerProtocol() {
         return ver2Protocol(Server.getVersion()).orElseThrow();
     }

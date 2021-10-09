@@ -84,7 +84,11 @@ public class PlayerProfileManager {
     }
 
     public static CompletableFuture<Void> modify(PlayerWrapper player, Function<@NonNull PersistentPlayerProfile, @NonNull PersistentPlayerProfile> func) {
-        return Objects.requireNonNullElse(getInstance().adapter, fallbackAdapter).modify(player.getUuid(), func);
+        return modify(player.getUuid(), func);
+    }
+
+    public static CompletableFuture<Void> modify(UUID player, Function<@NonNull PersistentPlayerProfile, @NonNull PersistentPlayerProfile> func) {
+        return Objects.requireNonNullElse(getInstance().adapter, fallbackAdapter).modify(player, func);
     }
 
     public static CompletableFuture<Void> modifyAll(Function<@NonNull PersistentPlayerProfile, @Nullable PersistentPlayerProfile> func) {

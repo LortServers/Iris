@@ -3,7 +3,6 @@ package net.lortservers.iris;
 import net.lortservers.iris.commands.AlertsCommand;
 import net.lortservers.iris.commands.JudgementDaySetCommand;
 import net.lortservers.iris.commands.JudgementDayStartCommand;
-import net.lortservers.iris.commands.PlayerInfoCommand;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.listener.AimbotListener;
 import net.lortservers.iris.listener.InteractFrequencyListener;
@@ -19,7 +18,10 @@ import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.lib.utils.annotations.PluginDependencies;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>The main plugin container class.</p>
@@ -45,7 +47,6 @@ import java.util.concurrent.*;
         ReachListener.class,
         // commands
         AlertsCommand.class,
-        PlayerInfoCommand.class,
         JudgementDaySetCommand.class,
         JudgementDayStartCommand.class
 })
