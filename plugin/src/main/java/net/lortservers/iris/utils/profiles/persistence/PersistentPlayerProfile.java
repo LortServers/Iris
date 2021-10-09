@@ -1,25 +1,29 @@
 package net.lortservers.iris.utils.profiles.persistence;
 
 import lombok.*;
-import net.lortservers.iris.api.profiles.AbstractPlayerProfile;
+import lombok.experimental.Accessors;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
+import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class PersistentPlayerProfile extends AbstractPlayerProfile {
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Accessors(chain = true)
+public class PersistentPlayerProfile {
+    @Setter(AccessLevel.PRIVATE)
+    private UUID player = null;
     private boolean judgementDay = false;
     private String banMessage = null;
 
-    private PersistentPlayerProfile(UUID player) {
-        super(player);
-    }
-
     public static PersistentPlayerProfile of(UUID player) {
-        return new PersistentPlayerProfile(player);
+        return new PersistentPlayerProfile().setPlayer(player);
     }
 
     public void save() {
@@ -28,5 +32,9 @@ public class PersistentPlayerProfile extends AbstractPlayerProfile {
 
     public boolean isBanned() {
         return banMessage != null;
+    }
+
+    public Optional<PlayerWrapper> toPlayer() {
+        return PlayerMapper.getPlayer(player);
     }
 }
