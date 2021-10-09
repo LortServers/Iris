@@ -167,7 +167,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
         return false;
     }
 
-    @OnEvent(priority = EventPriority.HIGHEST)
+    @OnEvent(priority = EventPriority.HIGH)
     public void onPlayerJoin(SPlayerJoinEvent event) {
         PlayerProfileManager.ofPersistent(event.getPlayer()).thenAccept(e -> {
             if (e.isBanned()) {

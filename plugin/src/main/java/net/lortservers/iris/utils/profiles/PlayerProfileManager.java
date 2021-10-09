@@ -33,12 +33,12 @@ public class PlayerProfileManager {
         return ServiceManager.get(PlayerProfileManager.class);
     }
 
-    @OnEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @OnEvent(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(SPlayerJoinEvent event) {
         putEphemeralPlayer(event.getPlayer());
     }
 
-    @OnEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @OnEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLeave(SPlayerLeaveEvent event) {
         ephemeralPlayerProfiles.remove(event.getPlayer().getUuid());
     }
