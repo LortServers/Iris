@@ -1,5 +1,6 @@
 package net.lortservers.iris.utils.profiles.persistence;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.Accessors;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
@@ -30,6 +31,7 @@ public class PersistentPlayerProfile {
         PlayerProfileManager.persist(this);
     }
 
+    @JsonIgnore
     public boolean isBanned() {
         return banMessage != null;
     }
