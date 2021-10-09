@@ -17,6 +17,7 @@ import net.lortservers.iris.utils.webhooks.WebhookDispatcher;
 import net.lortservers.iris.utils.webhooks.WebhookExecuteRequest;
 import net.lortservers.iris.utils.webhooks.data.Embed;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
@@ -24,10 +25,10 @@ import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
-import java.util.Optional;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -171,7 +172,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
     public void onPlayerJoin(SPlayerJoinEvent event) {
         PlayerProfileManager.ofPersistent(event.getPlayer()).thenAccept(e -> {
             if (e.isBanned()) {
-                kick(event.getPlayer(), e.getBanMessage());
+                Server.runSynchronously(() -> kick(event.getPlayer(), e.getBanMessage()));
             }
         });
     }
