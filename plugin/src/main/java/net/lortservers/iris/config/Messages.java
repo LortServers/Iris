@@ -1,6 +1,7 @@
 package net.lortservers.iris.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.Maps;
 import com.google.common.collect.ImmutableMap;
 import lombok.*;
 import net.kyori.adventure.text.Component;
@@ -55,7 +56,7 @@ public class Messages {
      * @return the message component
      */
     public Component getMessage(String id, Map<String, String> placeholders) {
-        return MINIMESSAGE.parse(getRawMessage(id), ImmutableMap.builder().putAll(placeholders).put("prefix", prefix).build());
+        return MINIMESSAGE.parse(getRawMessage(id), Maps.newHashMap(ImmutableMap.builder().putAll(placeholders).put("prefix", prefix).build()));
     }
 
     public String getRawMessage(String id) {
