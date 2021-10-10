@@ -70,7 +70,10 @@ public final class ProtocolUtils {
         }
         if (psMethod != null) {
             final int protocolVersion = (int) Reflect.fastInvoke(psMethod.invokeStatic(player.getChannel().remoteAddress()), "getId");
-            return getProtocol((protocolVersion != -1) ? protocolVersion : getServerProtocol().getVersion()).orElseThrow();
+            if (protocolVersion == -1) {
+                return getServerProtocol();
+            }
+            return getProtocol(protocolVersion).orElseThrow();
         }
         return getServerProtocol();
     }
