@@ -4,18 +4,20 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import net.lortservers.iris.api.managers.ConfigurationManager;
 import net.lortservers.iris.api.managers.PunishmentManager;
+import net.lortservers.iris.utils.PunishmentManagerImpl;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.sender.permissions.SimplePermission;
 import org.screamingsandals.lib.utils.annotations.Service;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
-import java.util.Optional;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service(dependsOn = {
-        PlayerProfileManager.class
+        PlayerProfileManager.class,
+        PunishmentManagerImpl.class
 })
 public class JudgementDayStartCommand extends BaseCommand {
     public JudgementDayStartCommand() {

@@ -1,6 +1,7 @@
 package net.lortservers.iris;
 
 import net.lortservers.iris.commands.AlertsCommand;
+import net.lortservers.iris.commands.BanCommand;
 import net.lortservers.iris.commands.JudgementDaySetCommand;
 import net.lortservers.iris.commands.JudgementDayStartCommand;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
@@ -48,7 +49,8 @@ import java.util.concurrent.TimeUnit;
         // commands
         AlertsCommand.class,
         JudgementDaySetCommand.class,
-        JudgementDayStartCommand.class
+        JudgementDayStartCommand.class,
+        BanCommand.class
 })
 public class IrisPlugin extends PluginContainer {
     public static final ExecutorService THREAD_POOL = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<>());

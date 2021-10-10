@@ -36,6 +36,7 @@ public class Messages {
     private String judgementDayComplete = "<prefix> <color:#FFA500>Banned <color:red><count><color:#FFA500> players.";
     private String banMessage = "<prefix> <color:red><message>";
     private String banMessageCheating = "Banned for unfair advantage.";
+    private String banCommandSuccess = "<prefix> <color:red>Banned <color:white><player><color:red>.";
 
     /**
      * <p>Gets the message component from id.</p>
