@@ -24,8 +24,10 @@ public final class ViaVersionAccessor {
         return VIA_API;
     }
 
-    public static @Nullable InstanceMethod getViaApiMethod(String name, Class<?> params) {
-        if (!hasVia()) return null;
+    public static @Nullable InstanceMethod getViaApiMethod(String name, Class<?>... params) {
+        if (!hasVia()) {
+            return null;
+        }
         final InstanceMethod method = Reflect.getMethod(Objects.requireNonNull(VIA_API), name, params);
         return (method.getMethod() == null) ? null : method;
     }
