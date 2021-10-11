@@ -135,10 +135,13 @@ public class PunishmentManagerImpl implements PunishmentManager {
     // TODO: ban event
     @Override
     public void ban(PlayerWrapper player, String message) {
-        PlayerProfileManager.modify(player, e -> {
-            e.setBanMessage(message);
-            return e;
-        }).thenRun(() -> kick(player, message));
+        PlayerProfileManager.ofPersistent(player)
+                        .thenAcceptAsync(e -> {
+                            try (e) {
+                                e.setBanMessage(message);
+                            }
+                            kick(player, message);
+                        });
     }
 
     @Override

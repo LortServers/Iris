@@ -19,9 +19,6 @@ public interface PersistenceAdapter<T> {
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new))
                 .thenApplyAsync(i -> futures.stream().map(CompletableFuture::join).toList(), IrisPlugin.THREAD_POOL);
     }
-    default CompletableFuture<Void> modify(UUID player, Function<@NonNull T, @NonNull T> func) {
-        return retrieve(player).thenAcceptAsync(e -> persist(func.apply(e)), IrisPlugin.THREAD_POOL);
-    }
     default CompletableFuture<Void> modifyAll(Function<@NonNull T, @Nullable T> func) {
         return all().thenAcceptAsync(e -> {
             for (T profile : e) {

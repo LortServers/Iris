@@ -17,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Accessors(chain = true)
-public class PersistentPlayerProfile {
+public class PersistentPlayerProfile implements AutoCloseable {
     @Setter(AccessLevel.PRIVATE)
     private UUID player = null;
     private boolean judgementDay = false;
@@ -27,10 +27,6 @@ public class PersistentPlayerProfile {
         return new PersistentPlayerProfile().setPlayer(player);
     }
 
-    public void save() {
-        PlayerProfileManager.persist(this);
-    }
-
     @JsonIgnore
     public boolean isBanned() {
         return banMessage != null;
@@ -38,5 +34,10 @@ public class PersistentPlayerProfile {
 
     public Optional<PlayerWrapper> toPlayer() {
         return PlayerMapper.getPlayer(player);
+    }
+
+    @Override
+    public void close() {
+        PlayerProfileManager.persist(this);
     }
 }

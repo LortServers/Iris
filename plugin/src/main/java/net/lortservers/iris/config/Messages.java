@@ -37,6 +37,7 @@ public class Messages {
     private String banMessage = "<prefix> <color:red><message>";
     private String banMessageCheating = "Banned for unfair advantage.";
     private String banCommandSuccess = "<prefix> <color:red>Banned <color:white><player><color:red>.";
+    private String unbanCommandSuccess = "<prefix> <color:yellow>Cleared the ban status from <color:red><player><color:yellow>.";
 
     /**
      * <p>Gets the message component from id.</p>
