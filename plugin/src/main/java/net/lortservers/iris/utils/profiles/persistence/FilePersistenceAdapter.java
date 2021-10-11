@@ -35,13 +35,13 @@ public class FilePersistenceAdapter implements PersistenceAdapter<PersistentPlay
             //noinspection ResultOfMethodCallIgnored
             profileFile.delete();
         }
-        CompletableFuture.runAsync(() -> {
+        IrisPlugin.THREAD_POOL.submit(() -> {
             try {
                 ConfigurationManagerImpl.MAPPER.writeValue(profileFile, profile);
             } catch (IOException e) {
                 IrisPlugin.getInstance().getLogger().error("Could not persist player profile: " + profile.getPlayer(), e);
             }
-        }, IrisPlugin.THREAD_POOL);
+        });
     }
 
     @Override

@@ -22,13 +22,13 @@ public final class MongoDBPersistenceAdapter implements PersistenceAdapter<Persi
 
     @Override
     public void persist(PersistentPlayerProfile profile) {
-        CompletableFuture.runAsync(() -> {
+        IrisPlugin.THREAD_POOL.submit(() -> {
             if (usersColl.find(Filters.eq("player", profile.getPlayer())).first() != null) {
                 usersColl.replaceOne(Filters.eq("player", profile.getPlayer()), profile);
             } else {
                 usersColl.insertOne(profile);
             }
-        }, IrisPlugin.THREAD_POOL);
+        });
     }
 
     @Override

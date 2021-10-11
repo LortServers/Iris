@@ -21,6 +21,7 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Configuration {
+    private String locale = "en_US";
     private boolean debug = false;
     private boolean platformEvents = true;
     private int decreaseFrequency = 60;

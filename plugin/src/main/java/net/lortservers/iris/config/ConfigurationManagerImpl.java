@@ -19,7 +19,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * <p>A class responsible for managing the configuration.</p>
@@ -122,7 +121,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             IrisPlugin.getInstance().getDataFolder().toFile().mkdirs();
         }
         for (ConfigurationManager.FileDefinition file : TRACKED_FILES) {
-            CompletableFuture.runAsync(file::load, IrisPlugin.THREAD_POOL);
+            IrisPlugin.THREAD_POOL.submit(file::load);
         }
     }
 

@@ -26,6 +26,7 @@ dependencies {
     annotationProcessor "org.screamingsandals.lib:screaming-annotation:$screamingLibVersion"
 
     compileOnly "com.google.guava:guava:$guavaVersion"
+    implementation "org.apache.commons:commons-lang3:$apacheCommonsVersion"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
@@ -46,6 +47,7 @@ shadowJar {
     relocate 'com.fasterxml.jackson', 'net.lortservers.iris.lib.jackson'
     relocate 'cloud.commandframework.minecraft.extras', 'net.lortservers.iris.lib.cloudextras'
     relocate 'net.kyori.adventure', 'net.lortservers.iris.lib.adventure'
+    relocate 'org.apache.commons.lang3', 'net.lortservers.iris.lib.commonslang3'
 }
 
 runPaper.disablePluginJarDetection()
