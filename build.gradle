@@ -13,7 +13,6 @@ buildscript {
         nettyVersion = "4.1.69.Final"
         guavaVersion = "31.0.1-jre"
         mongoDbDriverVersion = "3.12.10"
-        apacheCommonsVersion = "3.12.0"
     }
 }
 
@@ -46,6 +45,7 @@ subprojects {
     dependencies {
         compileOnly "io.papermc.paper:paper-api:$paperApiVersion"
         compileOnly "org.checkerframework:checker-qual:$checkerFrameworkVersion"
+        
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"
     }
