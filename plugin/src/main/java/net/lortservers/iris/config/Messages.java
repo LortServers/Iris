@@ -1,12 +1,10 @@
 package net.lortservers.iris.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.screamingsandals.lib.utils.reflect.Reflect;
 
-import java.util.Map;
+import java.util.Locale;
 
 /**
  * <p>A class holding the message strings.</p>
@@ -18,12 +16,8 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Messages {
-    /**
-     * <p>The MiniMessage instance.</p>
-     */
-    @Getter(AccessLevel.NONE)
     @JsonIgnore
-    protected static final MiniMessage MINIMESSAGE = MiniMessage.miniMessage();
+    private Locale locale = Locale.ENGLISH;
     private String prefix = "[<color:blue>Iris<color:white>]";
     private String failedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:gray><info><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <loc>, <color:#83A9B5>vl:<color:white> <vl>";
     private String shortFailedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <loc>, <color:#83A9B5>vl:<color:white> <vl>";
@@ -39,36 +33,13 @@ public class Messages {
     private String banCommandSuccess = "<prefix> <color:red>Banned <color:white><player><color:red>.";
     private String unbanCommandSuccess = "<prefix> <color:yellow>Cleared the ban status from <color:red><player><color:yellow>.";
 
-    /**
-     * <p>Gets the message component from id.</p>
-     *
-     * @param id the message id
-     * @return the message component
-     */
-    public Component getMessage(String id) {
-        return getMessage(id, Map.of());
+    @JsonProperty("locale")
+    public String getJSONLocale() {
+        return locale.toLanguageTag();
     }
 
-    /**
-     * <p>Gets the message component from id and translates placeholders.</p>
-     *
-     * @param id the message id
-     * @param placeholders the message placeholders
-     * @return the message component
-     */
-    public Component getMessage(String id, Map<String, String> placeholders) {
-        return MINIMESSAGE.parse(componentPlaceholder(getRawMessage(id), Map.of("prefix", prefix)), placeholders);
-    }
-
-    public String getRawMessage(String id) {
-        return (String) Reflect.getField(this, id);
-    }
-
-    public static String componentPlaceholder(String s, Map<String, String> placeholders) {
-        String newStr = s;
-        for (Map.Entry<String, String> e : placeholders.entrySet()) {
-            newStr = newStr.replaceAll("<" + e.getKey() + ">", e.getValue());
-        }
-        return newStr;
+    @JsonProperty("locale")
+    public void setJSONLocale(String locale) {
+        this.locale = Locale.forLanguageTag(locale);
     }
 }

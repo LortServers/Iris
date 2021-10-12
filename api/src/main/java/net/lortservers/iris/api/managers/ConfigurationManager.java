@@ -1,12 +1,10 @@
 package net.lortservers.iris.api.managers;
 
-import net.kyori.adventure.text.Component;
 import net.lortservers.iris.api.checks.Check;
 import net.lortservers.iris.api.utils.ThresholdType;
 import org.screamingsandals.lib.plugin.ServiceManager;
 
 import java.io.File;
-import java.util.Map;
 import java.util.Optional;
 
 public interface ConfigurationManager {
@@ -18,12 +16,6 @@ public interface ConfigurationManager {
     Optional<FileDefinition> getTrackedFile(String relativePath);
 
     <T> Optional<T> getTrackedFile(String file, Class<T> clazz);
-
-    Component getMessage(String id);
-
-    Component getMessage(String id, Map<String, String> placeholders);
-
-    String getRawMessage(String id);
 
     <T> Optional<T> getValue(String key, Class<T> returnType);
 

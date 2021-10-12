@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.SneakyThrows;
-import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.api.checks.Check;
 import net.lortservers.iris.api.managers.ConfigurationManager;
@@ -17,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -32,8 +30,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     public static final @NonNull ObjectMapper MAPPER = new ObjectMapper(new JsonFactory());
 
     private static final List<ConfigurationManager.FileDefinition> TRACKED_FILES = List.of(
-            FileDefinitionImpl.of(Configuration.class, "config.json"),
-            FileDefinitionImpl.of(Messages.class, "messages.json")
+            FileDefinitionImpl.of(Configuration.class, "config.json")
     );
 
     @Override
@@ -50,42 +47,8 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
         return (definition.orElseThrow().isLoaded()) ? Optional.of(clazz.cast(definition.orElseThrow().getObject())) : Optional.empty();
     }
 
-    /**
-     * <p>Gets the message component from id.</p>
-     *
-     * @param id the message id
-     * @return the message component
-     */
-    @Override
-    public Component getMessage(String id) {
-        return getMessage(id, Map.of());
-    }
-
-    public Optional<Messages> getMessages() {
-        return getTrackedFile("messages.json", Messages.class);
-    }
-
     public Optional<Configuration> getConfiguration() {
         return getTrackedFile("config.json", Configuration.class);
-    }
-
-    /**
-     * <p>Gets the message component from id and translates placeholders.</p>
-     *
-     * @param id the message id
-     * @param placeholders the message placeholders
-     * @return the message component
-     */
-    @Override
-    public Component getMessage(String id, Map<String, String> placeholders) {
-        final Optional<Messages> msgs = getMessages();
-        return (msgs.isPresent()) ? msgs.orElseThrow().getMessage(id, placeholders) : Component.empty();
-    }
-
-    @Override
-    public String getRawMessage(String id) {
-        final Optional<Messages> msgs = getMessages();
-        return (msgs.isPresent()) ? msgs.orElseThrow().getRawMessage(id) : "";
     }
 
     @Override

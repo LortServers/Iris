@@ -2,7 +2,7 @@ package net.lortservers.iris.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import net.lortservers.iris.api.managers.ConfigurationManager;
+import net.lortservers.iris.api.managers.TranslationManager;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.screamingsandals.lib.Server;
@@ -39,7 +39,7 @@ public class UnbanCommand extends BaseCommand {
                             final Optional<PlayerWrapper> player = PlayerMapper.getPlayer((String) commandContext.get("player"));
                             if (player.isEmpty()) {
                                 commandContext.getSender().sendMessage(
-                                        ConfigurationManager.getInstance().getMessage("invalidPlayer")
+                                        TranslationManager.getInstance().getMessage("invalidPlayer", commandContext.getSender().getLocale())
                                 );
                                 return;
                             }
@@ -49,7 +49,7 @@ public class UnbanCommand extends BaseCommand {
                                                     e.setBanMessage(null);
                                                 }
                                                 commandContext.getSender().sendMessage(
-                                                        ConfigurationManager.getInstance().getMessage("unbanCommandSuccess", Map.of("player", player.orElseThrow().getName()))
+                                                        TranslationManager.getInstance().getMessage("unbanCommandSuccess", Map.of("player", player.orElseThrow().getName()), commandContext.getSender().getLocale())
                                                 );
                                             });
                         })

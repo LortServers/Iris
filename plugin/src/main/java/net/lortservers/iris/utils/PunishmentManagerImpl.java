@@ -6,7 +6,9 @@ import net.lortservers.iris.api.checks.Check;
 import net.lortservers.iris.api.events.IrisCheckMessageSendEvent;
 import net.lortservers.iris.api.managers.ConfigurationManager;
 import net.lortservers.iris.api.managers.PunishmentManager;
+import net.lortservers.iris.api.managers.TranslationManager;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
+import net.lortservers.iris.config.TranslationManagerImpl;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckMessageSendEventImpl;
 import net.lortservers.iris.utils.profiles.EphemeralPlayerProfile;
@@ -37,6 +39,7 @@ import java.util.stream.Stream;
  */
 @Service(dependsOn = {
         ConfigurationManagerImpl.class,
+        TranslationManagerImpl.class,
         PlayerProfileManager.class
 })
 public class PunishmentManagerImpl implements PunishmentManager {
@@ -63,14 +66,15 @@ public class PunishmentManagerImpl implements PunishmentManager {
      */
     public <T extends Check> void log(PlayerWrapper player, T check, @Nullable String info) {
         final String loc = Stream.of(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ()).map(e -> Integer.toString(e)).collect(Collectors.joining(", ")) + ", " + player.getLocation().getWorld().getName();
+        // TODO: make this per-player translatable
         Component component;
         if (info == null) {
-            component = ConfigurationManager.getInstance().getMessage(
+            component = TranslationManager.getInstance().getMessage(
                     "shortFailedCheck",
                     Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "ping", Integer.toString(player.getPing()), "loc", loc)
             );
         } else {
-            component = ConfigurationManager.getInstance().getMessage(
+            component = TranslationManager.getInstance().getMessage(
                     "failedCheck",
                     Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "info", info, "ping", Integer.toString(player.getPing()), "loc", loc)
             );
@@ -129,7 +133,7 @@ public class PunishmentManagerImpl implements PunishmentManager {
 
     @Override
     public void kick(PlayerWrapper player, String message) {
-        player.kick(ConfigurationManager.getInstance().getMessage("banMessage", Map.of("message", message)));
+        player.kick(TranslationManager.getInstance().getMessage("banMessage", Map.of("message", message), player.getLocale()));
     }
 
     // TODO: ban event

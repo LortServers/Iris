@@ -4,8 +4,9 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import lombok.experimental.UtilityClass;
+import net.lortservers.iris.api.managers.TranslationManager;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
-import net.lortservers.iris.api.managers.ConfigurationManager;
+import net.lortservers.iris.config.TranslationManagerImpl;
 import org.screamingsandals.lib.command.CloudConstructor;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -16,6 +17,7 @@ import org.screamingsandals.lib.utils.annotations.methods.Provider;
  */
 @Service(dependsOn = {
         ConfigurationManagerImpl.class,
+        TranslationManagerImpl.class,
         CloudConstructor.class
 })
 @UtilityClass
@@ -33,10 +35,10 @@ public class CommandService {
             new MinecraftExceptionHandler<CommandSenderWrapper>()
                     .withDefaultHandlers()
                     .withHandler(MinecraftExceptionHandler.ExceptionType.NO_PERMISSION, (senderWrapper, e) ->
-                            ConfigurationManager.getInstance().getMessage("noPermission")
+                            TranslationManager.getInstance().getMessage("noPermission", senderWrapper.getLocale())
                     )
                     .withHandler(MinecraftExceptionHandler.ExceptionType.INVALID_SYNTAX, (senderWrapper, e) ->
-                            ConfigurationManager.getInstance().getMessage("invalidCommand")
+                            TranslationManager.getInstance().getMessage("invalidCommand", senderWrapper.getLocale())
                     )
                     .apply(manager, s -> s);
 

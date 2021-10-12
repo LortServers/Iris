@@ -2,8 +2,8 @@ package net.lortservers.iris.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import net.lortservers.iris.api.managers.ConfigurationManager;
 import net.lortservers.iris.api.managers.PunishmentManager;
+import net.lortservers.iris.api.managers.TranslationManager;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -31,7 +31,7 @@ public class JudgementDayStartCommand extends BaseCommand {
                         .literal("start")
                         .handler(commandContext -> {
                             final AtomicInteger count = new AtomicInteger(0);
-                            final String cheatMessage = ConfigurationManager.getInstance().getRawMessage("banMessageCheating");
+                            final String cheatMessage = TranslationManager.getInstance().getRawMessage("banMessageCheating");
                             PlayerProfileManager.modifyAll(e -> {
                                 if (e.isJudgementDay()) {
                                     e.setJudgementDay(false);
@@ -45,9 +45,10 @@ public class JudgementDayStartCommand extends BaseCommand {
                                 }
                                 return null;
                             }).thenRun(() -> commandContext.getSender().sendMessage(
-                                    ConfigurationManager.getInstance().getMessage(
+                                    TranslationManager.getInstance().getMessage(
                                             "judgementDayComplete",
-                                            Map.of("count", count.toString())
+                                            Map.of("count", count.toString()),
+                                            commandContext.getSender().getLocale()
                                     )
                             ));
                         })

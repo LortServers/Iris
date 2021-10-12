@@ -2,8 +2,8 @@ package net.lortservers.iris.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
-import net.lortservers.iris.api.managers.ConfigurationManager;
 import net.lortservers.iris.api.managers.PunishmentManager;
+import net.lortservers.iris.api.managers.TranslationManager;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.sender.CommandSenderWrapper;
@@ -44,7 +44,7 @@ public class AlertsCommand extends BaseCommand {
                         .handler(commandContext -> {
                             final boolean now = PunishmentManager.getInstance().toggleAlerts(commandContext.getSender().as(PlayerWrapper.class));
                             commandContext.getSender().sendMessage(
-                                    ConfigurationManager.getInstance().getMessage("alertsToggle", Map.of("status", BOOL_ABBR.get(now)))
+                                    TranslationManager.getInstance().getMessage("alertsToggle", Map.of("status", BOOL_ABBR.get(now)), commandContext.getSender().getLocale())
                             );
                         })
         );

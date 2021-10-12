@@ -3,7 +3,7 @@ package net.lortservers.iris.commands;
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.BooleanArgument;
-import net.lortservers.iris.api.managers.ConfigurationManager;
+import net.lortservers.iris.api.managers.TranslationManager;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -40,7 +40,7 @@ public class JudgementDaySetCommand extends BaseCommand {
                             final Optional<PlayerWrapper> player = PlayerMapper.getPlayer((String) commandContext.get("player"));
                             if (player.isEmpty()) {
                                 commandContext.getSender().sendMessage(
-                                        ConfigurationManager.getInstance().getMessage("invalidPlayer")
+                                        TranslationManager.getInstance().getMessage("invalidPlayer", commandContext.getSender().getLocale())
                                 );
                                 return;
                             }
@@ -50,12 +50,13 @@ public class JudgementDaySetCommand extends BaseCommand {
                                                     e.setJudgementDay(commandContext.get("state"));
                                                 }
                                                 commandContext.getSender().sendMessage(
-                                                        ConfigurationManager.getInstance().getMessage(
+                                                        TranslationManager.getInstance().getMessage(
                                                                 "judgementDaySet",
                                                                 Map.of(
                                                                         "player", player.orElseThrow().getName(),
                                                                         "status", Boolean.toString(commandContext.get("state"))
-                                                                )
+                                                                ),
+                                                                commandContext.getSender().getLocale()
                                                         )
                                                 );
                                             });
