@@ -33,4 +33,11 @@ public interface TranslationManager {
         }
         return newStr;
     }
+    static String fromLocale(Locale locale) {
+        return locale.getLanguage() + "_" + locale.getCountry();
+    }
+    static Locale toLocale(String s) {
+        final String[] p = s.split("_");
+        return new Locale(p[0], p[1]);
+    }
 }

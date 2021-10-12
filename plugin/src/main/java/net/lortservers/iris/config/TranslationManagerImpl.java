@@ -19,7 +19,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
+@Service(dependsOn = {
+        ConfigurationManagerImpl.class
+})
 public class TranslationManagerImpl implements TranslationManager {
     private static final ConfigurationManager.FileDefinition<Messages> MESSAGES_FILE = ConfigurationManagerImpl.FileDefinitionImpl.of(Messages.class, "messages.json");
     private static final Messages DUMMY = new Messages();
@@ -37,24 +39,32 @@ public class TranslationManagerImpl implements TranslationManager {
                     return;
                 }
             }
-            loadTranslation(Locale.forLanguageTag(ConfigurationManager.getInstance().getValue("locale", String.class).orElse("en")));
+            currentTranslation = (Messages) loadTranslation0(TranslationManager.toLocale(ConfigurationManager.getInstance().getValue("locale", String.class).orElse("en_US").replace("-", "_")));
         });
     }
 
     @Override
     public void loadTranslation(Locale locale) {
+        final Object res = loadTranslation0(locale);
+        if (res != null) {
+            cachedTranslations.put(locale, (Messages) res);
+        }
+    }
+
+    private @Nullable Object loadTranslation0(Locale locale) {
         try {
-            final InputStream resource = IrisPlugin.class.getResourceAsStream("lang/" + locale.toLanguageTag() + ".json");
+            final InputStream resource = IrisPlugin.class.getResourceAsStream("/lang/" + TranslationManager.fromLocale(locale) + ".json");
             if (resource != null) {
-                cachedTranslations.put(locale, ConfigurationManagerImpl.MAPPER.readValue(resource, Messages.class));
+                return ConfigurationManagerImpl.MAPPER.readValue(resource, Messages.class);
             } else {
-                IrisPlugin.getInstance().getLogger().error("Resource 'lang/" + locale + ".json' was not found.");
+                IrisPlugin.getInstance().getLogger().error("Resource 'lang/" + TranslationManager.fromLocale(locale) + ".json' was not found.");
             }
         } catch (IOException e) {
             IrisPlugin.getInstance().getLogger().error("Could not load translation, deserialization error!", e);
         } catch (IllegalArgumentException e) {
             IrisPlugin.getInstance().getLogger().error("Could not load translation, invalid locale!");
         }
+        return null;
     }
 
     private boolean isCurrentTranslation(Locale locale) {

@@ -3,6 +3,7 @@ package net.lortservers.iris.config;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import net.lortservers.iris.api.managers.TranslationManager;
 
 import java.util.Locale;
 
@@ -17,7 +18,7 @@ import java.util.Locale;
 @AllArgsConstructor
 public class Messages {
     @JsonIgnore
-    private Locale locale = Locale.ENGLISH;
+    private Locale locale = Locale.US;
     private String prefix = "[<color:blue>Iris<color:white>]";
     private String failedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:gray><info><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <loc>, <color:#83A9B5>vl:<color:white> <vl>";
     private String shortFailedCheck = "<prefix> <color:gray><player><color:white> failed <color:#ADD8E6><check> <type><color:white> | <color:#83A9B5>ping: <color:white><ping><color:#45BCE2>ms<color:white>, <color:#83A9B5>loc:<color:white> <loc>, <color:#83A9B5>vl:<color:white> <vl>";
@@ -35,11 +36,11 @@ public class Messages {
 
     @JsonProperty("locale")
     public String getJSONLocale() {
-        return locale.toLanguageTag();
+        return TranslationManager.fromLocale(locale);
     }
 
     @JsonProperty("locale")
     public void setJSONLocale(String locale) {
-        this.locale = Locale.forLanguageTag(locale);
+        this.locale = TranslationManager.toLocale(locale);
     }
 }
