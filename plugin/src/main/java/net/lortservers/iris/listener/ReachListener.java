@@ -51,6 +51,7 @@ public class ReachListener {
             reA.increaseVL(attacker, 1);
             reaF.increaseVL(attacker, 1);
             if (reaF.getVL(attacker) >= ConfigurationManager.getInstance().getVLThreshold(reaF, ThresholdType.MESSAGE) || reA.getVL(attacker) >= ConfigurationManager.getInstance().getVLThreshold(reA, ThresholdType.MESSAGE)) {
+                // TODO: cooldowns
                 if (distX >= ConfigurationManager.getInstance().getValue(reaF, "minDistance", Double.class).orElse(3.75)) {
                     PunishmentManager.getInstance().log(attacker, reaF, "tried to hit a player " + distX + " blocks away");
                 } else {
@@ -62,6 +63,7 @@ public class ReachListener {
             reB.increaseVL(attacker, 1);
             reaG.increaseVL(attacker, 1);
             if (reaG.getVL(attacker) >= ConfigurationManager.getInstance().getVLThreshold(reaG, ThresholdType.MESSAGE) || reB.getVL(attacker) >= ConfigurationManager.getInstance().getVLThreshold(reB, ThresholdType.MESSAGE)) {
+                // TODO: cooldowns
                 if (distZ >= ConfigurationManager.getInstance().getValue(reaG, "minDistance", Double.class).orElse(3.75)) {
                     PunishmentManager.getInstance().log(attacker, reaG, "tried to hit a player " + distZ + " blocks away");
                 } else {

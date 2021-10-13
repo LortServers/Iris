@@ -53,11 +53,13 @@ public class TranslationManagerImpl implements TranslationManager {
 
     private @Nullable Object loadTranslation0(Locale locale) {
         try {
-            final InputStream resource = IrisPlugin.class.getResourceAsStream("/lang/" + TranslationManager.fromLocale(locale) + ".json");
+            final String localeStr = TranslationManager.fromLocale(locale);
+            final InputStream resource = IrisPlugin.class.getResourceAsStream("/lang/" + localeStr + ".json");
             if (resource != null) {
                 return ConfigurationManagerImpl.MAPPER.readValue(resource, Messages.class);
             } else {
-                IrisPlugin.getInstance().getLogger().error("Resource 'lang/" + TranslationManager.fromLocale(locale) + ".json' was not found.");
+                // TODO: make this debug=true only, so players with untranslated locales don't spam the console
+                IrisPlugin.getInstance().getLogger().error("Resource 'lang/" + localeStr + ".json' was not found.");
             }
         } catch (IOException e) {
             IrisPlugin.getInstance().getLogger().error("Could not load translation, deserialization error!", e);
