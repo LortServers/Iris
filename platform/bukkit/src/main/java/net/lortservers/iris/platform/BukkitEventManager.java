@@ -18,8 +18,8 @@ public class BukkitEventManager extends EventManager {
                 .registerW2P(IrisCheckTriggerEventBukkitImpl.class, wrapper -> new IrisCheckTriggerEventBukkitImpl(wrapper.getPlayer(), wrapper.getCheck()))
                 .registerP2W(IrisCheckTriggerEventImpl.class, irisCheckTriggerEvent -> new IrisCheckTriggerEventImpl(irisCheckTriggerEvent.getPlayer(), irisCheckTriggerEvent.getCheck()));
         IrisCheckMessageSendEventImpl.getConverter()
-                .registerW2P(IrisCheckMessageSendEventBukkitImpl.class, wrapper -> new IrisCheckMessageSendEventBukkitImpl(wrapper.getMessage(), wrapper.getRecipients()))
-                .registerP2W(IrisCheckMessageSendEventImpl.class, irisCheckMessageSendEvent -> new IrisCheckMessageSendEventImpl(irisCheckMessageSendEvent.getMessage(), irisCheckMessageSendEvent.getRecipients()));
+                .registerW2P(IrisCheckMessageSendEventBukkitImpl.class, wrapper -> new IrisCheckMessageSendEventBukkitImpl(wrapper.getRecipients()))
+                .registerP2W(IrisCheckMessageSendEventImpl.class, irisCheckMessageSendEvent -> new IrisCheckMessageSendEventImpl(irisCheckMessageSendEvent.getRecipients()));
         IrisCheckVLManipulateEventImpl.getConverter()
                 .registerW2P(IrisCheckVLManipulateEventBukkitImpl.class, wrapper -> new IrisCheckVLManipulateEventBukkitImpl(wrapper.getPlayer(), wrapper.getCheck(), wrapper.getOldVL(), wrapper.getNewVL(), wrapper.isScheduled(), wrapper.getAction()))
                 .registerP2W(IrisCheckVLManipulateEventImpl.class, irisCheckVLManipulateEvent -> new IrisCheckVLManipulateEventImpl(irisCheckVLManipulateEvent.getPlayer(), irisCheckVLManipulateEvent.getCheck(), irisCheckVLManipulateEvent.getOldVL(), irisCheckVLManipulateEvent.getNewVL(), irisCheckVLManipulateEvent.isScheduled(), irisCheckVLManipulateEvent.getAction()));

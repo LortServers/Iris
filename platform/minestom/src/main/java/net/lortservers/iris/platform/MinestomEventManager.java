@@ -19,8 +19,8 @@ public class MinestomEventManager extends EventManager {
                 .registerW2P(IrisCheckTriggerEventMinestomImpl.class, wrapper -> new IrisCheckTriggerEventMinestomImpl(wrapper.getPlayer(), wrapper.getCheck()))
                 .registerP2W(IrisCheckTriggerEventImpl.class, irisCheckTriggerEvent -> new IrisCheckTriggerEventImpl(irisCheckTriggerEvent.getPlayer(), irisCheckTriggerEvent.getCheck()));
         IrisCheckMessageSendEventImpl.getConverter()
-                .registerW2P(IrisCheckMessageSendEventMinestomImpl.class, wrapper -> new IrisCheckMessageSendEventMinestomImpl(wrapper.getMessage(), wrapper.getRecipients()))
-                .registerP2W(IrisCheckMessageSendEventImpl.class, irisCheckMessageSendEvent -> new IrisCheckMessageSendEventImpl(irisCheckMessageSendEvent.getMessage(), irisCheckMessageSendEvent.getRecipients()));
+                .registerW2P(IrisCheckMessageSendEventMinestomImpl.class, wrapper -> new IrisCheckMessageSendEventMinestomImpl(wrapper.getRecipients()))
+                .registerP2W(IrisCheckMessageSendEventImpl.class, irisCheckMessageSendEvent -> new IrisCheckMessageSendEventImpl(irisCheckMessageSendEvent.getRecipients()));
         IrisCheckVLManipulateEventImpl.getConverter()
                 .registerW2P(IrisCheckVLManipulateEventMinestomImpl.class, wrapper -> new IrisCheckVLManipulateEventMinestomImpl(wrapper.getPlayer(), wrapper.getCheck(), wrapper.getOldVL(), wrapper.getNewVL(), wrapper.isScheduled(), wrapper.getAction()))
                 .registerP2W(IrisCheckVLManipulateEventImpl.class, irisCheckVLManipulateEvent -> new IrisCheckVLManipulateEventImpl(irisCheckVLManipulateEvent.getPlayer(), irisCheckVLManipulateEvent.getCheck(), irisCheckVLManipulateEvent.getOldVL(), irisCheckVLManipulateEvent.getNewVL(), irisCheckVLManipulateEvent.isScheduled(), irisCheckVLManipulateEvent.getAction()));

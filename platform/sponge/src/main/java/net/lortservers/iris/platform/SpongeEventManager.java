@@ -18,8 +18,8 @@ public class SpongeEventManager extends EventManager {
                 .registerW2P(IrisCheckTriggerEventSpongeImpl.class, wrapper -> new IrisCheckTriggerEventSpongeImpl(wrapper.getPlayer(), wrapper.getCheck()))
                 .registerP2W(IrisCheckTriggerEventImpl.class, irisCheckTriggerEvent -> new IrisCheckTriggerEventImpl(irisCheckTriggerEvent.getPlayer(), irisCheckTriggerEvent.getCheck()));
         IrisCheckMessageSendEventImpl.getConverter()
-                .registerW2P(IrisCheckMessageSendEventSpongeImpl.class, wrapper -> new IrisCheckMessageSendEventSpongeImpl(wrapper.getMessage(), wrapper.getRecipients()))
-                .registerP2W(IrisCheckMessageSendEventImpl.class, irisCheckMessageSendEvent -> new IrisCheckMessageSendEventImpl(irisCheckMessageSendEvent.getMessage(), irisCheckMessageSendEvent.getRecipients()));
+                .registerW2P(IrisCheckMessageSendEventSpongeImpl.class, wrapper -> new IrisCheckMessageSendEventSpongeImpl(wrapper.getRecipients()))
+                .registerP2W(IrisCheckMessageSendEventImpl.class, irisCheckMessageSendEvent -> new IrisCheckMessageSendEventImpl(irisCheckMessageSendEvent.getRecipients()));
         IrisCheckVLManipulateEventImpl.getConverter()
                 .registerW2P(IrisCheckVLManipulateEventSpongeImpl.class, wrapper -> new IrisCheckVLManipulateEventSpongeImpl(wrapper.getPlayer(), wrapper.getCheck(), wrapper.getOldVL(), wrapper.getNewVL(), wrapper.isScheduled(), wrapper.getAction()))
                 .registerP2W(IrisCheckVLManipulateEventImpl.class, irisCheckVLManipulateEvent -> new IrisCheckVLManipulateEventImpl(irisCheckVLManipulateEvent.getPlayer(), irisCheckVLManipulateEvent.getCheck(), irisCheckVLManipulateEvent.getOldVL(), irisCheckVLManipulateEvent.getNewVL(), irisCheckVLManipulateEvent.isScheduled(), irisCheckVLManipulateEvent.getAction()));
