@@ -1,5 +1,7 @@
 package net.lortservers.iris.utils;
 
+import com.google.common.collect.ImmutableMap;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.api.checks.Check;
@@ -27,10 +29,7 @@ import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,24 +64,27 @@ public class PunishmentManagerImpl implements PunishmentManager {
      * @param info additional info to log
      */
     public <T extends Check> void log(PlayerWrapper player, T check, @Nullable String info) {
-        final String loc = Stream.of(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ()).map(e -> Integer.toString(e)).collect(Collectors.joining(", ")) + ", " + player.getLocation().getWorld().getName();
-        // TODO: make this per-player translatable
-        Component component;
-        if (info == null) {
-            component = TranslationManager.getInstance().getMessage(
-                    "shortFailedCheck",
-                    Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "ping", Integer.toString(player.getPing()), "loc", loc)
-            );
+        final ImmutableMap.Builder<String, String> placeholders = new ImmutableMap.Builder<String, String>()
+                .put("player", player.getName())
+                .put("check", check.getName())
+                .put("type", check.getType().name())
+                .put("vl", Integer.toString(check.getVL(player)))
+                .put("ping", Integer.toString(player.getPing()))
+                .put("loc", Stream.of(player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ()).map(e -> Integer.toString(e)).collect(Collectors.joining(", ")) + ", " + player.getLocation().getWorld().getName());
+        String messageId;
+        if (info != null) {
+            placeholders.put("info", info);
+            messageId = "failedCheck";
         } else {
-            component = TranslationManager.getInstance().getMessage(
-                    "failedCheck",
-                    Map.of("player", player.getName(), "check", check.getName(), "type", check.getType().name(), "vl", Integer.toString(check.getVL(player)), "info", info, "ping", Integer.toString(player.getPing()), "loc", loc)
-            );
+            messageId = "shortFailedCheck";
         }
-        final IrisCheckMessageSendEvent evt = EventManager.fire(new IrisCheckMessageSendEventImpl(component, getSubscribers()));
+        final Map<PlayerWrapper, Component> messages = messageForSubscribers(messageId, placeholders.build());
+        final IrisCheckMessageSendEvent evt = EventManager.fire(new IrisCheckMessageSendEventImpl(messages));
         if (!evt.isCancelled()) {
-            getSubscribers().forEach(e -> e.sendMessage(component));
-            PlayerMapper.getConsoleSender().sendMessage(component);
+            IrisPlugin.THREAD_POOL.submit(() -> {
+                messages.forEach(Audience::sendMessage);
+                PlayerMapper.getConsoleSender().sendMessage(TranslationManager.getInstance().getMessage(messageId, placeholders.build()));
+            });
         }
         if (ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse(null) != null && !webhookCooldown.isOnCooldown()) {
             webhookCooldown.putCooldown();
@@ -131,6 +133,12 @@ public class PunishmentManagerImpl implements PunishmentManager {
         }
     }
 
+    private Map<PlayerWrapper, Component> messageForSubscribers(String id, Map<String, String> placeholders) {
+        final ImmutableMap.Builder<PlayerWrapper, Component> messages = ImmutableMap.builder();
+        getSubscribers().forEach(player -> messages.put(player, TranslationManager.getInstance().getMessage(id, placeholders)));
+        return messages.build();
+    }
+
     @Override
     public void kick(PlayerWrapper player, String message) {
         player.kick(TranslationManager.getInstance().getMessage("banMessage", Map.of("message", message), player.getLocale()));
@@ -139,13 +147,12 @@ public class PunishmentManagerImpl implements PunishmentManager {
     // TODO: ban event
     @Override
     public void ban(PlayerWrapper player, String message) {
-        PlayerProfileManager.ofPersistent(player)
-                        .thenAcceptAsync(e -> {
-                            try (e) {
-                                e.setBanMessage(message);
-                            }
-                            kick(player, message);
-                        });
+        PlayerProfileManager.ofPersistent(player).thenAcceptAsync(e -> {
+            try (e) {
+                e.setBanMessage(message);
+            }
+            kick(player, message);
+        });
     }
 
     @Override

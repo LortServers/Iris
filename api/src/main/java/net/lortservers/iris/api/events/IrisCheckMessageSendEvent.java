@@ -3,9 +3,8 @@ package net.lortservers.iris.api.events;
 import net.kyori.adventure.text.Component;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
-import java.util.List;
+import java.util.Map;
 
 public interface IrisCheckMessageSendEvent extends IrisCancellableEvent {
-    Component getMessage();
-    List<PlayerWrapper> getRecipients();
+    Map<PlayerWrapper, Component> getRecipients();
 }

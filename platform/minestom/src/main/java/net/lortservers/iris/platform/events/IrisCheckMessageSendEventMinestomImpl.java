@@ -6,7 +6,7 @@ import net.lortservers.iris.api.events.IrisCheckMessageSendEvent;
 import net.minestom.server.event.trait.CancellableEvent;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @EqualsAndHashCode
@@ -15,6 +15,5 @@ import java.util.List;
 public class IrisCheckMessageSendEventMinestomImpl implements IrisCheckMessageSendEvent, CancellableEvent {
     @Setter
     private boolean cancelled = false;
-    private final Component message;
-    private final List<PlayerWrapper> recipients;
+    private final Map<PlayerWrapper, Component> recipients;
 }

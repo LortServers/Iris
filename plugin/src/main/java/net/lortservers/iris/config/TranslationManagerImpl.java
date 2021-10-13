@@ -58,8 +58,9 @@ public class TranslationManagerImpl implements TranslationManager {
             if (resource != null) {
                 return ConfigurationManagerImpl.MAPPER.readValue(resource, Messages.class);
             } else {
-                // TODO: make this debug=true only, so players with untranslated locales don't spam the console
-                IrisPlugin.getInstance().getLogger().error("Resource 'lang/" + localeStr + ".json' was not found.");
+                if (ConfigurationManager.getInstance().getValue("debug", Boolean.class).orElse(false)) {
+                    IrisPlugin.getInstance().getLogger().error("Resource 'lang/" + localeStr + ".json' was not found.");
+                }
             }
         } catch (IOException e) {
             IrisPlugin.getInstance().getLogger().error("Could not load translation, deserialization error!", e);
@@ -76,6 +77,7 @@ public class TranslationManagerImpl implements TranslationManager {
     @Override
     public @Nullable Object getTranslation(Locale locale) {
         if (!cachedTranslations.containsKey(locale) && !isCurrentTranslation(locale)) {
+            // I really don't like doing jackson on the main thread, but submitting this in the thread pool may cause multiple tasks trying to load the translation
             loadTranslation(locale);
         }
         return (isCurrentTranslation(locale)) ? currentTranslation : cachedTranslations.get(locale);

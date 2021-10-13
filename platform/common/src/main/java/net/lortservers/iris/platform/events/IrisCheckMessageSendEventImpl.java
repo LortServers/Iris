@@ -11,7 +11,7 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.BidirectionalConverter;
 import org.screamingsandals.lib.utils.Wrapper;
 
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
@@ -20,8 +20,7 @@ import java.util.List;
 public class IrisCheckMessageSendEventImpl extends CancellableAbstractEvent implements IrisCheckMessageSendEvent, Wrapper {
     @Getter
     private static final BidirectionalConverter<IrisCheckMessageSendEventImpl> converter = BidirectionalConverter.build();
-    private final Component message;
-    private final List<PlayerWrapper> recipients;
+    private final Map<PlayerWrapper, Component> recipients;
 
     @Override
     public <T> T as(Class<T> type) {

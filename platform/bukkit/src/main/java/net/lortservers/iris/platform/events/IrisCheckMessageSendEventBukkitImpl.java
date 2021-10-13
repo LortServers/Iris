@@ -9,7 +9,7 @@ import org.bukkit.event.HandlerList;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
@@ -19,8 +19,7 @@ public class IrisCheckMessageSendEventBukkitImpl extends Event implements Cancel
     private static final HandlerList HANDLERS = new HandlerList();
     @Setter
     private boolean cancelled = false;
-    private final Component message;
-    private final List<PlayerWrapper> recipients;
+    private final Map<PlayerWrapper, Component> recipients;
 
     @Override
     public @NonNull HandlerList getHandlers() {

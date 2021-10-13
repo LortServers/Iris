@@ -13,7 +13,7 @@ import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.impl.AbstractEvent;
 import org.spongepowered.api.plugin.PluginContainer;
 
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
@@ -22,8 +22,7 @@ import java.util.List;
 public class IrisCheckMessageSendEventSpongeImpl extends AbstractEvent implements Cancellable, IrisCheckMessageSendEvent {
     @Setter
     private boolean cancelled = false;
-    private final Component message;
-    private final List<PlayerWrapper> recipients;
+    private final Map<PlayerWrapper, Component> recipients;
 
     @Override
     public @NotNull Cause getCause() {

@@ -48,10 +48,12 @@ public class ReachListener {
         final RigidEntityCheckB reB = Check.get(RigidEntityCheckB.class);
         final ReachCheckG reaG = Check.get(ReachCheckG.class);
         if (distX >= ConfigurationManager.getInstance().getValue(reA, "minDistance", Double.class).orElse(3.35)) {
+            if (reA.isOnCooldown(attacker) || reaF.isOnCooldown(attacker) || !reA.isEligibleForCheck(attacker) || !reaF.isEligibleForCheck(attacker)) {
+                return;
+            }
             reA.increaseVL(attacker, 1);
             reaF.increaseVL(attacker, 1);
             if (reaF.getVL(attacker) >= ConfigurationManager.getInstance().getVLThreshold(reaF, ThresholdType.MESSAGE) || reA.getVL(attacker) >= ConfigurationManager.getInstance().getVLThreshold(reA, ThresholdType.MESSAGE)) {
-                // TODO: cooldowns
                 if (distX >= ConfigurationManager.getInstance().getValue(reaF, "minDistance", Double.class).orElse(3.75)) {
                     PunishmentManager.getInstance().log(attacker, reaF, "tried to hit a player " + distX + " blocks away");
                 } else {
@@ -59,11 +61,15 @@ public class ReachListener {
                 }
                 event.setCancelled(true);
             }
+            reA.putCooldown(attacker);
+            reaF.putCooldown(attacker);
         } else if (distZ >= ConfigurationManager.getInstance().getValue(reB, "minDistance", Double.class).orElse(3.35)) {
+            if (reB.isOnCooldown(attacker) || reaG.isOnCooldown(attacker) || !reB.isEligibleForCheck(attacker) || !reaG.isEligibleForCheck(attacker)) {
+                return;
+            }
             reB.increaseVL(attacker, 1);
             reaG.increaseVL(attacker, 1);
             if (reaG.getVL(attacker) >= ConfigurationManager.getInstance().getVLThreshold(reaG, ThresholdType.MESSAGE) || reB.getVL(attacker) >= ConfigurationManager.getInstance().getVLThreshold(reB, ThresholdType.MESSAGE)) {
-                // TODO: cooldowns
                 if (distZ >= ConfigurationManager.getInstance().getValue(reaG, "minDistance", Double.class).orElse(3.75)) {
                     PunishmentManager.getInstance().log(attacker, reaG, "tried to hit a player " + distZ + " blocks away");
                 } else {
@@ -71,6 +77,8 @@ public class ReachListener {
                 }
                 event.setCancelled(true);
             }
+            reB.putCooldown(attacker);
+            reaG.putCooldown(attacker);
         }
     }
 }
