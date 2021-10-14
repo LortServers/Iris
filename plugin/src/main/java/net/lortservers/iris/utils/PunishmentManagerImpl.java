@@ -29,7 +29,11 @@ import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -78,14 +82,15 @@ public class PunishmentManagerImpl implements PunishmentManager {
         } else {
             messageId = "shortFailedCheck";
         }
-        final Map<PlayerWrapper, Component> messages = messageForSubscribers(messageId, placeholders.build());
-        final IrisCheckMessageSendEvent evt = EventManager.fire(new IrisCheckMessageSendEventImpl(messages));
-        if (!evt.isCancelled()) {
-            IrisPlugin.THREAD_POOL.submit(() -> {
-                messages.forEach(Audience::sendMessage);
-                PlayerMapper.getConsoleSender().sendMessage(TranslationManager.getInstance().getMessage(messageId, placeholders.build()));
-            });
-        }
+        messageForSubscribers(messageId, placeholders.build()).thenAccept(messages -> Server.runSynchronously(() -> {
+            final IrisCheckMessageSendEvent evt = EventManager.fire(new IrisCheckMessageSendEventImpl(messages));
+            if (!evt.isCancelled()) {
+                IrisPlugin.THREAD_POOL.submit(() -> {
+                    messages.forEach(Audience::sendMessage);
+                    PlayerMapper.getConsoleSender().sendMessage(TranslationManager.getInstance().getMessage(messageId, placeholders.build()));
+                });
+            }
+        }));
         if (ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse(null) != null && !webhookCooldown.isOnCooldown()) {
             webhookCooldown.putCooldown();
             final Protocol proto = ProtocolUtils.getPlayerProtocol(player);
@@ -133,10 +138,12 @@ public class PunishmentManagerImpl implements PunishmentManager {
         }
     }
 
-    private Map<PlayerWrapper, Component> messageForSubscribers(String id, Map<String, String> placeholders) {
-        final ImmutableMap.Builder<PlayerWrapper, Component> messages = ImmutableMap.builder();
-        getSubscribers().forEach(player -> messages.put(player, TranslationManager.getInstance().getMessage(id, placeholders)));
-        return messages.build();
+    private CompletableFuture<Map<PlayerWrapper, Component>> messageForSubscribers(String id, Map<String, String> placeholders) {
+        return CompletableFuture.supplyAsync(() -> {
+            final ImmutableMap.Builder<PlayerWrapper, Component> messages = ImmutableMap.builder();
+            getSubscribers().forEach(player -> messages.put(player, TranslationManager.getInstance().getMessage(id, placeholders)));
+            return messages.build();
+        }, IrisPlugin.THREAD_POOL);
     }
 
     @Override
