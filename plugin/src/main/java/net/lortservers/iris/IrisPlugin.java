@@ -48,7 +48,7 @@ import java.util.concurrent.*;
         UnbanCommand.class
 })
 public class IrisPlugin extends PluginContainer {
-    public static final ExecutorService THREAD_POOL = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<>());
+    public static final ExecutorService THREAD_POOL = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<>());
     /**
      * <p>The plugin instance.</p>
      */
