@@ -2,6 +2,7 @@ package net.lortservers.iris.config;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.api.managers.ConfigurationManager;
 import net.lortservers.iris.api.managers.TranslationManager;
@@ -95,22 +96,22 @@ public class TranslationManagerImpl implements TranslationManager {
 
     @Override
     public Component getMessage(String id) {
-        return MiniMessage.miniMessage().parse(TranslationManager.componentPlaceholder(getRawMessage(id), Map.of("prefix", getRawMessage("prefix"))));
+        return parse(TranslationManager.componentPlaceholder(getRawMessage(id), Map.of("prefix", getRawMessage("prefix"))));
     }
 
     @Override
     public Component getMessage(String id, Locale locale) {
-        return MiniMessage.miniMessage().parse(TranslationManager.componentPlaceholder(getRawMessage(id, locale), Map.of("prefix", getRawMessage("prefix", locale))));
+        return parse(TranslationManager.componentPlaceholder(getRawMessage(id, locale), Map.of("prefix", getRawMessage("prefix", locale))));
     }
 
     @Override
     public Component getMessage(String id, Map<String, String> placeholders) {
-        return MiniMessage.miniMessage().parse(TranslationManager.componentPlaceholder(getRawMessage(id), Map.of("prefix", getRawMessage("prefix"))), placeholders);
+        return parse(TranslationManager.componentPlaceholder(getRawMessage(id), Map.of("prefix", getRawMessage("prefix"))), placeholders);
     }
 
     @Override
     public Component getMessage(String id, Map<String, String> placeholders, Locale locale) {
-        return MiniMessage.miniMessage().parse(TranslationManager.componentPlaceholder(getRawMessage(id, locale), Map.of("prefix", getRawMessage("prefix", locale))), placeholders);
+        return parse(TranslationManager.componentPlaceholder(getRawMessage(id, locale), Map.of("prefix", getRawMessage("prefix", locale))), placeholders);
     }
 
     @Override
@@ -121,5 +122,13 @@ public class TranslationManagerImpl implements TranslationManager {
     @Override
     public String getRawMessage(String id, Locale locale) {
         return (String) Reflect.getField(translation(locale), id);
+    }
+
+    private Component parse(String input) {
+        return MiniMessage.miniMessage().deserialize(input);
+    }
+
+    private Component parse(String input, Map<String, String> placeholders) {
+        return MiniMessage.miniMessage().deserialize(input, TemplateResolver.pairs(placeholders));
     }
 }
