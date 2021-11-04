@@ -9,7 +9,6 @@ import net.lortservers.iris.checks.reach.ReachCheckG;
 import net.lortservers.iris.checks.rigidentity.RigidEntityCheckA;
 import net.lortservers.iris.checks.rigidentity.RigidEntityCheckB;
 import net.lortservers.iris.config.ConfigurationManagerImpl;
-import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
 import org.screamingsandals.lib.entity.EntityLiving;
 import org.screamingsandals.lib.event.OnEvent;
@@ -17,6 +16,7 @@ import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
 import org.screamingsandals.lib.item.meta.PotionEffectHolder;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.lib.world.LocationHolder;
 
 @Service(dependsOn = {
@@ -28,13 +28,20 @@ import org.screamingsandals.lib.world.LocationHolder;
         RigidEntityCheckB.class
 })
 public class ReachListener {
+    private ConfigurationManager configurationManager;
+    private PunishmentManager punishmentManager;
+
+    @OnEnable
+    public void enable(ConfigurationManagerImpl configurationManager, PunishmentManagerImpl punishmentManager) {
+        this.configurationManager = configurationManager;
+        this.punishmentManager = punishmentManager;
+    }
+
     @OnEvent
     public void onEntityDamageByEntity(SEntityDamageByEntityEvent event) {
-        if (!PlayerUtils.isPlayer(event.getEntity()) || !PlayerUtils.isPlayer(event.getDamager()) || !event.getDamageCause().is("attack") || ((EntityLiving) event.getDamager()).hasPotionEffect(PotionEffectHolder.of("minecraft:speed"))) {
+        if (!(event.getEntity() instanceof final PlayerWrapper victim) || !(event.getDamager() instanceof final PlayerWrapper attacker) || !event.getDamageCause().is("attack") || ((EntityLiving) event.getDamager()).hasPotionEffect(PotionEffectHolder.of("minecraft:speed"))) {
             return;
         }
-        final PlayerWrapper attacker = event.getDamager().as(PlayerWrapper.class);
-        final PlayerWrapper victim = event.getEntity().as(PlayerWrapper.class);
         if (victim.isSprinting()) {
             return;
         }
@@ -47,33 +54,33 @@ public class ReachListener {
         final ReachCheckF reaF = Check.get(ReachCheckF.class);
         final RigidEntityCheckB reB = Check.get(RigidEntityCheckB.class);
         final ReachCheckG reaG = Check.get(ReachCheckG.class);
-        if (distX >= ConfigurationManager.getInstance().getValue(reA, "minDistance", Double.class).orElse(3.35)) {
+        if (distX >= configurationManager.getValue(reA, "minDistance", Double.class).orElse(3.35)) {
             if (reA.isOnCooldown(attacker) || reaF.isOnCooldown(attacker) || !reA.isEligibleForCheck(attacker) || !reaF.isEligibleForCheck(attacker)) {
                 return;
             }
             reA.increaseVL(attacker, 1);
             reaF.increaseVL(attacker, 1);
-            if (reaF.getVL(attacker) >= ConfigurationManager.getInstance().getVLThreshold(reaF, ThresholdType.MESSAGE) || reA.getVL(attacker) >= ConfigurationManager.getInstance().getVLThreshold(reA, ThresholdType.MESSAGE)) {
-                if (distX >= ConfigurationManager.getInstance().getValue(reaF, "minDistance", Double.class).orElse(3.75)) {
-                    PunishmentManager.getInstance().log(attacker, reaF, "tried to hit a player " + distX + " blocks away");
+            if (reaF.getVL(attacker) >= configurationManager.getVLThreshold(reaF, ThresholdType.MESSAGE) || reA.getVL(attacker) >= configurationManager.getVLThreshold(reA, ThresholdType.MESSAGE)) {
+                if (distX >= configurationManager.getValue(reaF, "minDistance", Double.class).orElse(3.75)) {
+                    punishmentManager.log(attacker, reaF, "tried to hit a player " + distX + " blocks away");
                 } else {
-                    PunishmentManager.getInstance().log(attacker, reA, "tried to hit a player out of it's hitbox");
+                    punishmentManager.log(attacker, reA, "tried to hit a player out of it's hitbox");
                 }
                 event.setCancelled(true);
             }
             reA.putCooldown(attacker);
             reaF.putCooldown(attacker);
-        } else if (distZ >= ConfigurationManager.getInstance().getValue(reB, "minDistance", Double.class).orElse(3.35)) {
+        } else if (distZ >= configurationManager.getValue(reB, "minDistance", Double.class).orElse(3.35)) {
             if (reB.isOnCooldown(attacker) || reaG.isOnCooldown(attacker) || !reB.isEligibleForCheck(attacker) || !reaG.isEligibleForCheck(attacker)) {
                 return;
             }
             reB.increaseVL(attacker, 1);
             reaG.increaseVL(attacker, 1);
-            if (reaG.getVL(attacker) >= ConfigurationManager.getInstance().getVLThreshold(reaG, ThresholdType.MESSAGE) || reB.getVL(attacker) >= ConfigurationManager.getInstance().getVLThreshold(reB, ThresholdType.MESSAGE)) {
-                if (distZ >= ConfigurationManager.getInstance().getValue(reaG, "minDistance", Double.class).orElse(3.75)) {
-                    PunishmentManager.getInstance().log(attacker, reaG, "tried to hit a player " + distZ + " blocks away");
+            if (reaG.getVL(attacker) >= configurationManager.getVLThreshold(reaG, ThresholdType.MESSAGE) || reB.getVL(attacker) >= configurationManager.getVLThreshold(reB, ThresholdType.MESSAGE)) {
+                if (distZ >= configurationManager.getValue(reaG, "minDistance", Double.class).orElse(3.75)) {
+                    punishmentManager.log(attacker, reaG, "tried to hit a player " + distZ + " blocks away");
                 } else {
-                    PunishmentManager.getInstance().log(attacker, reB, "tried to hit a player out of it's hitbox");
+                    punishmentManager.log(attacker, reB, "tried to hit a player out of it's hitbox");
                 }
                 event.setCancelled(true);
             }

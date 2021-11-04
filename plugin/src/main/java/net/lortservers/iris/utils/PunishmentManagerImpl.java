@@ -28,6 +28,7 @@ import org.screamingsandals.lib.event.player.SPlayerJoinEvent;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 
 import java.util.Date;
 import java.util.List;
@@ -47,6 +48,14 @@ import java.util.stream.Stream;
 })
 public class PunishmentManagerImpl implements PunishmentManager {
     private final CooldownMapping webhookCooldown = new CooldownMapping(10000);
+    private ConfigurationManager configurationManager;
+    private TranslationManager translationManager;
+
+    @OnEnable
+    public void enable(ConfigurationManagerImpl configurationManager, TranslationManagerImpl translationManager) {
+        this.configurationManager = configurationManager;
+        this.translationManager = translationManager;
+    }
 
     /**
      * <p>Sends a failed message to alert subscribers.</p>
@@ -87,11 +96,11 @@ public class PunishmentManagerImpl implements PunishmentManager {
             if (!evt.isCancelled()) {
                 IrisPlugin.THREAD_POOL.submit(() -> {
                     messages.forEach(Audience::sendMessage);
-                    PlayerMapper.getConsoleSender().sendMessage(TranslationManager.getInstance().getMessage(messageId, placeholders.build()));
+                    PlayerMapper.getConsoleSender().sendMessage(translationManager.getMessage(messageId, placeholders.build()));
                 });
             }
         }));
-        if (ConfigurationManager.getInstance().getValue("webhookUrl", String.class).orElse(null) != null && !webhookCooldown.isOnCooldown()) {
+        if (configurationManager.getValue("webhookUrl", String.class).orElse(null) != null && !webhookCooldown.isOnCooldown()) {
             webhookCooldown.putCooldown();
             final Protocol proto = ProtocolUtils.getPlayerProtocol(player);
             final String protocolString = proto.getVersion() + " (" + proto.getMinecraftVersion() + ")";
@@ -127,11 +136,11 @@ public class PunishmentManagerImpl implements PunishmentManager {
             WebhookDispatcher.execute(
                     WebhookExecuteRequest.builder()
                             .username("Iris")
-                            .avatarUrl(ConfigurationManager.getInstance().getValue("webhookAvatar", String.class).orElse(null))
+                            .avatarUrl(configurationManager.getValue("webhookAvatar", String.class).orElse(null))
                             .embed(embed.build())
                             .build()
             ).thenAccept(e -> {
-                if (ConfigurationManager.getInstance().getValue("debug", Boolean.class).orElse(false)) {
+                if (configurationManager.getValue("debug", Boolean.class).orElse(false)) {
                     IrisPlugin.getInstance().getLogger().info((e != null) ? e.body() : "");
                 }
             });
@@ -141,14 +150,14 @@ public class PunishmentManagerImpl implements PunishmentManager {
     private CompletableFuture<Map<PlayerWrapper, Component>> messageForSubscribers(String id, Map<String, String> placeholders) {
         return CompletableFuture.supplyAsync(() -> {
             final ImmutableMap.Builder<PlayerWrapper, Component> messages = ImmutableMap.builder();
-            getSubscribers().forEach(player -> messages.put(player, TranslationManager.getInstance().getMessage(id, placeholders)));
+            getSubscribers().forEach(player -> messages.put(player, translationManager.getMessage(id, placeholders)));
             return messages.build();
         }, IrisPlugin.THREAD_POOL);
     }
 
     @Override
     public void kick(PlayerWrapper player, String message) {
-        player.kick(TranslationManager.getInstance().getMessage("banMessage", Map.of("message", message), player.getLocale()));
+        player.kick(translationManager.getMessage("banMessage", Map.of("message", message), player.getLocale()));
     }
 
     // TODO: ban event

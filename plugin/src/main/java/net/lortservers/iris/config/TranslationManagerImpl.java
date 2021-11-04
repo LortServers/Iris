@@ -24,13 +24,16 @@ import java.util.concurrent.ConcurrentHashMap;
         ConfigurationManagerImpl.class
 })
 public class TranslationManagerImpl implements TranslationManager {
+    private ConfigurationManager configurationManager;
+
     private static final ConfigurationManager.FileDefinition<Messages> MESSAGES_FILE = ConfigurationManagerImpl.FileDefinitionImpl.of(Messages.class, "messages.json");
     private static final Messages DUMMY = new Messages();
     private final Map<Locale, Messages> cachedTranslations = new ConcurrentHashMap<>();
     private Messages currentTranslation = null;
 
     @OnEnable
-    public void enable() {
+    public void enable(ConfigurationManager configurationManager) {
+        this.configurationManager = configurationManager;
         IrisPlugin.THREAD_POOL.submit(() -> {
             final File messagesFile = MESSAGES_FILE.toFile();
             if (messagesFile.exists() && messagesFile.isFile()) {
@@ -40,7 +43,7 @@ public class TranslationManagerImpl implements TranslationManager {
                     return;
                 }
             }
-            currentTranslation = (Messages) loadTranslation0(TranslationManager.toLocale(ConfigurationManager.getInstance().getValue("locale", String.class).orElse("en_US").replace("-", "_")));
+            currentTranslation = (Messages) loadTranslation0(TranslationManager.toLocale(configurationManager.getValue("locale", String.class).orElse("en_US").replace("-", "_")));
         });
     }
 
@@ -59,13 +62,13 @@ public class TranslationManagerImpl implements TranslationManager {
             if (resource != null) {
                 return ConfigurationManagerImpl.MAPPER.readValue(resource, Messages.class);
             } else {
-                if (ConfigurationManager.getInstance().getValue("debug", Boolean.class).orElse(false)) {
+                if (configurationManager.getValue("debug", Boolean.class).orElse(false)) {
                     IrisPlugin.getInstance().getLogger().error("Resource 'lang/" + localeStr + ".json' was not found.");
                 }
             }
         } catch (IOException e) {
             IrisPlugin.getInstance().getLogger().error("Could not load translation, deserialization error!", e);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
             IrisPlugin.getInstance().getLogger().error("Could not load translation, invalid locale!");
         }
         return null;

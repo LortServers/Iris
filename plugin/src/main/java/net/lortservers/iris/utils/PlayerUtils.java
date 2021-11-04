@@ -1,8 +1,6 @@
 package net.lortservers.iris.utils;
 
 import net.lortservers.iris.utils.material.MaterialUtils;
-import org.screamingsandals.lib.entity.EntityBasic;
-import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.player.SPlayerInteractEvent;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
@@ -23,9 +21,5 @@ public final class PlayerUtils {
 
     public static boolean isHoldingMaterial(PlayerWrapper player, String mat) {
         return player.getPlayerInventory().getItemInMainHand().getMaterial().is(mat) || player.getPlayerInventory().getItemInOffHand().getMaterial().is(mat);
-    }
-
-    public static boolean isPlayer(EntityBasic entity) {
-        return entity.getEntityType().is("minecraft:player") || entity instanceof EntityHuman;
     }
 }

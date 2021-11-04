@@ -7,7 +7,6 @@ buildscript {
         junitVersion = "5.8.1"
         jacksonVersion = "2.13.0"
         checkerFrameworkVersion = "3.19.0"
-        lombokVersion = "1.18.22"
         miniMessageVersion = "4.2.0-SNAPSHOT"
         cloudExtrasVersion = "1.5.0"
         nettyVersion = "4.1.70.Final"
@@ -17,6 +16,7 @@ buildscript {
 }
 
 plugins {
+    id 'io.freefair.lombok' version '6.2.0' apply false
     id 'java-library'
 }
 
@@ -27,10 +27,10 @@ allprojects {
 
 subprojects {
     apply plugin: 'java-library'
+    apply plugin: 'io.freefair.lombok'
 
-    jar {
-        baseName "${rootProject.name}-${project.name}"
-    }
+    jar.baseName "${rootProject.name}-${project.name}"
+    java.disableAutoTargetJvm()
 
     repositories {
         mavenCentral()
@@ -45,9 +45,6 @@ subprojects {
     dependencies {
         compileOnly "io.papermc.paper:paper-api:$paperApiVersion"
         compileOnly "org.checkerframework:checker-qual:$checkerFrameworkVersion"
-        
-        compileOnly "org.projectlombok:lombok:$lombokVersion"
-        annotationProcessor "org.projectlombok:lombok:$lombokVersion"
     }
 
     configurations.all {

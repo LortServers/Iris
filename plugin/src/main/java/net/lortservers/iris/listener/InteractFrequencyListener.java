@@ -2,22 +2,21 @@ package net.lortservers.iris.listener;
 
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.api.checks.Check;
-import net.lortservers.iris.checks.interact.InteractFrequencyCheckA;
-import net.lortservers.iris.checks.interact.block.BlockingFrequencyCheckA;
-import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.api.events.IrisCheckTriggerEvent;
 import net.lortservers.iris.api.managers.ConfigurationManager;
 import net.lortservers.iris.api.managers.PunishmentManager;
+import net.lortservers.iris.api.utils.IntegerPair;
+import net.lortservers.iris.api.utils.ThresholdType;
+import net.lortservers.iris.checks.interact.InteractFrequencyCheckA;
+import net.lortservers.iris.checks.interact.block.BlockingFrequencyCheckA;
+import net.lortservers.iris.config.ConfigurationManagerImpl;
 import net.lortservers.iris.platform.EventManager;
 import net.lortservers.iris.platform.events.IrisCheckTriggerEventImpl;
-import net.lortservers.iris.api.utils.IntegerPair;
 import net.lortservers.iris.utils.PlayerUtils;
 import net.lortservers.iris.utils.PunishmentManagerImpl;
-import net.lortservers.iris.api.utils.ThresholdType;
 import net.lortservers.iris.utils.material.MaterialUtils;
 import net.lortservers.iris.utils.profiles.PlayerProfileManager;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.entity.EntityHuman;
 import org.screamingsandals.lib.event.EventPriority;
 import org.screamingsandals.lib.event.OnEvent;
 import org.screamingsandals.lib.event.entity.SEntityDamageByEntityEvent;
@@ -50,6 +49,8 @@ public class InteractFrequencyListener {
      * <p>Right click interact actions.</p>
      */
     private static final List<SPlayerInteractEvent.Action> rightActions = List.of(SPlayerInteractEvent.Action.RIGHT_CLICK_AIR, SPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK);
+    private ConfigurationManager configurationManager;
+    private PunishmentManager punishmentManager;
 
     public IntegerPair getCps(PlayerWrapper player) {
         return PlayerProfileManager.ofEphemeral(player).getCps();
@@ -59,7 +60,9 @@ public class InteractFrequencyListener {
      * <p>Initializes the listener.</p>
      */
     @OnEnable
-    public void enable() {
+    public void enable(ConfigurationManagerImpl configurationManager, PunishmentManagerImpl punishmentManager) {
+        this.configurationManager = configurationManager;
+        this.punishmentManager = punishmentManager;
         Tasker.build(() -> {
             for (PlayerWrapper player : Server.getConnectedPlayers()) {
                 getCps(player).modifyFull(0, 0);
@@ -85,8 +88,7 @@ public class InteractFrequencyListener {
      */
     @OnEvent(priority = EventPriority.HIGHEST)
     public void onEntityDamageByEntity(SEntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof EntityHuman) {
-            final PlayerWrapper attacker = event.getDamager().as(PlayerWrapper.class);
+        if (event.getDamager() instanceof final PlayerWrapper attacker) {
             final long diff = Math.abs(System.currentTimeMillis() - PlayerProfileManager.ofEphemeral(attacker).getLastBreak());
             if (diff <= 1500) {
                 return;
@@ -132,11 +134,11 @@ public class InteractFrequencyListener {
     }
 
     private void performCheck(PlayerWrapper player, SPlayerInteractEvent.Action action) {
-        if (ConfigurationManager.getInstance().getValue("debug", Boolean.class).orElse(false)) {
+        if (configurationManager.getValue("debug", Boolean.class).orElse(false)) {
             IrisPlugin.getInstance().getLogger().info("LCPS: " + getCps(player).first() + ", RCPS: " + getCps(player).second());
         }
         final InteractFrequencyCheckA a = Check.get(InteractFrequencyCheckA.class);
-        if ((getCps(player).first() >= ConfigurationManager.getInstance().getValue(a, "maxCPS", Integer.class).orElse(16)) || (getCps(player).second() >= ConfigurationManager.getInstance().getValue(a, "maxCPS", Integer.class).orElse(16))) {
+        if ((getCps(player).first() >= configurationManager.getValue(a, "maxCPS", Integer.class).orElse(16)) || (getCps(player).second() >= configurationManager.getValue(a, "maxCPS", Integer.class).orElse(16))) {
             if (a.isEligibleForCheck(player)) {
                 final IrisCheckTriggerEvent evt1 = EventManager.fire(new IrisCheckTriggerEventImpl(player, a));
                 if (!evt1.isCancelled()) {
@@ -149,12 +151,12 @@ public class InteractFrequencyListener {
                                 if (!evt.isCancelled()) {
                                     a1.increaseVL(player, 1);
                                     if (a1.getVL(player) >= a1.getVLThreshold(ThresholdType.MESSAGE)) {
-                                        PunishmentManager.getInstance().log(player, a1, "blocking too fast [RCPS: " + getCps(player).second() + "]");
+                                        punishmentManager.log(player, a1, "blocking too fast [RCPS: " + getCps(player).second() + "]");
                                     }
                                 }
                             }
                         } else {
-                            PunishmentManager.getInstance().log(player, a, "seems to be using an autoclicker [LCPS: " + getCps(player).first() + ", RCPS: " + getCps(player).second() + "]");
+                            punishmentManager.log(player, a, "seems to be using an autoclicker [LCPS: " + getCps(player).first() + ", RCPS: " + getCps(player).second() + "]");
                         }
                     }
                 }

@@ -30,6 +30,7 @@ import java.util.Locale;
 })
 @RequiredArgsConstructor
 public abstract class CheckImpl implements Check {
+    private ConfigurationManager configurationManager;
     /**
      * <p>The check's cooldown time.</p>
      */
@@ -60,7 +61,8 @@ public abstract class CheckImpl implements Check {
     }
 
     @OnEnable
-    public void enable() {
+    public void enable(ConfigurationManagerImpl configurationManager) {
+        this.configurationManager = configurationManager;
         Tasker.build(() -> {
             for (EphemeralPlayerProfile profile : PlayerProfileManager.allEphemeral()) {
                 int currentVl = profile.getCheckVLs().getOrDefault(getClass(), 0);
@@ -181,7 +183,7 @@ public abstract class CheckImpl implements Check {
     @Override
     public boolean isEligibleForCheck(PlayerWrapper player) {
         return player.isOnline() &&
-                !player.asEntity().isDead() &&
+                !player.isDead() &&
                 player.getGameMode().is("survival") &&
                 !player.hasPermission("iris.bypass." + getName().toLowerCase(Locale.ROOT) + "." + getType().name().toLowerCase(Locale.ROOT)) &&
                 isEnabled();
@@ -195,11 +197,11 @@ public abstract class CheckImpl implements Check {
      */
     @Override
     public int getVLThreshold(ThresholdType type) {
-        return ConfigurationManager.getInstance().getVLThreshold(this, type);
+        return configurationManager.getVLThreshold(this, type);
     }
 
     @Override
     public boolean isEnabled() {
-        return ConfigurationManager.getInstance().isCheckEnabled(this);
+        return configurationManager.isCheckEnabled(this);
     }
 }
