@@ -30,7 +30,6 @@ subprojects {
     apply plugin: 'io.freefair.lombok'
 
     jar.baseName "${rootProject.name}-${project.name}"
-    java.disableAutoTargetJvm()
 
     repositories {
         mavenCentral()

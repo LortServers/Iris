@@ -14,3 +14,5 @@ dependencies {
 
     compileOnly "com.github.Minestom:Minestom:$minestomVersion"
 }
+
+java.disableAutoTargetJvm()
