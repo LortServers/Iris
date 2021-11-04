@@ -75,13 +75,16 @@ public class PlayerWrapperArgument<C> extends CommandArgument<C, PlayerWrapper> 
 
             final Optional<PlayerWrapper> player = PlayerMapper.getPlayer(input);
             inputQueue.remove();
-            return (player.isPresent()) ? ArgumentParseResult.success(player.orElseThrow()) : ArgumentParseResult.failure(new PlayerWrapperParseException(input, commandContext));
+            if (player.isPresent()) {
+                inputQueue.remove();
+                return ArgumentParseResult.success(player.orElseThrow());
+            }
+            return ArgumentParseResult.failure(new PlayerWrapperParseException(commandContext));
         }
     }
 
     public static final class PlayerWrapperParseException extends ParserException {
         public PlayerWrapperParseException(
-                final @NonNull String input,
                 final @NonNull CommandContext<?> context
         ) {
             super(
