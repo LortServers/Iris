@@ -74,7 +74,6 @@ public class PlayerWrapperArgument<C> extends CommandArgument<C, PlayerWrapper> 
             }
 
             final Optional<PlayerWrapper> player = PlayerMapper.getPlayer(input);
-            inputQueue.remove();
             if (player.isPresent()) {
                 inputQueue.remove();
                 return ArgumentParseResult.success(player.orElseThrow());
