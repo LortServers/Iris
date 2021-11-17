@@ -22,7 +22,7 @@ plugins {
 }
 
 allprojects {
-    group 'net.lortservers'
+    group 'net.lortservers.iris'
     version '0.0.1-SNAPSHOT'
     sourceCompatibility = '17'
 }
