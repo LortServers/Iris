@@ -1,6 +1,5 @@
 package net.lortservers.iris.utils.profiles;
 
-import com.google.common.collect.Lists;
 import net.lortservers.iris.api.managers.PunishmentManager;
 import net.lortservers.iris.utils.profiles.persistence.FilePersistenceAdapter;
 import net.lortservers.iris.utils.profiles.persistence.PersistenceAdapter;
@@ -68,7 +67,7 @@ public class PlayerProfileManager {
     }
 
     public static List<EphemeralPlayerProfile> allEphemeral() {
-        return Lists.newArrayList(getInstance().ephemeralPlayerProfiles.values());
+        return new ArrayList<>(getInstance().ephemeralPlayerProfiles.values());
     }
 
     public static CompletableFuture<List<PersistentPlayerProfile>> allPersistent() {

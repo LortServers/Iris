@@ -4,10 +4,8 @@ import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.parser.ArgumentParseResult;
 import cloud.commandframework.arguments.parser.ArgumentParser;
-import cloud.commandframework.captions.Caption;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.exceptions.parsing.NoInputProvidedException;
-import cloud.commandframework.exceptions.parsing.ParserException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.screamingsandals.lib.player.PlayerMapper;
@@ -24,7 +22,7 @@ public class PlayerWrapperArgument<C> extends CommandArgument<C, PlayerWrapper> 
             final @NonNull String name,
             final @NonNull String defaultValue,
             final @Nullable BiFunction<@NonNull CommandContext<C>,
-                    @NonNull String, @NonNull List<@NonNull String>> suggestionsProvider,
+            @NonNull String, @NonNull List<@NonNull String>> suggestionsProvider,
             final @NonNull ArgumentDescription defaultDescription
     ) {
         super(required, name, new PlayerWrapperParser<>(), defaultValue, PlayerWrapper.class, suggestionsProvider, defaultDescription);
@@ -78,19 +76,7 @@ public class PlayerWrapperArgument<C> extends CommandArgument<C, PlayerWrapper> 
                 inputQueue.remove();
                 return ArgumentParseResult.success(player.orElseThrow());
             }
-            return ArgumentParseResult.failure(new PlayerWrapperParseException(commandContext));
-        }
-    }
-
-    public static final class PlayerWrapperParseException extends ParserException {
-        public PlayerWrapperParseException(
-                final @NonNull CommandContext<?> context
-        ) {
-            super(
-                    PlayerWrapperParser.class,
-                    context,
-                    Caption.of("Invalid player!")
-            );
+            return ArgumentParseResult.failure(new IllegalArgumentException("Player not found!"));
         }
     }
 }

@@ -6,12 +6,40 @@ import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.ServiceManager;
 
+/**
+ * <p>Check base.</p>
+ */
 public interface Check {
+    /**
+     * <p>Gets the check's letter.</p>
+     *
+     * @return the check letter
+     */
     CheckAlphabet getType();
 
+    /**
+     * <p>Gets the check name.</p>
+     *
+     * @return the check name
+     */
     @NonNull
     String getName();
 
+    /**
+     * <p>Gets the check's display name.</p>
+     *
+     * @return the check display name
+     */
+    default String getDisplayName() {
+        return getName() + " " + getType().name();
+    }
+
+    /**
+     * <p>Gets the check's VL threshold for the specified threshold type.</p>
+     *
+     * @param type the threshold type
+     * @return the check's VL threshold
+     */
     int getVLThreshold(ThresholdType type);
 
     default int getVL(Object player) {
