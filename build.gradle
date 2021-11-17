@@ -17,19 +17,24 @@ buildscript {
 
 plugins {
     id 'io.freefair.lombok' version '6.3.0' apply false
+    id 'maven-publish'
     id 'java-library'
 }
 
 allprojects {
-    group 'net.lortservers'
+    group 'net.lortservers.iris'
     version '0.0.1-SNAPSHOT'
+    sourceCompatibility = '17'
 }
 
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'io.freefair.lombok'
+    apply plugin: 'maven-publish'
 
     jar.baseName "${rootProject.name}-${project.name}"
+    javadocJar.baseName "${rootProject.name}-${project.name}"
+    sourcesJar.baseName "${rootProject.name}-${project.name}"
 
     repositories {
         mavenCentral()
@@ -67,6 +72,30 @@ subprojects {
         slibCompileOnly = { String platform, String... modules ->
             modules.each {
                 dependencies.compileOnly "org.screamingsandals.lib:" + it + "-" + platform + ":$screamingLibVersion"
+            }
+        }
+    }
+
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
+    publishing {
+        repositories {
+            it.maven({ MavenArtifactRepository repository ->
+                if (((String) project.version).contains("SNAPSHOT")) {
+                    repository.url = System.getenv("NEXUS_URL_SNAPSHOT")
+                } else {
+                    repository.url = System.getenv("NEXUS_URL_RELEASE")
+                }
+                repository.credentials.username = System.getenv("NEXUS_USERNAME")
+                repository.credentials.password = System.getenv("NEXUS_PASSWORD")
+            })
+        }
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
             }
         }
     }
