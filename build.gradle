@@ -74,15 +74,27 @@ subprojects {
         }
     }
 
-    publishing.repositories {
-        it.maven({ MavenArtifactRepository repository ->
-            if (((String) project.version).contains("SNAPSHOT")) {
-                repository.url = System.getenv("NEXUS_URL_SNAPSHOT")
-            } else {
-                repository.url = System.getenv("NEXUS_URL_RELEASE")
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
+    publishing {
+        repositories {
+            it.maven({ MavenArtifactRepository repository ->
+                if (((String) project.version).contains("SNAPSHOT")) {
+                    repository.url = System.getenv("NEXUS_URL_SNAPSHOT")
+                } else {
+                    repository.url = System.getenv("NEXUS_URL_RELEASE")
+                }
+                repository.credentials.username = System.getenv("NEXUS_USERNAME")
+                repository.credentials.password = System.getenv("NEXUS_PASSWORD")
+            })
+        }
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
             }
-            repository.credentials.username = System.getenv("NEXUS_USERNAME")
-            repository.credentials.password = System.getenv("NEXUS_PASSWORD")
-        })
+        }
     }
 }
