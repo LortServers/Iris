@@ -8,8 +8,8 @@ dependencies {
 
     implementation "org.mongodb:mongo-java-driver:$mongoDbDriverVersion"
 
-    slibCompileOnly('bukkit', 'core', 'plugin', 'utils')
-    slibCompileOnly('common', 'utils')
+    slibModulesForPlatform('bukkit', 'core', 'plugin', 'utils')
+    slibModulesForPlatform('common', 'utils')
     annotationProcessor "org.screamingsandals.lib:screaming-annotation:$screamingLibVersion"
 }
 
@@ -19,6 +19,7 @@ shadowJar {
 
     relocate 'com.mongodb', 'net.lortservers.iris.adapters.mongodb.lib.mongodb'
     relocate 'org.bson', 'net.lortservers.iris.adapters.mongodb.lib.bson'
-    // reuse slib from main plugin
-    relocate 'org.screamingsandals.lib', 'net.lortservers.iris.lib.slib'
+    relocate 'org.screamingsandals.lib', 'net.lortservers.iris.adapters.mongodb.lib.slib'
+    // reusing adventure from the main plugin
+    relocate 'net.kyori.adventure', 'net.lortservers.iris.lib.adventure'
 }
