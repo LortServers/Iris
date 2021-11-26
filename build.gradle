@@ -32,6 +32,11 @@ subprojects {
     apply plugin: 'io.freefair.lombok'
     apply plugin: 'maven-publish'
 
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
     jar.baseName "${rootProject.name}-${project.name}"
     javadocJar.baseName "${rootProject.name}-${project.name}"
     sourcesJar.baseName "${rootProject.name}-${project.name}"
@@ -74,11 +79,6 @@ subprojects {
                 dependencies.compileOnly "org.screamingsandals.lib:" + it + "-" + platform + ":$screamingLibVersion"
             }
         }
-    }
-
-    java {
-        withJavadocJar()
-        withSourcesJar()
     }
 
     publishing {
