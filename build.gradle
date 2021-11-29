@@ -4,7 +4,7 @@ buildscript {
         paperApiVersion = "1.17.1-R0.1-SNAPSHOT"
         spongeApiVersion = "7.3.0"
         minestomVersion = "master-SNAPSHOT"
-        junitVersion = "5.8.1"
+        junitVersion = "5.8.2"
         jacksonVersion = "2.13.0"
         checkerFrameworkVersion = "3.19.0"
         miniMessageVersion = "4.2.0-SNAPSHOT"
