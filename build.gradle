@@ -7,7 +7,7 @@ buildscript {
         junitVersion = "5.8.2"
         jacksonVersion = "2.13.0"
         checkerFrameworkVersion = "3.19.0"
-        miniMessageVersion = "4.2.0-SNAPSHOT"
+        miniMessageVersion = "4.10.0-SNAPSHOT"
         cloudExtrasVersion = "1.6.0"
         nettyVersion = "4.1.70.Final"
         guavaVersion = "31.0.1-jre"
