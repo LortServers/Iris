@@ -10,7 +10,7 @@ buildscript {
         miniMessageVersion = "4.10.0-SNAPSHOT"
         cloudExtrasVersion = "1.6.0"
         nettyVersion = "4.1.72.Final"
-        guavaVersion = "31.0.1-jre"
+        guavaVersion = "31.1-jre"
         mongoDbDriverVersion = "3.12.10"
     }
 }
