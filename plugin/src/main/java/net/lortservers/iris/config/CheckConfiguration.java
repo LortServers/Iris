@@ -6,7 +6,6 @@ import net.lortservers.iris.api.checks.CheckAlphabet;
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 @Getter
 @Builder
@@ -23,7 +22,7 @@ public class CheckConfiguration {
     private Map<String, Object> options = Map.of();
     private Map<String, Integer> suspicionThresholds;
 
-    public Optional<Check> toCheck() {
+    public Check toCheck() {
         return Check.get(name, CheckAlphabet.valueOf(type.toUpperCase(Locale.ROOT)));
     }
 }

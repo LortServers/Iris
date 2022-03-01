@@ -34,12 +34,12 @@ public class PlayerProfileManager {
 
     @OnEvent(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(SPlayerJoinEvent event) {
-        putEphemeralPlayer(event.getPlayer());
+        putEphemeralPlayer(event.player());
     }
 
     @OnEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLeave(SPlayerLeaveEvent event) {
-        ephemeralPlayerProfiles.remove(event.getPlayer().getUuid());
+        ephemeralPlayerProfiles.remove(event.player().getUuid());
     }
 
     @OnEnable

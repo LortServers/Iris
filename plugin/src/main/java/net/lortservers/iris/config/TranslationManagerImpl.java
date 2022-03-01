@@ -2,7 +2,8 @@ package net.lortservers.iris.config;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.lortservers.iris.IrisPlugin;
 import net.lortservers.iris.api.managers.ConfigurationManager;
 import net.lortservers.iris.api.managers.TranslationManager;
@@ -132,6 +133,11 @@ public class TranslationManagerImpl implements TranslationManager {
     }
 
     private Component parse(String input, Map<String, String> placeholders) {
-        return MiniMessage.miniMessage().deserialize(input, TemplateResolver.pairs(placeholders));
+        return MiniMessage.miniMessage().deserialize(
+                input,
+                placeholders.entrySet().stream()
+                        .map(e -> TagResolver.resolver(e.getKey(), Tag.inserting(Component.text(e.getValue()))))
+                        .toArray(TagResolver[]::new)
+        );
     }
 }

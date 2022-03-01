@@ -77,8 +77,8 @@ public class InteractFrequencyListener {
      */
     @OnEvent
     public void onPlayerBlockBreak(SPlayerBlockBreakEvent event) {
-        getCps(event.getPlayer()).modifyFirst(0);
-        PlayerProfileManager.ofEphemeral(event.getPlayer()).setLastBreak(System.currentTimeMillis());
+        getCps(event.player()).modifyFirst(0);
+        PlayerProfileManager.ofEphemeral(event.player()).setLastBreak(System.currentTimeMillis());
     }
 
     /**
@@ -88,7 +88,7 @@ public class InteractFrequencyListener {
      */
     @OnEvent(priority = EventPriority.HIGHEST)
     public void onEntityDamageByEntity(SEntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof final PlayerWrapper attacker) {
+        if (event.damager() instanceof final PlayerWrapper attacker) {
             final long diff = Math.abs(System.currentTimeMillis() - PlayerProfileManager.ofEphemeral(attacker).getLastBreak());
             if (diff <= 1500) {
                 return;
@@ -105,23 +105,23 @@ public class InteractFrequencyListener {
      */
     @OnEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(SPlayerInteractEvent event) {
-        if (event.getAction() == SPlayerInteractEvent.Action.PHYSICAL) {
+        if (event.action() == SPlayerInteractEvent.Action.PHYSICAL) {
             return;
         }
-        final PlayerWrapper player = event.getPlayer();
+        final PlayerWrapper player = event.player();
         final long diff = Math.abs(System.currentTimeMillis() - PlayerProfileManager.ofEphemeral(player).getLastBreak());
         if (diff <= 1500) {
             return;
         }
-        if (leftActions.contains(event.getAction())) {
+        if (leftActions.contains(event.action())) {
             getCps(player).incrementFirst(1);
         }
-        if (rightActions.contains(event.getAction())) {
-            if (event.getBlockClicked() != null) {
-                if (MaterialUtils.hasPart(event.getBlockClicked(), "fence_gate") || MaterialUtils.hasPart(event.getBlockClicked(), "button") || MaterialUtils.hasPart(event.getBlockClicked(), "door")) {
+        if (rightActions.contains(event.action())) {
+            if (event.clickedBlock() != null) {
+                if (MaterialUtils.hasPart(event.clickedBlock(), "fence_gate") || MaterialUtils.hasPart(event.clickedBlock(), "button") || MaterialUtils.hasPart(event.clickedBlock(), "door")) {
                     return;
                 }
-                if (event.getBlockClicked().getType().is("minecraft:daylight_detector") || event.getBlockClicked().getType().is("minecraft:repeater") || event.getBlockClicked().getType().is("minecraft:comparator") || event.getBlockClicked().getType().is("minecraft:lever")) {
+                if (event.clickedBlock().getType().is("minecraft:daylight_detector") || event.clickedBlock().getType().is("minecraft:repeater") || event.clickedBlock().getType().is("minecraft:comparator") || event.clickedBlock().getType().is("minecraft:lever")) {
                     return;
                 }
                 if (PlayerUtils.isHoldingMaterial(player, "minecraft:fishing_rod")) {
@@ -130,7 +130,7 @@ public class InteractFrequencyListener {
             }
             getCps(player).incrementSecond(1);
         }
-        performCheck(player, event.getAction());
+        performCheck(player, event.action());
     }
 
     private void performCheck(PlayerWrapper player, SPlayerInteractEvent.Action action) {

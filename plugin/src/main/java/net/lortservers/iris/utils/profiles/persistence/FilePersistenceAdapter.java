@@ -20,7 +20,7 @@ public class FilePersistenceAdapter implements PersistenceAdapter<PersistentPlay
     private final Map<UUID, PersistentPlayerProfile> profileCache = new ConcurrentHashMap<>();
 
     public FilePersistenceAdapter() {
-        EventManager.getDefaultEventManager().register(SPlayerLeaveEvent.class, event -> profileCache.remove(event.getPlayer().getUuid()));
+        EventManager.getDefaultEventManager().register(SPlayerLeaveEvent.class, event -> profileCache.remove(event.player().getUuid()));
     }
 
     @Override

@@ -2,7 +2,7 @@ buildscript {
     ext {
         screamingLibVersion = "2.0.1-SNAPSHOT"
         paperApiVersion = "1.17.1-R0.1-SNAPSHOT"
-        spongeApiVersion = "7.3.0"
+        spongeApiVersion = "8.0.0"
         minestomVersion = "master-SNAPSHOT"
         junitVersion = "5.8.2"
         jacksonVersion = "2.13.1"

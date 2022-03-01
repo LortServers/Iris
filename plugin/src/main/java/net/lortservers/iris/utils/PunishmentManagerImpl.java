@@ -200,9 +200,9 @@ public class PunishmentManagerImpl implements PunishmentManager {
 
     @OnEvent(priority = EventPriority.HIGH)
     public void onPlayerJoin(SPlayerJoinEvent event) {
-        PlayerProfileManager.ofPersistent(event.getPlayer()).thenAccept(e -> {
+        PlayerProfileManager.ofPersistent(event.player()).thenAccept(e -> {
             if (e.isBanned()) {
-                Server.runSynchronously(() -> kick(event.getPlayer(), e.getBanMessage()));
+                Server.runSynchronously(() -> kick(event.player(), e.getBanMessage()));
             }
         });
     }

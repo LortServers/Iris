@@ -39,7 +39,7 @@ public class ReachListener {
 
     @OnEvent
     public void onEntityDamageByEntity(SEntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof final PlayerWrapper victim) || !(event.getDamager() instanceof final PlayerWrapper attacker) || !event.getDamageCause().is("attack") || ((EntityLiving) event.getDamager()).hasPotionEffect(PotionEffectHolder.of("minecraft:speed"))) {
+        if (!(event.entity() instanceof final PlayerWrapper victim) || !(event.damager() instanceof final PlayerWrapper attacker) || !event.damageCause().is("attack") || ((EntityLiving) event.damager()).hasPotionEffect(PotionEffectHolder.of("minecraft:speed"))) {
             return;
         }
         if (victim.isSprinting()) {

@@ -59,7 +59,7 @@ public class AimbotListener {
      */
     @OnEvent
     public void onEntityDamageByEntity(SEntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof final PlayerWrapper attacker) || !(event.getEntity() instanceof final PlayerWrapper victim) || !event.getDamageCause().is("attack")) {
+        if (!(event.damager() instanceof final PlayerWrapper attacker) || !(event.entity() instanceof final PlayerWrapper victim) || !event.damageCause().is("attack")) {
             return;
         }
         final EphemeralPlayerProfile profile = PlayerProfileManager.ofEphemeral(attacker);

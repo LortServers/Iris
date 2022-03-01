@@ -90,8 +90,7 @@ public interface Check {
         return ServiceManager.get(clazz);
     }
 
-    @SuppressWarnings("unchecked")
-    static <T extends Check> T get(@NonNull String name, CheckAlphabet letter) {
-        return (T) ServiceManager.getAll(Check.class).stream().filter(e -> e.getName().equals(name) && e.getType().equals(letter)).findFirst().orElseThrow();
+    static Check get(@NonNull String name, CheckAlphabet letter) {
+        return ServiceManager.getAll(Check.class).stream().filter(e -> e.getName().equals(name) && e.getType().equals(letter)).findFirst().orElseThrow();
     }
 }

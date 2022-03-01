@@ -21,9 +21,8 @@ dependencies {
 
     implementation "net.kyori:adventure-text-minimessage:$miniMessageVersion"
     implementation "cloud.commandframework:cloud-minecraft-extras:$cloudExtrasVersion"
-    slibModulesForPlatform('bukkit', 'core', 'event', 'tasker', 'plugin', 'command')
-    slibModulesForPlatform('common', 'utils')
-    annotationProcessor "org.screamingsandals.lib:screaming-annotation:$screamingLibVersion"
+    slibModulesForPlatform('bukkit', 'core', 'command')
+    annotationProcessor "org.screamingsandals.lib:annotation:$screamingLibVersion"
 
     compileOnly "com.google.guava:guava:$guavaVersion"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
