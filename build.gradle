@@ -5,7 +5,7 @@ buildscript {
         spongeApiVersion = "7.3.0"
         minestomVersion = "master-SNAPSHOT"
         junitVersion = "5.8.2"
-        jacksonVersion = "2.13.0"
+        jacksonVersion = "2.13.1"
         checkerFrameworkVersion = "3.20.0"
         miniMessageVersion = "4.10.0-SNAPSHOT"
         cloudExtrasVersion = "1.6.0"
@@ -16,7 +16,7 @@ buildscript {
 }
 
 plugins {
-    id 'io.freefair.lombok' version '6.3.0' apply false
+    id 'io.freefair.lombok' version '6.4.1' apply false
     id 'maven-publish'
     id 'java-library'
 }
