@@ -8,7 +8,7 @@ buildscript {
         jacksonVersion = "2.13.1"
         checkerFrameworkVersion = "3.21.2"
         miniMessageVersion = "4.10.0-SNAPSHOT"
-        cloudExtrasVersion = "1.6.0"
+        cloudExtrasVersion = "1.6.2"
         nettyVersion = "4.1.74.Final"
         guavaVersion = "31.1-jre"
         mongoDbDriverVersion = "3.12.10"
