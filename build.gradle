@@ -6,7 +6,7 @@ buildscript {
         minestomVersion = "master-SNAPSHOT"
         junitVersion = "5.8.2"
         jacksonVersion = "2.13.1"
-        checkerFrameworkVersion = "3.21.2"
+        checkerFrameworkVersion = "3.30.0"
         miniMessageVersion = "4.11.0-SNAPSHOT"
         cloudExtrasVersion = "1.6.2"
         nettyVersion = "4.1.74.Final"
